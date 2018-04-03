@@ -1,0 +1,16 @@
+package org.gatlin.soa.bean.enums;
+
+public enum ConfigType {
+
+	COURIER(1);
+	
+	private int mark;
+	
+	private ConfigType(int mark) {
+		this.mark = mark;
+	}
+	
+	public int mark() {
+		return mark;
+	}
+}

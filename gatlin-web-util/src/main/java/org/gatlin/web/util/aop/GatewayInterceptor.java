@@ -1,0 +1,157 @@
+package org.gatlin.web.util.aop;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.gatlin.core.bean.entity.LogRequest;
+import org.gatlin.core.bean.model.message.Request;
+import org.gatlin.core.bean.model.message.Response;
+import org.gatlin.core.bean.model.message.WrapResponse;
+import org.gatlin.core.util.Assert;
+import org.gatlin.soa.config.api.ConfigService;
+import org.gatlin.soa.config.bean.entity.CfgApi;
+import org.gatlin.soa.config.bean.enums.StorageType;
+import org.gatlin.soa.log.api.LogService;
+import org.gatlin.soa.model.User;
+import org.gatlin.soa.user.api.UserService;
+import org.gatlin.soa.user.bean.UserCode;
+import org.gatlin.util.DateUtil;
+import org.gatlin.util.IDWorker;
+import org.gatlin.util.lang.StringUtil;
+import org.gatlin.util.serial.SerializeUtil;
+import org.gatlin.web.util.WebUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamSource;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class GatewayInterceptor {
+	
+	private static final Logger logger = LoggerFactory.getLogger(GatewayInterceptor.class);
+
+	@Resource
+	private LogService logService;
+	@Resource
+	private UserService userService;
+	@Resource
+	private ConfigService configService;
+
+	@Pointcut("execution(* org..controller.*.*(..))")
+	public void pointcut() {
+	}
+
+	@Around("pointcut()")
+	public Object controllerAround(ProceedingJoinPoint point) throws Throwable {
+		Class<?> returnType = WebUtil.returnType(point);
+		if (returnType == Void.TYPE)
+			return point.proceed();
+		HttpServletRequest request = WebUtil.getRequest();
+		LogRequest log = _logRequest(request, point);
+		CfgApi api = configService.api(log.getPath());
+		// 用户数据处理
+		User user = null;
+		String token = request.getHeader("Token");
+		if (StringUtil.hasText(token)) {
+			if (null != api && api.isSerial()) 
+				user = userService.lock(token, api.getLockTimeout());
+			else
+				user = userService.user(token);
+		}
+		try {
+			Object[] params = point.getArgs();
+			for (Object param : params) {
+				if (param instanceof Request) {
+					Request req = (Request) param;
+					req.init(log, token, user);
+					req.verify();
+				}
+			}
+			if (null != api) {
+				if (api.isLogin())			// 检测登录
+					Assert.notNull(UserCode.USER_UNLOGIN, user);
+				int deviceType = user.getDevice().getType();
+				Assert.isTrue((api.getDeviceMod() & deviceType) == deviceType, UserCode.DEVICE_UNSUPPORT);
+			}
+			Object result = point.proceed();
+			Object response = null;
+			if (null != result) {
+				if (result instanceof WrapResponse)
+					response = ((WrapResponse) result).getResult();
+				else if (!(result instanceof Response<?>))
+					response = new Response<Object>(result);
+				else
+					response = result;
+			} else
+				response = Response.ok();
+			log.setResponse(SerializeUtil.GSON.toJson(response));
+			log.setSuccess(true);
+			log.setRtime(DateUtil.getDate(DateUtil.YYYY_MM_DD_HH_MM_SS_SSS));
+			return response;
+		} catch (Exception e) {
+			StringWriter error = new StringWriter();
+			log.setSuccess(false);
+			e.printStackTrace(new PrintWriter(error));
+			log.setResponse(error.toString());
+			log.setRtime(DateUtil.getDate(DateUtil.YYYY_MM_DD_HH_MM_SS_SSS));
+			throw e;
+		} finally {
+			if (StringUtil.hasText(user.getLockId())) {
+				boolean released = userService.releaseLock(user.getId(), user.getLockId());
+				if (!released)
+					logger.warn("用户  {} 锁资源释放失败！", user.getId());
+			}
+			// 开启日志记录
+			if (null != api) {
+				 StorageType type = StorageType.valueOf(api.getStorageType());
+				 switch (type) {
+				case FILE:
+					logger.info("客户端请求：{}", SerializeUtil.GSON.toJson(api));
+					break;
+				case MONGO:
+					logService.logRequest(log);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+	private final LogRequest _logRequest(HttpServletRequest request, ProceedingJoinPoint point) throws IOException {
+		LogRequest meta = new LogRequest();
+		meta.set_id(IDWorker.INSTANCE.nextSid());
+		meta.setIp(WebUtil.getIpAddress(request));
+		meta.setCtime(DateUtil.getDate(DateUtil.YYYY_MM_DD_HH_MM_SS_SSS));
+		meta.setType(request.getMethod());
+		meta.setPath(request.getRequestURI().toString());
+		meta.setQuery(request.getQueryString());
+		Object[] params = point.getArgs();
+		List<Object> list = new ArrayList<Object>();
+		for(int i = 0 ; i<params.length ; i++) {
+			if (params[i] instanceof InputStream || params[i] instanceof InputStreamSource)
+				continue;
+			if(params[i] instanceof Serializable) 
+				list.add(params[i]);
+		}
+		params = list.toArray(new Object[] {});
+		meta.setParam(SerializeUtil.GSON.toJson(params));
+		String method = point.getTarget().getClass().getName() + "." + point.getSignature().getName();
+		meta.setMethod(method);
+		meta.setCreated(DateUtil.current());
+		return meta;
+	}
+}
