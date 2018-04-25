@@ -25,7 +25,7 @@ public class Username implements Entity<Long> {
 	private int type;
 	private String username;
 	private int created;
-
+	
 	public long getId() {
 		return id;
 	}

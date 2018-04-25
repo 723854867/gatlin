@@ -16,6 +16,8 @@ public class CfgApi implements Entity<String> {
 	private boolean serial;
 	private int lockTimeout;
 	private String storageType;
+	// 安全级别：和服务器的当前状态级别对应，只有级别高于服务器的状态级别才可以调用
+	private int securityLevel;
 	private int created;
 	private int updated;
 
@@ -73,6 +75,10 @@ public class CfgApi implements Entity<String> {
 
 	public void setStorageType(String storageType) {
 		this.storageType = storageType;
+	}
+	
+	public int getSecurityLevel() {
+		return securityLevel;
 	}
 
 	public int getCreated() {

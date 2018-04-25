@@ -20,11 +20,15 @@ import org.gatlin.dao.bean.model.Condition;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.util.bean.model.Pair;
 import org.gatlin.util.lang.CollectionUtil;
+import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.serial.SerializeUtil;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -48,8 +52,16 @@ public class Mongo {
 	
 	@PostConstruct
 	public void init() {
-		this.mongo = new MongoClient(GatlinConfigration.get(Options.MONGO_HOST));
-		this.connection = mongo.getDatabase(GatlinConfigration.get(Options.MONGO_DB));
+		String db = GatlinConfigration.get(Options.MONGO_DB);
+		String username = GatlinConfigration.get(Options.MONGO_DB);
+		String password = GatlinConfigration.get(Options.MONGO_PASSWORD);
+		if (StringUtil.hasText(username) && StringUtil.hasText(password)) {
+			MongoCredential credential = MongoCredential.createCredential(username, db, password.toCharArray());
+			ServerAddress address = new ServerAddress(GatlinConfigration.get(Options.MONGO_HOST));
+			this.mongo = new MongoClient(address, credential, MongoClientOptions.builder().build());
+		} else 
+			this.mongo = new MongoClient(GatlinConfigration.get(Options.MONGO_HOST));
+		this.connection = mongo.getDatabase(db);
 	}
 	
 	public void insertOne(String collectionName, Object object) {
@@ -165,7 +177,7 @@ public class Mongo {
 		return list;
 	}
 	
-	public <T> Paginate<T> query(String collectionName, Query<?> query, Class<T> clazz) {
+	public <T> Paginate<T> query(String collectionName, Query query, Class<T> clazz) {
 		MongoCollection<Document> collection = collection(collectionName);
 		List<Condition> conditions = query.getConditions();
 		List<Bson> filters = new ArrayList<Bson>();

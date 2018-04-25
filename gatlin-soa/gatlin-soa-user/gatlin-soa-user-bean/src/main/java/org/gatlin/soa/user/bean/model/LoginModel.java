@@ -2,7 +2,7 @@ package org.gatlin.soa.user.bean.model;
 
 import java.io.Serializable;
 
-import org.gatlin.soa.entity.UserDevice;
+import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.info.LoginInfo;
 
 public class LoginModel implements Serializable {

@@ -26,5 +26,6 @@
 		<module>gatlin-soa-log</module>
     <module>gatlin-soa-courier</module>
     <module>gatlin-soa-user</module>
+    <module>gatlin-soa-resource</module>
   </modules>
 </project>

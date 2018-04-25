@@ -8,4 +8,7 @@ public interface WebCode {
 	final Code UNSUPPORT_HTTP_METHOD 			= new Code("code.unsupport.http.method", "不支持的HTTP请求方法");
 	final Code UPLOAD_SIZE_EXCEEDED 			= new Code("code.upload.size.exceeded", "上传文件太大");
 	final Code UPLOAD_COUNT_EXCEEDED 			= new Code("code.upload.count.exceeded", "上传文件数量超过限制");
+	final Code UPLOAD_FAILURE		 			= new Code("code.upload.failure", "资源上传失败");
+
+	final Code SERVER_WARNING 					= new Code("code.warning", "服务器预警");
 }

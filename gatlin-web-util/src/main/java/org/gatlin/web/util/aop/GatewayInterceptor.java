@@ -5,10 +5,10 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,22 +20,27 @@ import org.gatlin.core.bean.model.message.Request;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.bean.model.message.WrapResponse;
 import org.gatlin.core.util.Assert;
+import org.gatlin.soa.bean.User;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.entity.CfgApi;
 import org.gatlin.soa.config.bean.enums.StorageType;
 import org.gatlin.soa.log.api.LogService;
-import org.gatlin.soa.model.User;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
+import org.gatlin.util.bean.enums.DeviceType;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.serial.SerializeUtil;
+import org.gatlin.web.util.WebCode;
+import org.gatlin.web.util.WebConsts;
 import org.gatlin.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Aspect
 @Component
@@ -43,11 +48,11 @@ public class GatewayInterceptor {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GatewayInterceptor.class);
 
-	@Resource
+	@Autowired(required = false)
 	private LogService logService;
-	@Resource
+	@Autowired(required = false)
 	private UserService userService;
-	@Resource
+	@Autowired(required = false)
 	private ConfigService configService;
 
 	@Pointcut("execution(* org..controller.*.*(..))")
@@ -56,20 +61,23 @@ public class GatewayInterceptor {
 
 	@Around("pointcut()")
 	public Object controllerAround(ProceedingJoinPoint point) throws Throwable {
-		Class<?> returnType = WebUtil.returnType(point);
-		if (returnType == Void.TYPE)
+		Method method = WebUtil.method(point);
+		if (!method.isAnnotationPresent(RequestMapping.class))
 			return point.proceed();
 		HttpServletRequest request = WebUtil.getRequest();
 		LogRequest log = _logRequest(request, point);
-		CfgApi api = configService.api(log.getPath());
+		int serverState = configService.config(WebConsts.Options.SERVER_STATE);
+		CfgApi api = null != configService ? configService.api(log.getPath()) : null;
+		int apiSecurityLevel = null == api ? 1 : api.getSecurityLevel();
+		Assert.isTrue(apiSecurityLevel > serverState, WebCode.SERVER_WARNING);
 		// 用户数据处理
 		User user = null;
 		String token = request.getHeader("Token");
 		if (StringUtil.hasText(token)) {
 			if (null != api && api.isSerial()) 
-				user = userService.lock(token, api.getLockTimeout());
+				user = null != userService ? userService.lock(token, api.getLockTimeout()) : null;
 			else
-				user = userService.user(token);
+				user = null != userService ? userService.user(token) : null;
 		}
 		try {
 			Object[] params = point.getArgs();
@@ -83,8 +91,8 @@ public class GatewayInterceptor {
 			if (null != api) {
 				if (api.isLogin())			// 检测登录
 					Assert.notNull(UserCode.USER_UNLOGIN, user);
-				int deviceType = user.getDevice().getType();
-				Assert.isTrue((api.getDeviceMod() & deviceType) == deviceType, UserCode.DEVICE_UNSUPPORT);
+				DeviceType deviceType = user.getDeviceType();
+				Assert.isTrue((api.getDeviceMod() & deviceType.mark()) == deviceType.mark(), UserCode.DEVICE_UNSUPPORT);
 			}
 			Object result = point.proceed();
 			Object response = null;
@@ -109,7 +117,7 @@ public class GatewayInterceptor {
 			log.setRtime(DateUtil.getDate(DateUtil.YYYY_MM_DD_HH_MM_SS_SSS));
 			throw e;
 		} finally {
-			if (StringUtil.hasText(user.getLockId())) {
+			if (null != user && StringUtil.hasText(user.getLockId())) {
 				boolean released = userService.releaseLock(user.getId(), user.getLockId());
 				if (!released)
 					logger.warn("用户  {} 锁资源释放失败！", user.getId());
@@ -122,7 +130,8 @@ public class GatewayInterceptor {
 					logger.info("客户端请求：{}", SerializeUtil.GSON.toJson(api));
 					break;
 				case MONGO:
-					logService.logRequest(log);
+					if (null != logService)
+						logService.logRequest(log);
 					break;
 				default:
 					break;

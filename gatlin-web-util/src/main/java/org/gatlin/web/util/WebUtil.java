@@ -57,4 +57,15 @@ public class WebUtil {
 		}
 		throw new CodeException(CoreCode.SYSTEM_ERR);
 	}
+	
+	public static Method method(ProceedingJoinPoint point) throws Exception {
+		String name = point.getSignature().getName();
+		Method[] methods = point.getTarget().getClass().getMethods();
+		for (Method method : methods) {
+			if (!method.getName().equals(name))
+				continue;
+			return method;
+		}
+		throw new CodeException(CoreCode.SYSTEM_ERR);
+	}
 }

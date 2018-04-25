@@ -24,11 +24,13 @@
 		<junit.version>4.12</junit.version>
 		<jedis.version>2.9.0</jedis.version>
 		<mongo.version>3.6.2</mongo.version>
+		<okhttp.version>3.9.1</okhttp.version>
 		<janino.version>3.0.8</janino.version>
 		<servlet.version>3.1.0</servlet.version>
 		<mybatis.version>3.4.5</mybatis.version>
 		<logback.version>1.2.3</logback.version>
 		<HikariCP.version>2.7.8</HikariCP.version>
+		<javax.mail.version>1.6.1</javax.mail.version>
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<pagehelper.version>5.1.2</pagehelper.version>
 		<jul-to-slf4j.version>1.7.25</jul-to-slf4j.version>
@@ -91,6 +93,11 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context-support</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
@@ -257,6 +264,18 @@
 				<artifactId>jboss-logging</artifactId>
 				<version>${jboss-logging.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.squareup.okhttp3</groupId>
+				<artifactId>okhttp</artifactId>
+				<version>${okhttp.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.mail</groupId>
+				<artifactId>javax.mail</artifactId>
+				<version>${javax.mail.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -340,5 +359,6 @@
 		<module>gatlin-soa-util</module>
 		<module>gatlin-web-util</module>
 		<module>gatlin-soa-all</module>
+		<module>gatlin-sdk</module>
 	</modules>
 </project>

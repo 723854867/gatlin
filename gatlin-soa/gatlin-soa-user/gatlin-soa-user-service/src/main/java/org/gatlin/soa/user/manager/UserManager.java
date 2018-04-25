@@ -4,18 +4,17 @@ import javax.annotation.Resource;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.gatlin.core.util.Assert;
-import org.gatlin.soa.entity.UserDevice;
-import org.gatlin.soa.entity.UserInfo;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.user.EntityGenerator;
 import org.gatlin.soa.user.bean.UserCode;
+import org.gatlin.soa.user.bean.entity.UserDevice;
+import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.info.LoginInfo;
 import org.gatlin.soa.user.bean.model.LoginModel;
 import org.gatlin.soa.user.bean.model.RegisterModel;
-import org.gatlin.soa.user.bean.model.query.DeviceQuery;
-import org.gatlin.soa.user.bean.model.query.UsernameQuery;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.mybatis.dao.UserDeviceDao;
 import org.gatlin.soa.user.mybatis.dao.UserInfoDao;
@@ -57,11 +56,10 @@ public class UserManager {
 		UserInfo user = userInfoDao.getByKey(device.getUid());
 		String cpwd = DigestUtils.md5Hex(pwd + "_" + user.getSalt());
 		Assert.isTrue(cpwd.equalsIgnoreCase(pwd), UserCode.LOGIN_PWD_ERROR);
-		DeviceQuery query = new DeviceQuery();
-		query.uid(user.getId()).type(device.getType());
+		Query query = new Query().eq("uid", user.getId()).eq("type", device.getType());
 		UserDevice odevice = userDeviceDao.queryUnique(query);
 		if (null != odevice)							// 已经有同类型的设备登录了
-			userDeviceDao.deleteByKey(odevice.getId());
+			userDeviceDao.deleteByKey(odevice.getToken());
 		userDeviceDao.insert(device);
 		return new LoginModel(new LoginInfo(user.getId(), device.getToken()), device, odevice);
 	}
@@ -70,13 +68,12 @@ public class UserManager {
 		return userInfoDao.getByKey(uid);
 	}
 	
-	public UserDevice device(String id) {
-		return userDeviceDao.getByKey(id);
+	public UserDevice device(String token) {
+		return userDeviceDao.getByKey(token);
 	}
 	
 	public Username username(UsernameType type, String username) {
-		UsernameQuery query = new UsernameQuery();
-		query.username(username).type(type);
+		Query query = new Query().eq("username", username).eq("type", type);
 		return usernameDao.queryUnique(query);
 	}
 }

@@ -65,17 +65,17 @@ public class RedisDao<KEY, ENTITY extends Entity<KEY>> implements Dao<KEY, ENTIT
 	}
 
 	@Override
-	public ENTITY queryUnique(Query<?> query) {
+	public ENTITY queryUnique(Query query) {
 		throw new UnsupportedOperationException("Redis unsupport query!");
 	}
 
 	@Override
-	public Map<KEY, ENTITY> query(Query<?> query) {
+	public Map<KEY, ENTITY> query(Query query) {
 		throw new UnsupportedOperationException("Redis unsupport query!");
 	}
 
 	@Override
-	public List<ENTITY> queryList(Query<?> query) {
+	public List<ENTITY> queryList(Query query) {
 		throw new UnsupportedOperationException("Redis unsupport query!");
 	}
 
@@ -113,7 +113,7 @@ public class RedisDao<KEY, ENTITY extends Entity<KEY>> implements Dao<KEY, ENTIT
 	}
 	
 	@Override
-	public long deleteByQuery(Query<?> query) {
+	public long deleteByQuery(Query query) {
 		return 0;
 	}
 

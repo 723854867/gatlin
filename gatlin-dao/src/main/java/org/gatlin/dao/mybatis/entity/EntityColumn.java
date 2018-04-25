@@ -3,6 +3,7 @@ package org.gatlin.dao.mybatis.entity;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.gatlin.util.lang.StringUtil;
+import org.gatlin.util.reflect.EntityField;
 
 public class EntityColumn {
 	

@@ -51,15 +51,15 @@ public interface DBDao<KEY, ENTITY extends Entity<KEY>> extends Dao<KEY, ENTITY>
 	
 	@Override
 	@SelectProvider(type = QuerySQLProvider.class, method = "dynamicSQL")
-	ENTITY queryUnique(Query<?> query);
+	ENTITY queryUnique(Query query);
 	
 	@Override
 	@SelectProvider(type = QuerySQLProvider.class, method = "dynamicSQL")
-	Map<KEY, ENTITY> query(Query<?> query);
+	Map<KEY, ENTITY> query(Query query);
 	
 	@Override
 	@SelectProvider(type = QuerySQLProvider.class, method = "dynamicSQL")
-	List<ENTITY> queryList(Query<?> query);
+	List<ENTITY> queryList(Query query);
 	
 	@Override
 	@SelectProvider(type = GetByKeysSQLProvider.class, method = "dynamicSQL")
@@ -82,7 +82,7 @@ public interface DBDao<KEY, ENTITY extends Entity<KEY>> extends Dao<KEY, ENTITY>
 	long deleteByKey(KEY key);
 	
 	@Override
-	long deleteByQuery(Query<?> query);
+	long deleteByQuery(Query query);
 	
 	@Override
 	@DeleteProvider(type = DeleteByKeysSQLProvider.class, method = "dynamicSQL")

@@ -65,17 +65,17 @@ public class MongoDao<KEY, ENTITY extends Entity<KEY>> implements Dao<KEY, ENTIT
 	}
 	
 	@Override
-	public ENTITY queryUnique(Query<?> query) {
+	public ENTITY queryUnique(Query query) {
 		return null;
 	}
 
 	@Override
-	public Map<KEY, ENTITY> query(Query<?> query) {
+	public Map<KEY, ENTITY> query(Query query) {
 		throw new UnsupportedOperationException("mongo db not support query!");
 	}
 
 	@Override
-	public List<ENTITY> queryList(Query<?> query) {
+	public List<ENTITY> queryList(Query query) {
 		return mongo.query(collection, query, clazz);
 	}
 
@@ -101,7 +101,7 @@ public class MongoDao<KEY, ENTITY extends Entity<KEY>> implements Dao<KEY, ENTIT
 	}
 	
 	@Override
-	public long deleteByQuery(Query<?> query) {
+	public long deleteByQuery(Query query) {
 		return 0;
 	}
 

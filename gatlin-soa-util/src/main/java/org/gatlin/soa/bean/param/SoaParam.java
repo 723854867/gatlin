@@ -2,7 +2,7 @@ package org.gatlin.soa.bean.param;
 
 import org.gatlin.core.bean.entity.LogRequest;
 import org.gatlin.core.bean.param.Param;
-import org.gatlin.soa.model.User;
+import org.gatlin.soa.bean.User;
 
 public class SoaParam extends Param {
 

@@ -16,6 +16,8 @@ import org.gatlin.dao.mybatis.DaoConfig;
 import org.gatlin.dao.mybatis.DaoConfig.Style;
 import org.gatlin.dao.mybatis.SqlKeyWords;
 import org.gatlin.util.lang.StringUtil;
+import org.gatlin.util.reflect.EntityField;
+import org.gatlin.util.reflect.FieldHelper;
 
 public class EntityHelper {
 

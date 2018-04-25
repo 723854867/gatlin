@@ -14,8 +14,7 @@ import org.gatlin.util.bean.model.Pair;
  *
  * @param <QUERY>
  */
-@SuppressWarnings("unchecked")
-public class Query<QUERY extends Query<QUERY>> implements Serializable {
+public class Query implements Serializable {
 
 	private static final long serialVersionUID = 7213510348985683656L;
 
@@ -39,173 +38,173 @@ public class Query<QUERY extends Query<QUERY>> implements Serializable {
 		return lock;
 	}
 	
-	public QUERY forUpdate()  {
+	public Query forUpdate()  {
 		this.lock = true;
-		return (QUERY) this;
+		return this;
 	}
 	
 	public Integer getLimit() {
 		return limit;
 	}
 	
-	public QUERY limit(Integer limit) {
+	public Query limit(Integer limit) {
 		this.limit = limit;
-		return (QUERY) this;
+		return this;
 	}
 	
 	public Integer getPage() {
 		return page;
 	}
 	
-	public QUERY page(Integer page) {
+	public Query page(Integer page) {
 		this.page = page;
-		return (QUERY) this;
+		return this;
 	}
 	
 	public Integer getPageSize() {
 		return pageSize;
 	}
 	
-	public QUERY setPageSize(Integer pageSize) {
+	public Query pageSize(Integer pageSize) {
 		this.pageSize = pageSize;
-		return (QUERY) this;
+		return this;
 	}
 	
 	public List<String> getCols() {
 		return cols;
 	}
 	
-	public QUERY cols(List<String> cols) {
+	public Query cols(List<String> cols) {
 		this.cols = cols;
-		return (QUERY) this;
+		return this;
 	}
 	
 	public List<String> getGroupBys() {
 		return groupBys;
 	}
 	
-	public QUERY setGroupBys(List<String> groupBys) {
+	public Query groupBys(List<String> groupBys) {
 		this.groupBys = groupBys;
-		return (QUERY) this;
+		return this;
 	}
 	
 	public List<Condition> getConditions() {
 		return conditions;
 	}
 	
-	public QUERY addCondition(Condition condition) {
+	public Query addCondition(Condition condition) {
 		this.conditions.add(condition);
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY setConditions(List<Condition> conditions) {
+	public Query setConditions(List<Condition> conditions) {
 		this.conditions = conditions;
-		return (QUERY) this;
+		return this;
 	}
 	
 	public List<Pair<String, Boolean>> getOrderBys() {
 		return orderBys;
 	}
 	
-	public QUERY setOrderBys(List<Pair<String, Boolean>> orderBys) {
+	public Query orderBys(List<Pair<String, Boolean>> orderBys) {
 		this.orderBys = orderBys;
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY cols(String...cols) {
+	public Query cols(String...cols) {
 		for (String col : cols)
 			this.cols.add(col);
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY sum(String col) {
-		this.cols.add("SUM(" + col + ")");
-		return (QUERY) this;
+	public Query sum(String col) {
+		this.cols.add("SUM(" + col + ") " + col);
+		return this;
 	}
 	
-	public QUERY max(String col) {
-		this.cols.add("MAX(" + col + ")");
-		return (QUERY) this;
+	public Query max(String col) {
+		this.cols.add("MAX(" + col + ") " + col);
+		return this;
 	}
 	
-	public QUERY min(String col) {
-		this.cols.add("MIN(" + col + ")");
-		return (QUERY) this;
+	public Query min(String col) {
+		this.cols.add("MIN(" + col + ") " + col);
+		return this;
 	}
 	
-	public QUERY groupBy(String...cols) {
+	public Query groupBy(String...cols) {
 		for (String col : cols)
 			this.groupBys.add(col);
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY orderByAsc(String col) {
+	public Query orderByAsc(String col) {
 		return orderBy(col, true);
 	}
 	
-	public QUERY orderByAsc(String... cols) {
+	public Query orderByAsc(String... cols) {
 		for (String col : cols)
 			orderBy(col, true);
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY orderByDesc(String col) {
+	public Query orderByDesc(String col) {
 		return orderBy(col, false);
 	}
 	
-	public QUERY orderByDesc(String... cols) {
+	public Query orderByDesc(String... cols) {
 		for (String col : cols)
 			orderBy(col, false);
-		return (QUERY) this;
+		return this;
 	}
 	
-	protected QUERY orderBy(String col, boolean asc) {
+	protected Query orderBy(String col, boolean asc) {
 		this.orderBys.add(new Pair<String, Boolean>(col, asc));
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY in(String col, Object... params) {
+	public Query in(String col, Object... params) {
 		this.conditions.add(new Condition(col, Comparison.in, params));
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY notIn(String col, Object... params) {
+	public Query notIn(String col, Object... params) {
 		this.conditions.add(new Condition(col, Comparison.nin, params));
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY eq(String col, Object value) {
+	public Query eq(String col, Object value) {
 		this.conditions.add(new Condition(col, Comparison.eq, value));
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY neq(String col, Object value) {
+	public Query neq(String col, Object value) {
 		this.conditions.add(new Condition(col, Comparison.neq, value));
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY lt(String col, Object value) {
+	public Query lt(String col, Object value) {
 		this.conditions.add(new Condition(col, Comparison.lt, value));
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY lte(String col, Object value) {
+	public Query lte(String col, Object value) {
 		this.conditions.add(new Condition(col, Comparison.lte, value));
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY gt(String col, Object value) {
+	public Query gt(String col, Object value) {
 		this.conditions.add(new Condition(col, Comparison.gt, value));
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY gte(String col, Object value) {
+	public Query gte(String col, Object value) {
 		this.conditions.add(new Condition(col, Comparison.gte, value));
-		return (QUERY) this;
+		return this;
 	}
 	
-	public QUERY like(String col, String value) {
+	public Query like(String col, String value) {
 		this.conditions.add(new Condition(col, Comparison.like, value));
-		return (QUERY) this;
+		return this;
 	}
 }

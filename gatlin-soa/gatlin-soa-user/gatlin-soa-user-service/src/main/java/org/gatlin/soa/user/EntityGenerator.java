@@ -1,14 +1,13 @@
 package org.gatlin.soa.user;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.gatlin.soa.bean.enums.DeviceType;
-import org.gatlin.soa.entity.UserDevice;
-import org.gatlin.soa.entity.UserInfo;
+import org.gatlin.soa.user.bean.entity.UserDevice;
+import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
+import org.gatlin.soa.user.bean.param.LoginParam;
 import org.gatlin.util.DateUtil;
-import org.gatlin.util.IDWorker;
 import org.gatlin.util.KeyUtil;
 import org.gatlin.util.lang.StringUtil;
 
@@ -18,7 +17,6 @@ public class EntityGenerator {
 		UserInfo instance = new UserInfo();
 		instance.setAvatar(StringUtil.EMPTY);
 		instance.setNickname(StringUtil.EMPTY);
-		instance.setId(IDWorker.INSTANCE.nextId());
 		instance.setSalt(KeyUtil.randomCode(6, false));
 		instance.setPwd(DigestUtils.md5Hex(password + "_" + instance.getSalt()));
 		int time = DateUtil.current();
@@ -45,11 +43,13 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final UserDevice newUserDevice(long uid, DeviceType type, String deviceId) {
+	public static final UserDevice newUserDevice(long uid, LoginParam param) {
 		UserDevice instance = new UserDevice();
-		instance.setId(deviceId);
+		instance.setToken(StringUtil.uuid());
 		instance.setUid(uid);
-		instance.setType(type.mark());
+		instance.setOs(param.getOs().mark());
+		instance.setType(param.getDeviceType().mark());
+		instance.setClient(param.getClient().mark());
 		instance.setCreated(DateUtil.current());
 		return instance;
 	}

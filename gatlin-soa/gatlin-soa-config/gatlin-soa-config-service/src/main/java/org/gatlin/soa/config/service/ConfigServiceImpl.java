@@ -5,12 +5,12 @@ import javax.annotation.Resource;
 import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.model.option.Option;
 import org.gatlin.core.util.Assert;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.entity.CfgApi;
 import org.gatlin.soa.config.bean.entity.CfgGlobal;
 import org.gatlin.soa.config.bean.enums.ConfigCode;
 import org.gatlin.soa.config.bean.model.Configs;
-import org.gatlin.soa.config.bean.model.query.ConfigQuery;
 import org.gatlin.soa.config.mybatis.dao.CfgApiDao;
 import org.gatlin.soa.config.mybatis.dao.CfgGlobalDao;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class ConfigServiceImpl implements ConfigService {
 	}
 	
 	@Override
-	public Configs configs(ConfigQuery query) {
+	public Configs configs(Query query) {
 		Configs configs = new Configs();
 		configs.setGlobals(cfgGlobalDao.query(query));
 		return configs;

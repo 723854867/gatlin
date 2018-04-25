@@ -3,47 +3,47 @@ package org.gatlin.soa.user.bean.param;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.gatlin.soa.bean.enums.DeviceType;
-import org.gatlin.soa.bean.param.SoaParam;
-import org.gatlin.soa.user.bean.enums.UsernameType;
+import org.gatlin.core.CoreCode;
+import org.gatlin.core.util.Assert;
+import org.gatlin.util.bean.enums.Client;
+import org.gatlin.util.bean.enums.DeviceType;
+import org.gatlin.util.bean.enums.OS;
 
-public class LoginParam extends SoaParam {
+public class LoginParam extends UsernameParam {
 
 	private static final long serialVersionUID = -1393766562081282538L;
 
-	@NotEmpty
-	private String username;
+	@NotNull
+	private OS os;
+	@NotNull
+	private Client client;
 	@NotEmpty
 	private String password;
-	@NotEmpty
-	private String deviceId;
 	@NotNull
 	private DeviceType deviceType;
-	@NotNull
-	private UsernameType usernameType;
 
-	public String getUsername() {
-		return username;
+	public OS getOs() {
+		return os;
 	}
-
-	public void setUsername(String username) {
-		this.username = username;
+	
+	public void setOs(OS os) {
+		this.os = os;
 	}
-
+	
+	public Client getClient() {
+		return client;
+	}
+	
+	public void setClient(Client client) {
+		this.client = client;
+	}
+	
 	public String getPassword() {
 		return password;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getDeviceId() {
-		return deviceId;
-	}
-
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
 	}
 
 	public DeviceType getDeviceType() {
@@ -53,12 +53,10 @@ public class LoginParam extends SoaParam {
 	public void setDeviceType(DeviceType deviceType) {
 		this.deviceType = deviceType;
 	}
-
-	public UsernameType getUsernameType() {
-		return usernameType;
-	}
-
-	public void setUsernameType(UsernameType usernameType) {
-		this.usernameType = usernameType;
+	
+	@Override
+	public void verify() {
+		super.verify();
+		Assert.isTrue(deviceType.support(os), CoreCode.PARAM_ERR);
 	}
 }

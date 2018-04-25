@@ -59,6 +59,8 @@ public interface DaoConsts {
 		
 		// mongo
 		final StrOption MONGO_DB					= new StrOption("mongo.db");
+		final StrOption MONGO_USERNAME				= new StrOption("mongo.username", "");
+		final StrOption MONGO_PASSWORD				= new StrOption("mongo.password", "");
 		final StrOption MONGO_HOST					= new StrOption("mongo.host");
 		final BoolOption MONGO_ENABLE				= new BoolOption("mongo.enable", false);
 	}

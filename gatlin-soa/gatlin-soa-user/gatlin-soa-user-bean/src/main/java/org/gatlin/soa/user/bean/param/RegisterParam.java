@@ -2,15 +2,12 @@ package org.gatlin.soa.user.bean.param;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
-import org.gatlin.soa.bean.param.SoaParam;
-import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.util.PhoneUtil;
 
-public class RegisterParam extends SoaParam {
+public class RegisterParam extends UsernameParam {
 
 	private static final long serialVersionUID = 4433642237759495470L;
 
@@ -19,11 +16,7 @@ public class RegisterParam extends SoaParam {
 	// 验证码
 	private String captcha;
 	@NotEmpty
-	private String username;
-	@NotEmpty
 	private String password;
-	@NotNull
-	private UsernameType usernameType;
 
 	public Long getInviter() {
 		return inviter;
@@ -41,14 +34,6 @@ public class RegisterParam extends SoaParam {
 		this.captcha = captcha;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
 	public String getPassword() {
 		return password;
 	}
@@ -56,25 +41,17 @@ public class RegisterParam extends SoaParam {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public UsernameType getUsernameType() {
-		return usernameType;
-	}
-
-	public void setUsernameType(UsernameType usernameType) {
-		this.usernameType = usernameType;
-	}
-
+	
 	@Override
 	public void verify() {
 		super.verify();
-		switch (usernameType) {
+		switch (getUsernameType()) {
 		case EMAIL:
 			Assert.hasText(captcha, CoreCode.PARAM_ERR);
 			break;
 		case MOBILE:
 			Assert.hasText(captcha, CoreCode.PARAM_ERR);
-			this.username = PhoneUtil.parseMobile(username);
+			setUsername(PhoneUtil.parseMobile(getUsername()));
 			break;
 		default:
 			break;

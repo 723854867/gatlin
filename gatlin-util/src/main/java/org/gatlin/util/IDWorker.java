@@ -27,7 +27,7 @@ public class IDWorker {
 
     /** 数据标识id所占的位数 */
     private final long datacenterIdBits = 5L;
-
+    
     /** 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数) */
     private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
 
