@@ -55,7 +55,7 @@ public class UserManager {
 	public LoginModel login(UserDevice device, String pwd) {
 		UserInfo user = userInfoDao.getByKey(device.getUid());
 		String cpwd = DigestUtils.md5Hex(pwd + "_" + user.getSalt());
-		Assert.isTrue(cpwd.equalsIgnoreCase(pwd), UserCode.LOGIN_PWD_ERROR);
+		Assert.isTrue(UserCode.LOGIN_PWD_ERROR, cpwd.equalsIgnoreCase(user.getPwd()));
 		Query query = new Query().eq("uid", user.getId()).eq("type", device.getType());
 		UserDevice odevice = userDeviceDao.queryUnique(query);
 		if (null != odevice)							// 已经有同类型的设备登录了
@@ -73,7 +73,7 @@ public class UserManager {
 	}
 	
 	public Username username(UsernameType type, String username) {
-		Query query = new Query().eq("username", username).eq("type", type);
+		Query query = new Query().eq("username", username).eq("type", type.mark());
 		return usernameDao.queryUnique(query);
 	}
 }

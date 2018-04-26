@@ -5,7 +5,6 @@ import javax.validation.constraints.NotEmpty;
 
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
-import org.gatlin.util.PhoneUtil;
 
 public class RegisterParam extends UsernameParam {
 
@@ -47,11 +46,8 @@ public class RegisterParam extends UsernameParam {
 		super.verify();
 		switch (getUsernameType()) {
 		case EMAIL:
-			Assert.hasText(captcha, CoreCode.PARAM_ERR);
-			break;
 		case MOBILE:
 			Assert.hasText(captcha, CoreCode.PARAM_ERR);
-			setUsername(PhoneUtil.parseMobile(getUsername()));
 			break;
 		default:
 			break;

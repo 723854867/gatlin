@@ -6,7 +6,7 @@ import org.gatlin.util.lang.StringUtil;
 
 public class Assert {
 
-	public static final <T> T  notNull(T param) {
+	public static final <T> T notNull(T param) {
 		return notNull("notNull assert failure!", param);
 	}
 	
@@ -32,7 +32,7 @@ public class Assert {
 		return expression;
 	}
 	
-	public static final boolean isTrue(boolean expression, Code code) { 
+	public static final boolean isTrue(Code code, boolean expression) { 
 		if (!expression)
 			throw new CodeException(code);
 		return expression;

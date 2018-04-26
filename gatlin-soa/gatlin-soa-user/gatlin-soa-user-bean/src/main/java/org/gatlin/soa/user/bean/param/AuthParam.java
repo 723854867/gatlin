@@ -34,6 +34,6 @@ public class AuthParam extends SoaParam {
 	@Override
 	public void verify() {
 		super.verify();
-		Assert.isTrue(uid != getUser().getId(), CoreCode.FORBID);
+		Assert.isTrue(CoreCode.FORBID, uid != getUser().getId());
 	}
 }

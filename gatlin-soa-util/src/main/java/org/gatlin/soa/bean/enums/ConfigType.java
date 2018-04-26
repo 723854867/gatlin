@@ -2,7 +2,8 @@ package org.gatlin.soa.bean.enums;
 
 public enum ConfigType {
 
-	COURIER(1);
+	COURIER(1),
+	RESOURCE(2);
 	
 	private int mark;
 	

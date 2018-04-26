@@ -10,5 +10,5 @@ public interface EmailService {
 	/**
 	 * 验证码校验
 	 */
-	boolean captchaVerify(String email, String captcha);
+	void captchaVerify(String email, String captcha);
 }

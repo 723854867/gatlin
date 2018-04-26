@@ -11,13 +11,22 @@ public class UploadParam extends SoaParam {
 
 	private static final long serialVersionUID = 5290464922395781523L;
 
+	private long major;
 	@Min(0)
 	@Max(255)
 	private int priority;
-	private String linkUrl;
+	private int uploadType;
+	private int resourceId;
 	@NotNull
-	private MultipartFile file;
-	private MultipartFile link;
+	private MultipartFile source;
+	
+	public long getMajor() {
+		return major;
+	}
+	
+	public void setMajor(long major) {
+		this.major = major;
+	}
 	
 	public int getPriority() {
 		return priority;
@@ -27,28 +36,28 @@ public class UploadParam extends SoaParam {
 		this.priority = priority;
 	}
 	
-	public String getLinkUrl() {
-		return linkUrl;
+	public int getUploadType() {
+		return uploadType;
 	}
 	
-	public void setLinkUrl(String linkUrl) {
-		this.linkUrl = linkUrl;
+	public void setUploadType(int uploadType) {
+		this.uploadType = uploadType;
 	}
 	
-	public MultipartFile getFile() {
-		return file;
+	public int getResourceId() {
+		return resourceId;
 	}
 	
-	public void setFile(MultipartFile file) {
-		this.file = file;
+	public void setResourceId(int resourceId) {
+		this.resourceId = resourceId;
 	}
 	
-	public MultipartFile getLink() {
-		return link;
+	public MultipartFile getSource() {
+		return source;
 	}
 	
-	public void setLink(MultipartFile link) {
-		this.link = link;
+	public void setSource(MultipartFile source) {
+		this.source = source;
 	}
 	
 	@Override

@@ -5,21 +5,16 @@ import javax.persistence.Id;
 
 import org.gatlin.core.bean.Entity;
 
-/**
- * 资源上传引用
- * 
- * @author lynn
- */
-public class CfgResourceRefer implements Entity<Integer> {
+public class CfgResourceGroup implements Entity<Integer> {
 
-	private static final long serialVersionUID = 7575887375520827560L;
+	private static final long serialVersionUID = 467120302120809297L;
 
 	@Id
 	@GeneratedValue
 	private int id;
-	private int uploadType;
-	private int resourceId;
+	private String name;
 	private int created;
+	private int updated;
 
 	public int getId() {
 		return id;
@@ -29,28 +24,28 @@ public class CfgResourceRefer implements Entity<Integer> {
 		this.id = id;
 	}
 
-	public int getUploadType() {
-		return uploadType;
-	}
-	
-	public void setUploadType(int uploadType) {
-		this.uploadType = uploadType;
+	public String getName() {
+		return name;
 	}
 
-	public int getResourceId() {
-		return resourceId;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void setResourceId(int resourceId) {
-		this.resourceId = resourceId;
-	}
-	
 	public int getCreated() {
 		return created;
 	}
-	
+
 	public void setCreated(int created) {
 		this.created = created;
+	}
+
+	public int getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(int updated) {
+		this.updated = updated;
 	}
 
 	@Override

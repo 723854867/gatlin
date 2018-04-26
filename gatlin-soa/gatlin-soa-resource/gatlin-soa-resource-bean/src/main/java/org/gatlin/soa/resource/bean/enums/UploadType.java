@@ -1,16 +1,8 @@
 package org.gatlin.soa.resource.bean.enums;
 
-public enum UploadType {
+public interface UploadType {
 
-	BANNER(1);
+	int key();
 	
-	private int mark;
-	
-	private UploadType(int mark) {
-		this.mark = mark;
-	}
-	
-	public int mark() {
-		return mark;
-	}
+	String directory();
 }

@@ -7,6 +7,10 @@ import org.gatlin.core.bean.Entity;
 /**
  * 资源上传配置
  * 
+ * <pre>
+ * 一个  upload 配置只能适用一种场景，不能被多个场景使用。比如个人资料上传，区分：车贷个人资料上传、实名认证个人资料上传
+ * </pre>
+ * 
  * @author lynn
  */
 public class CfgUpload implements Entity<Integer> {

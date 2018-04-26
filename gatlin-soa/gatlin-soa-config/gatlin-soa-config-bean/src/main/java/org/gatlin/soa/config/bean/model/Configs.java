@@ -19,6 +19,10 @@ public class Configs implements Serializable {
 		return null == config ? option.defaultValue() : GatlinConfigration.CONVERSION_SERVICE.convert(config.getValue(), option.clazz());
 	}
 	
+	public Map<String, CfgGlobal> getGlobals() {
+		return globals;
+	}
+	
 	public void setGlobals(Map<String, CfgGlobal> globals) {
 		this.globals = globals;
 	}

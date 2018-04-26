@@ -15,5 +15,5 @@ public interface SmsService {
 	/**
 	 * 验证码校验
 	 */
-	boolean captchaVerify(String mobile, String captcha);
+	void captchaVerify(String mobile, String captcha);
 }

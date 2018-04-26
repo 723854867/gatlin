@@ -57,6 +57,6 @@ public class LoginParam extends UsernameParam {
 	@Override
 	public void verify() {
 		super.verify();
-		Assert.isTrue(deviceType.support(os), CoreCode.PARAM_ERR);
+		Assert.isTrue(CoreCode.PARAM_ERR, deviceType.support(os));
 	}
 }

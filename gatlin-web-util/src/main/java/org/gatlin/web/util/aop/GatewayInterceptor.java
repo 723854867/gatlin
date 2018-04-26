@@ -69,7 +69,7 @@ public class GatewayInterceptor {
 		int serverState = configService.config(WebConsts.Options.SERVER_STATE);
 		CfgApi api = null != configService ? configService.api(log.getPath()) : null;
 		int apiSecurityLevel = null == api ? 1 : api.getSecurityLevel();
-		Assert.isTrue(apiSecurityLevel > serverState, WebCode.SERVER_WARNING);
+		Assert.isTrue(WebCode.SERVER_WARNING, apiSecurityLevel > serverState);
 		// 用户数据处理
 		User user = null;
 		String token = request.getHeader("Token");
@@ -92,7 +92,7 @@ public class GatewayInterceptor {
 				if (api.isLogin())			// 检测登录
 					Assert.notNull(UserCode.USER_UNLOGIN, user);
 				DeviceType deviceType = user.getDeviceType();
-				Assert.isTrue((api.getDeviceMod() & deviceType.mark()) == deviceType.mark(), UserCode.DEVICE_UNSUPPORT);
+				Assert.isTrue(UserCode.DEVICE_UNSUPPORT, (api.getDeviceMod() & deviceType.mark()) == deviceType.mark());
 			}
 			Object result = point.proceed();
 			Object response = null;

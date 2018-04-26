@@ -27,6 +27,7 @@ public class CfgResource implements Entity<Integer> {
 	private int cacheSize;
 	// 资源大小单位
 	private String cacheUnit;
+	private int major;
 	private int created;
 	private int updated;
 
@@ -76,6 +77,14 @@ public class CfgResource implements Entity<Integer> {
 	
 	public void setCacheUnit(String cacheUnit) {
 		this.cacheUnit = cacheUnit;
+	}
+	
+	public int getMajor() {
+		return major;
+	}
+	
+	public void setMajor(int major) {
+		this.major = major;
 	}
 
 	public int getCreated() {

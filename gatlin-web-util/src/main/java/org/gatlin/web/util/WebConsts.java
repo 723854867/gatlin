@@ -14,5 +14,6 @@ public interface WebConsts {
 		final IntegerOption RAPID_MAX_IN_MEMORY_SIZE				= new IntegerOption("upload.maxInMemorySize", 51200);
 		final IntegerOption RAPID_MAX_UPLOAD_SIZE_PER_FILE			= new IntegerOption("upload.maxUploadSizePerFile", 1048576);
 		final StrOption RESOURCE_PATH								= new StrOption("resource.path");
+		final StrOption RESOURCE_PREFIX								= new StrOption("resource.prefix");
 	}
 }
