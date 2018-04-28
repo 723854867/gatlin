@@ -22,6 +22,13 @@ public class Assert {
 		return param;
 	}
 	
+	public static final void notNull(Code code, Object... params) {
+		for (Object param : params) {
+			if (null == param)
+				throw new CodeException(code);
+		}
+	}
+	
 	public static final boolean isTrue(boolean expression) { 
 		return isTrue(expression, "isTrue asset failure!");
 	}
@@ -38,7 +45,7 @@ public class Assert {
 		return expression;
 	}
 	
-	public static final String hasText(String content, Code code) {
+	public static final String hasText(Code code, String content) {
 		if (!StringUtil.hasText(content))
 			throw new CodeException(code);
 		return content;

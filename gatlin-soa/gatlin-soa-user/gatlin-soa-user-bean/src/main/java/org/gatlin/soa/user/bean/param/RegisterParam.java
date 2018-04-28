@@ -47,7 +47,7 @@ public class RegisterParam extends UsernameParam {
 		switch (getUsernameType()) {
 		case EMAIL:
 		case MOBILE:
-			Assert.hasText(captcha, CoreCode.PARAM_ERR);
+			Assert.hasText(CoreCode.PARAM_ERR, captcha);
 			break;
 		default:
 			break;

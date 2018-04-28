@@ -1,33 +1,20 @@
 package org.gatlin.soa.resource.bean.entity;
 
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.gatlin.core.bean.Entity;
 
-/**
- * 资源配置
- * 
- * @author lynn
- */
 public class CfgResource implements Entity<Integer> {
 
-	private static final long serialVersionUID = 7786898347611801753L;
+	private static final long serialVersionUID = 429288989882702100L;
 
 	@Id
-	@GeneratedValue
 	private int id;
-	// 资源名
 	private String name;
-	// 上传最低数量限制
-	private int minimumNum;
-	// 上传最大数量限制
-	private int maximumNum;
-	// 单个资源大小限制
+	private int minimum;
+	private int maximum;
 	private int cacheSize;
-	// 资源大小单位
 	private String cacheUnit;
-	private int major;
 	private int created;
 	private int updated;
 
@@ -47,44 +34,36 @@ public class CfgResource implements Entity<Integer> {
 		this.name = name;
 	}
 
-	public int getMinimumNum() {
-		return minimumNum;
+	public int getMinimum() {
+		return minimum;
 	}
 
-	public void setMinimumNum(int minimumNum) {
-		this.minimumNum = minimumNum;
+	public void setMinimum(int minimum) {
+		this.minimum = minimum;
 	}
 
-	public int getMaximumNum() {
-		return maximumNum;
+	public int getMaximum() {
+		return maximum;
 	}
 
-	public void setMaximumNum(int maximumNum) {
-		this.maximumNum = maximumNum;
+	public void setMaximum(int maximum) {
+		this.maximum = maximum;
 	}
 
 	public int getCacheSize() {
 		return cacheSize;
 	}
-	
+
 	public void setCacheSize(int cacheSize) {
 		this.cacheSize = cacheSize;
 	}
-	
+
 	public String getCacheUnit() {
 		return cacheUnit;
 	}
-	
+
 	public void setCacheUnit(String cacheUnit) {
 		this.cacheUnit = cacheUnit;
-	}
-	
-	public int getMajor() {
-		return major;
-	}
-	
-	public void setMajor(int major) {
-		this.major = major;
 	}
 
 	public int getCreated() {

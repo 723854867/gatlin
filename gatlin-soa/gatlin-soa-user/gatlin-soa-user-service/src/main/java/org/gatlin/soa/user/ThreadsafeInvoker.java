@@ -33,7 +33,7 @@ public class ThreadsafeInvoker {
 	public void invoke(long uid, long timeout, NullCallback callback) {
 		String lock = KeyGenerator.userLockKey(uid);
 		String lockId = redisLock.lock(lock, timeout);
-		Assert.hasText(lockId, UserCode.USER_LOCK_FAIL);
+		Assert.hasText(UserCode.USER_LOCK_FAIL, lockId);
 		try {
 			callback.invoke();
 		} finally {
@@ -56,12 +56,12 @@ public class ThreadsafeInvoker {
 	
 	public String tryLock(long uid) {
 		String lockId =  redisLock.tryLock(KeyGenerator.userLockKey(uid));
-		return Assert.hasText(lockId, UserCode.USER_LOCK_FAIL);
+		return Assert.hasText(UserCode.USER_LOCK_FAIL, lockId);
 	}
 	
 	public String lock(long uid, long timeout) {
 		String lockId =  redisLock.lock(KeyGenerator.userLockKey(uid), timeout);
-		return Assert.hasText(lockId, UserCode.USER_LOCK_FAIL);
+		return Assert.hasText(UserCode.USER_LOCK_FAIL, lockId);
 	}
 	
 	public boolean releaseLock(long uid, String lockId) {

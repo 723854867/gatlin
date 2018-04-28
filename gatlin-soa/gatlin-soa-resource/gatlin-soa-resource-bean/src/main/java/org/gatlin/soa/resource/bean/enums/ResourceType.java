@@ -1,13 +1,12 @@
 package org.gatlin.soa.resource.bean.enums;
 
-public enum ResourceMappingType {
+public enum ResourceType {
 
-	UPLOAD(1),
-	RESOURCE(2);
+	BANNER(1);
 	
 	private int mark;
 	
-	private ResourceMappingType(int mark) {
+	private ResourceType(int mark) {
 		this.mark = mark;
 	}
 	
