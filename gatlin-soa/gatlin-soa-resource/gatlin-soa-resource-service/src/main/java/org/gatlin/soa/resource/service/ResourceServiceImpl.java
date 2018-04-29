@@ -2,6 +2,7 @@ package org.gatlin.soa.resource.service;
 
 import java.util.List;
 
+import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.resource.api.ResourceService;
@@ -12,6 +13,8 @@ import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 import org.gatlin.soa.resource.manager.ResourceManager;
 import org.gatlin.util.bean.enums.CacheUnit;
 import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
 
 @Service("resourceService")
 public class ResourceServiceImpl implements ResourceService {
@@ -48,5 +51,13 @@ public class ResourceServiceImpl implements ResourceService {
 			long maximumSize = unit.bytes(cfgResource.getCacheSize());
 			Assert.isTrue(ResourceCode.RESOURCE_SIZE_LIMIT, maximumSize >= resource.getBytes());
 		}
+	}
+	
+	@Override
+	public Pager<Resource> resources(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		List<Resource> resources = resourceManager.resources(query);
+		return new Pager<Resource>(resources);
 	}
 }

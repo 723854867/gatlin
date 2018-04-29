@@ -1,10 +1,10 @@
 package org.gatlin.soa.bean.param;
 
 import org.gatlin.core.bean.entity.LogRequest;
-import org.gatlin.core.bean.param.Param;
+import org.gatlin.dao.bean.Searcher;
 import org.gatlin.soa.bean.User;
 
-public class SoaParam extends Param {
+public class SoaParam extends Searcher {
 
 	private static final long serialVersionUID = -4443407529395114149L;
 
