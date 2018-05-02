@@ -36,7 +36,7 @@ public class Uploader {
 		try {
 			String prefix = configService.config(WebConsts.Options.RESOURCE_PREFIX);
 			Resource resource = new Resource();
-			resource.setId(IDWorker.INSTANCE.nextId());
+			resource.setId(IDWorker.INSTANCE.nextSid());
 			resource.setPath(filePath);
 			resource.setUrl(prefix + suffix);
 			resource.setBytes(file.getSize());

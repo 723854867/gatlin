@@ -20,6 +20,7 @@ import org.gatlin.dao.mybatis.provider.GetByKeySQLProvider;
 import org.gatlin.dao.mybatis.provider.GetByKeysSQLProvider;
 import org.gatlin.dao.mybatis.provider.InsertSQLProvider;
 import org.gatlin.dao.mybatis.provider.QuerySQLProvider;
+import org.gatlin.dao.mybatis.provider.ReplaceIntoSQLProvider;
 import org.gatlin.dao.mybatis.provider.UpdateCollectionSQLProvider;
 import org.gatlin.dao.mybatis.provider.UpdateMapSQLProvider;
 import org.gatlin.dao.mybatis.provider.UpdateSQLProvider;
@@ -36,6 +37,9 @@ public interface DBDao<KEY, ENTITY extends Entity<KEY>> extends Dao<KEY, ENTITY>
 	@Override
 	@InsertProvider(type = BatchInsertSQLProvider.class, method = "dynamicSQL")
 	void batchInsert(Collection<ENTITY> entities);
+	
+	@InsertProvider(type = ReplaceIntoSQLProvider.class, method = "dynamicSQL")
+	long replace(ENTITY entity);
 	
 	@Override
 	@SelectProvider(type = GetAllSQLProvider.class, method = "dynamicSQL")

@@ -2,9 +2,9 @@ package org.gatlin.soa.resource.bean.param;
 
 import javax.validation.constraints.NotEmpty;
 
-import org.gatlin.soa.bean.param.SoaLidParam;
+import org.gatlin.soa.bean.param.SoaSidParam;
 
-public class ResourceModifyParam extends SoaLidParam {
+public class ResourceModifyParam extends SoaSidParam {
 
 	private static final long serialVersionUID = 1979697622927062997L;
 

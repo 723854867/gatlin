@@ -2,6 +2,7 @@ package org.gatlin.dao.bean.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.gatlin.dao.bean.enums.Comparison;
@@ -163,7 +164,7 @@ public class Query implements Serializable {
 		return this;
 	}
 	
-	public Query in(String col, Object... params) {
+	public Query in(String col, Collection<?> params) {
 		this.conditions.add(new Condition(col, Comparison.in, params));
 		return this;
 	}

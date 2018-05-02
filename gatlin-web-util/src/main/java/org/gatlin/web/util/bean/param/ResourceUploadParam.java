@@ -1,6 +1,8 @@
 package org.gatlin.web.util.bean.param;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.gatlin.soa.bean.param.SoaParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,22 +11,15 @@ public class ResourceUploadParam extends SoaParam {
 
 	private static final long serialVersionUID = -4042539380420527261L;
 
-	private int id;
 	private long owner;
-	@Min(0)
+	@NotEmpty
 	private String name;
 	@Min(0)
-	private Integer priority;
+	private int priority;
+	@Min(0)
 	private int cfgResourceId;
+	@NotNull
 	private MultipartFile source;
-	
-	public int getId() {
-		return id;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
 	
 	public long getOwner() {
 		return owner;
@@ -42,11 +37,11 @@ public class ResourceUploadParam extends SoaParam {
 		this.name = name;
 	}
 
-	public Integer getPriority() {
+	public int getPriority() {
 		return priority;
 	}
 	
-	public void setPriority(Integer priority) {
+	public void setPriority(int priority) {
 		this.priority = priority;
 	}
 	

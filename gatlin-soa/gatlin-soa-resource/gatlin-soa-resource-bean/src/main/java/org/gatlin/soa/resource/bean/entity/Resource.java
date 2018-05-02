@@ -4,12 +4,12 @@ import javax.persistence.Id;
 
 import org.gatlin.core.bean.Entity;
 
-public class Resource implements Entity<Long> {
+public class Resource implements Entity<String> {
 
 	private static final long serialVersionUID = 4984065305004886040L;
 
 	@Id
-	private long id;
+	private String id;
 	private int cfgId;
 	private long owner;
 	private long bytes;
@@ -20,11 +20,11 @@ public class Resource implements Entity<Long> {
 	private int created;
 	private int updated;
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
-
-	public void setId(long id) {
+	
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -101,7 +101,7 @@ public class Resource implements Entity<Long> {
 	}
 
 	@Override
-	public Long key() {
+	public String key() {
 		return this.id;
 	}
 }

@@ -1,43 +1,32 @@
 package org.gatlin.soa.resource.bean.entity;
 
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.gatlin.core.bean.Entity;
 
-public class ResourceRoute implements Entity<Long> {
+public class ResourceRoute implements Entity<String> {
 
 	private static final long serialVersionUID = -8193627536431815031L;
 	
 	@Id
-	@GeneratedValue
-	private long id;
-	private long from;
-	private long to;
+	private String resourceId;
+	private String link;
 	private int created;
 
-	public long getId() {
-		return id;
+	public String getResourceId() {
+		return resourceId;
+	}
+	
+	public void setResourceId(String resourceId) {
+		this.resourceId = resourceId;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public String getLink() {
+		return link;
 	}
-
-	public long getFrom() {
-		return from;
-	}
-
-	public void setFrom(long from) {
-		this.from = from;
-	}
-
-	public long getTo() {
-		return to;
-	}
-
-	public void setTo(long to) {
-		this.to = to;
+	
+	public void setLink(String link) {
+		this.link = link;
 	}
 
 	public int getCreated() {
@@ -49,7 +38,7 @@ public class ResourceRoute implements Entity<Long> {
 	}
 
 	@Override
-	public Long key() {
-		return this.id;
+	public String key() {
+		return this.resourceId;
 	}
 }

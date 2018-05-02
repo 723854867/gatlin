@@ -2,16 +2,22 @@ package org.gatlin.soa.resource.api;
 
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
+import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 
 public interface ResourceService {
+	
+	CfgResource uploadVerify(int cfgId, long owner, long bytes);
 	
 	void upload(Resource resource);
 	
 	void modify(ResourceModifyParam param);
 	
-	Resource delete(long id);
+	Resource delete(String id);
 	
-	Pager<Resource> resources(Query query);
+	void link(String id, String link);
+	
+	Pager<ResourceInfo> resources(Query query);
 }

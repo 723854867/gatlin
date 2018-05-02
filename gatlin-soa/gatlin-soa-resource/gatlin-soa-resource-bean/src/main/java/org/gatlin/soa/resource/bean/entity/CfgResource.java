@@ -10,11 +10,13 @@ public class CfgResource implements Entity<Integer> {
 
 	@Id
 	private int id;
+	private int type;
 	private String name;
 	private int minimum;
 	private int maximum;
 	private int cacheSize;
 	private String cacheUnit;
+	private String directory;
 	private int created;
 	private int updated;
 
@@ -24,6 +26,14 @@ public class CfgResource implements Entity<Integer> {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public int getType() {
+		return type;
+	}
+	
+	public void setType(int type) {
+		this.type = type;
 	}
 
 	public String getName() {
@@ -64,6 +74,14 @@ public class CfgResource implements Entity<Integer> {
 
 	public void setCacheUnit(String cacheUnit) {
 		this.cacheUnit = cacheUnit;
+	}
+	
+	public String getDirectory() {
+		return directory;
+	}
+	
+	public void setDirectory(String directory) {
+		this.directory = directory;
 	}
 
 	public int getCreated() {

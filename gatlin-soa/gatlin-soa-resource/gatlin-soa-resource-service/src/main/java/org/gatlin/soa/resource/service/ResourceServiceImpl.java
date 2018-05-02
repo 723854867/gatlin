@@ -1,6 +1,10 @@
 package org.gatlin.soa.resource.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
@@ -9,9 +13,12 @@ import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.ResourceCode;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
+import org.gatlin.soa.resource.bean.entity.ResourceRoute;
+import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 import org.gatlin.soa.resource.manager.ResourceManager;
 import org.gatlin.util.bean.enums.CacheUnit;
+import org.gatlin.util.lang.CollectionUtil;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -23,8 +30,24 @@ public class ResourceServiceImpl implements ResourceService {
 	private ResourceManager resourceManager;
 	
 	@Override
+	public CfgResource uploadVerify(int cfgId, long owner, long bytes) {
+		CfgResource cfgResource = resourceManager.cfgResource(cfgId);
+		Assert.notNull(ResourceCode.RESOURCE_CONFIG_NOT_EXIST, cfgResource);
+		if (0 < cfgResource.getMaximum()) {
+			Query query = new Query().eq("cfg_id", cfgId).eq("owner", owner);
+			List<Resource> resources = resourceManager.resources(query);
+			Assert.isTrue(ResourceCode.RESOURCE_COUNT_LIMIT, resources.size() < cfgResource.getMaximum());
+		}
+		if (0 < cfgResource.getCacheSize()) {
+			CacheUnit unit = CacheUnit.valueOf(cfgResource.getCacheUnit());
+			long maximumSize = unit.bytes(cfgResource.getCacheSize());
+			Assert.isTrue(ResourceCode.RESOURCE_SIZE_LIMIT, maximumSize >= bytes);
+		}
+		return cfgResource;
+	}
+	
+	@Override
 	public void upload(Resource resource) {
-		_uploadCheck(resource);
 		resourceManager.insert(resource);
 	}
 	
@@ -34,30 +57,29 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 	
 	@Override
-	public Resource delete(long id) {
-		return resourceManager.delete(id);
-	}
-	
-	private void _uploadCheck(Resource resource) {
-		CfgResource cfgResource = resourceManager.cfgResource(resource.getCfgId());
-		Assert.notNull(ResourceCode.RESOURCE_CONFIG_NOT_EXIST, cfgResource);
-		if (0 < cfgResource.getMaximum()) {
-			Query query = new Query().eq("cfg_id", resource.getCfgId()).eq("owner", resource.getOwner());
-			List<Resource> resources = resourceManager.resources(query);
-			Assert.isTrue(ResourceCode.RESOURCE_COUNT_LIMIT, resources.size() < cfgResource.getMaximum());
-		}
-		if (0 < cfgResource.getCacheSize()) {
-			CacheUnit unit = CacheUnit.valueOf(cfgResource.getCacheUnit());
-			long maximumSize = unit.bytes(cfgResource.getCacheSize());
-			Assert.isTrue(ResourceCode.RESOURCE_SIZE_LIMIT, maximumSize >= resource.getBytes());
-		}
+	public void link(String id, String link) {
+		resourceManager.link(id, link);
 	}
 	
 	@Override
-	public Pager<Resource> resources(Query query) {
+	public Resource delete(String id) {
+		return resourceManager.delete(id);
+	}
+	
+	@Override
+	public Pager<ResourceInfo> resources(Query query) {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
 		List<Resource> resources = resourceManager.resources(query);
-		return new Pager<Resource>(resources);
+		if (CollectionUtil.isEmpty(resources))
+			return Pager.<ResourceInfo>empty();
+		Set<String> set = new HashSet<String>();
+		resources.forEach(item -> set.add(item.getId()));
+		Map<String, ResourceRoute> routes = resourceManager.resourceRoutes(new Query().in("resource_id", set));
+		return Pager.<ResourceInfo, Resource>convert(resources, list -> {
+			List<ResourceInfo> infos = new ArrayList<ResourceInfo>();
+			list.forEach(item -> infos.add(new ResourceInfo(item, routes.get(item.getId()))));
+			return infos;
+		});
 	}
 }
