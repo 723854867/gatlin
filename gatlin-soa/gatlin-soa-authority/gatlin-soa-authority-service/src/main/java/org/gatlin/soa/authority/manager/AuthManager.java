@@ -124,4 +124,8 @@ public class AuthManager {
 	public List<CfgRole> roles(Query query) {
 		return cfgRoleDao.queryList(query);
 	}
+	
+	public List<CfgModular> modulars() {
+		return cfgModularDao.getAllList();
+	}
 }

@@ -8,6 +8,7 @@ import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.authority.api.AuthService;
 import org.gatlin.soa.authority.bean.entity.CfgApi;
+import org.gatlin.soa.authority.bean.entity.CfgModular;
 import org.gatlin.soa.authority.bean.entity.CfgRole;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
@@ -57,6 +58,11 @@ public class AuthServiceImpl implements AuthService {
 	}
 	
 	@Override
+	public List<CfgModular> modulars() {
+		return authManager.modulars();
+	}
+	
+	@Override
 	public int modularAdd(ModularAddParam param) {
 		return authManager.modularAdd(param);
 	}
@@ -90,6 +96,6 @@ public class AuthServiceImpl implements AuthService {
 	
 	@Override
 	public void roleModify(NameIdParam param) {
-		
+		authManager.roleModify(param);
 	}
 }

@@ -1,8 +1,11 @@
 package org.gatlin.soa.authority.api;
 
+import java.util.List;
+
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.authority.bean.entity.CfgApi;
+import org.gatlin.soa.authority.bean.entity.CfgModular;
 import org.gatlin.soa.authority.bean.entity.CfgRole;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
@@ -24,6 +27,8 @@ public interface AuthService {
 	void apiModify(ApiModifyParam param);
 	
 	void apiDelete(SoaIdParam param);
+	
+	List<CfgModular> modulars();
 	
 	int modularAdd(ModularAddParam param);
 	
