@@ -1,4 +1,4 @@
-package org.gatlin.soa.authority.mybatis;
+package org.gatlin.soa.authority.mybatis.dao;
 
 import java.util.Collection;
 
