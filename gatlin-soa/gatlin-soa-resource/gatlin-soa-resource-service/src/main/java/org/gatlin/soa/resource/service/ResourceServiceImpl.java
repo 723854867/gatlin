@@ -67,6 +67,15 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 	
 	@Override
+	public ResourceInfo resource(Query query) {
+		Resource resource = resourceManager.resource(query);
+		if (null == resource)
+			return null;
+		query = new Query().eq("resource_id", resource.getId());
+		return new ResourceInfo(resource, resourceManager.resourceRoute(query));
+	}
+	
+	@Override
 	public Pager<ResourceInfo> resources(Query query) {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());

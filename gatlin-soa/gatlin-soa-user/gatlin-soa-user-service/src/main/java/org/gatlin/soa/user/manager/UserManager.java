@@ -2,11 +2,12 @@ package org.gatlin.soa.user.manager;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.bean.User;
 import org.gatlin.soa.user.EntityGenerator;
 import org.gatlin.soa.user.bean.UserCode;
+import org.gatlin.soa.user.bean.UserUtil;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
@@ -20,6 +21,8 @@ import org.gatlin.soa.user.mybatis.dao.UserDeviceDao;
 import org.gatlin.soa.user.mybatis.dao.UserInfoDao;
 import org.gatlin.soa.user.mybatis.dao.UserInvitationDao;
 import org.gatlin.soa.user.mybatis.dao.UsernameDao;
+import org.gatlin.util.DateUtil;
+import org.gatlin.util.lang.StringUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +57,7 @@ public class UserManager {
 	@Transactional
 	public LoginModel login(UserDevice device, String pwd) {
 		UserInfo user = userInfoDao.getByKey(device.getUid());
-		String cpwd = DigestUtils.md5Hex(pwd + "_" + user.getSalt());
+		String cpwd = UserUtil.pwd(pwd, user.getSalt());
 		Assert.isTrue(UserCode.LOGIN_PWD_ERROR, cpwd.equalsIgnoreCase(user.getPwd()));
 		Query query = new Query().eq("uid", user.getId()).eq("type", device.getType());
 		UserDevice odevice = userDeviceDao.queryUnique(query);
@@ -62,6 +65,16 @@ public class UserManager {
 			userDeviceDao.deleteByKey(odevice.getToken());
 		userDeviceDao.insert(device);
 		return new LoginModel(new LoginInfo(user.getId(), device.getToken()), device, odevice);
+	}
+	
+	public void update(User user) {
+		UserInfo info = userInfoDao.getByKey(user.getId());
+		if (StringUtil.hasText(user.getPwd()))
+			info.setPwd(user.getPwd());
+		if (StringUtil.hasText(user.getNickname()))
+			info.setNickname(user.getNickname());
+		info.setUpdated(DateUtil.current());
+		userInfoDao.update(info);
 	}
 	
 	public UserInfo user(long uid) {

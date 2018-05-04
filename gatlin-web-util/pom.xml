@@ -35,6 +35,11 @@
 			<artifactId>gatlin-soa-resource-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.gatlin</groupId>
+			<artifactId>gatlin-soa-authority-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>

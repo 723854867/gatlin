@@ -13,7 +13,6 @@ import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
-import org.gatlin.soa.user.bean.info.UserTips;
 import org.gatlin.soa.user.bean.model.LoginModel;
 import org.gatlin.soa.user.bean.model.RegisterModel;
 import org.gatlin.soa.user.bean.param.LoginParam;
@@ -41,11 +40,12 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public UserTips user(UsernameType type, String username) {
+	public User user(UsernameType type, String username) {
 		Username uname = userManager.username(type, username);
-		Assert.notNull(UserCode.USERNAME_NOT_EXIST, uname);
+		if (null == uname)
+			return null;
 		UserInfo user = userManager.user(uname.getUid());
-		return new UserTips(user);
+		return _user(user, null);
 	}
 	
 	@Override
@@ -61,17 +61,25 @@ public class UserServiceImpl implements UserService {
 	private User _user(UserInfo info, UserDevice device) {
 		User user = new User();
 		user.setId(info.getId());
-		user.setAvatar(info.getAvatar());
-		user.setOs(OS.match(device.getOs()));
+		user.setPwd(info.getPwd());
+		user.setSalt(info.getSalt());
 		user.setNickname(info.getNickname());
-		user.setClient(Client.match(device.getClient()));
-		user.setDeviceType(DeviceType.match(device.getType()));
+		if (null != device) {
+			user.setOs(OS.match(device.getOs()));
+			user.setClient(Client.match(device.getClient()));
+			user.setDeviceType(DeviceType.match(device.getType()));
+		}
 		return user;
 	}
 	
 	@Override
 	public boolean releaseLock(long uid, String lockId) {
 		return threadsafeInvoker.releaseLock(uid, lockId);
+	}
+	
+	@Override
+	public void update(User user) {
+		userManager.update(user);
 	}
 
 	@Override

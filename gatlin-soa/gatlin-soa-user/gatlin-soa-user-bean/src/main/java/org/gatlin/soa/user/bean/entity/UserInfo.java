@@ -19,7 +19,6 @@ public class UserInfo implements Entity<Long> {
 	private long id;
 	private String pwd;
 	private String salt;
-	private String avatar;
 	private String nickname;
 	private int created;
 	private int updated;
@@ -46,14 +45,6 @@ public class UserInfo implements Entity<Long> {
 
 	public void setSalt(String salt) {
 		this.salt = salt;
-	}
-
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
 	}
 
 	public String getNickname() {

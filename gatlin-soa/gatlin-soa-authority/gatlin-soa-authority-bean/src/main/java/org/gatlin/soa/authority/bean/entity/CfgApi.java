@@ -1,14 +1,17 @@
-package org.gatlin.soa.config.bean.entity;
+package org.gatlin.soa.authority.bean.entity;
 
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.gatlin.core.bean.Entity;
 
-public class CfgApi implements Entity<String> {
+public class CfgApi implements Entity<Integer> {
 
 	private static final long serialVersionUID = -1477077842037120704L;
 
 	@Id
+	@GeneratedValue
+	private int id;
 	private String path;
 	private String desc;
 	private boolean login;
@@ -20,6 +23,14 @@ public class CfgApi implements Entity<String> {
 	private int securityLevel;
 	private int created;
 	private int updated;
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getPath() {
 		return path;
@@ -80,6 +91,10 @@ public class CfgApi implements Entity<String> {
 	public int getSecurityLevel() {
 		return securityLevel;
 	}
+	
+	public void setSecurityLevel(int securityLevel) {
+		this.securityLevel = securityLevel;
+	}
 
 	public int getCreated() {
 		return created;
@@ -98,7 +113,7 @@ public class CfgApi implements Entity<String> {
 	}
 
 	@Override
-	public String key() {
-		return this.path;
+	public Integer key() {
+		return this.id;
 	}
 }

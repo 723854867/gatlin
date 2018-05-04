@@ -1,4 +1,4 @@
-package org.gatlin.soa.config.bean.enums;
+package org.gatlin.soa.config.bean;
 
 import org.gatlin.core.bean.model.code.Code;
 

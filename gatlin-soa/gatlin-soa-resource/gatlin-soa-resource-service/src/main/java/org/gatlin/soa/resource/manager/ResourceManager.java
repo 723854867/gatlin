@@ -61,8 +61,16 @@ public class ResourceManager {
 		return cfgResourceDao.getByKey(id);
 	}
 	
+	public Resource resource(Query query) {
+		return resourceDao.queryUnique(query);
+	}
+	
 	public List<Resource> resources(Query query) {
 		return resourceDao.queryList(query);
+	}
+	
+	public ResourceRoute resourceRoute(Query query) { 
+		return resourceRouteDao.queryUnique(query);
 	}
 	
 	public Map<String, ResourceRoute> resourceRoutes(Query query) { 

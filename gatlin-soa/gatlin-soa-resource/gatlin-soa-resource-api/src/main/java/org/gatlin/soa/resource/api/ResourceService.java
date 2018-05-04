@@ -19,5 +19,7 @@ public interface ResourceService {
 	
 	void link(String id, String link);
 	
+	ResourceInfo resource(Query query);
+	
 	Pager<ResourceInfo> resources(Query query);
 }
