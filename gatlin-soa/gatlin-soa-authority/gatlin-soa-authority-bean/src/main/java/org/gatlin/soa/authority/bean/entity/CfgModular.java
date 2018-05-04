@@ -17,6 +17,8 @@ public class CfgModular implements Entity<Integer> {
 	private int left;
 	private int right;
 	private int layer;
+	private String url;
+	private int priority;
 	private int created;
 	private int updated;
 
@@ -66,6 +68,22 @@ public class CfgModular implements Entity<Integer> {
 
 	public void setLayer(int layer) {
 		this.layer = layer;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+	
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
+	public int getPriority() {
+		return priority;
+	}
+	
+	public void setPriority(int priority) {
+		this.priority = priority;
 	}
 
 	public int getCreated() {

@@ -9,6 +9,7 @@ import org.gatlin.soa.authority.bean.entity.CfgRole;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
+import org.gatlin.soa.authority.bean.param.ModularModifyParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
@@ -27,7 +28,7 @@ public interface AuthService {
 	
 	int modularAdd(ModularAddParam param);
 	
-	void modularModify(NameIdParam param);
+	void modularModify(ModularModifyParam param);
 	
 	Set<Integer> modularDelete(SoaIdParam param);
 	

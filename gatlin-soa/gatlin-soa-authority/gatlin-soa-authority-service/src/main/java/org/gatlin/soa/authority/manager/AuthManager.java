@@ -16,6 +16,7 @@ import org.gatlin.soa.authority.bean.entity.CfgRole;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
+import org.gatlin.soa.authority.bean.param.ModularModifyParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
 import org.gatlin.soa.authority.mybatis.dao.AuthMappingDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgApiDao;
@@ -82,10 +83,12 @@ public class AuthManager {
 		return modular.getId();
 	}
 	
-	public void modularModify(NameIdParam param) {
+	public void modularModify(ModularModifyParam param) {
 		CfgModular modular = cfgModularDao.getByKey(param.getId());
 		Assert.notNull(AuthCode.MODULAR_NOT_EXIST, modular);
+		modular.setUrl(param.getUrl());
 		modular.setName(param.getName());
+		modular.setPriority(param.getPriority());
 		modular.setUpdated(DateUtil.current());
 		cfgModularDao.update(modular);
 	}
