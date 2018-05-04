@@ -11,8 +11,10 @@ import org.gatlin.soa.authority.bean.EntityGenerator;
 import org.gatlin.soa.authority.bean.entity.CfgApi;
 import org.gatlin.soa.authority.bean.entity.CfgModular;
 import org.gatlin.soa.authority.bean.entity.CfgRole;
+import org.gatlin.soa.authority.bean.enums.AuthMappingType;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
+import org.gatlin.soa.authority.bean.param.AuthParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.ModularModifyParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
@@ -20,6 +22,7 @@ import org.gatlin.soa.authority.mybatis.dao.AuthMappingDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgApiDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgModularDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgRoleDao;
+import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
@@ -111,6 +114,37 @@ public class AuthManager {
 		long deleted = cfgRoleDao.deleteByKey(param.getId());
 		Assert.isTrue(AuthCode.ROLE_NOT_EXIST, 1 == deleted);
 		authMappingDao.deleteRole(param.getId());
+	}
+	
+	public void modularAuth(AuthParam param) {
+		CfgApi api = cfgApiDao.getByKey((int) param.getTid());
+		Assert.notNull(AuthCode.API_NOT_EXIST, api);
+		Assert.isTrue(AuthCode.UNLOGIN_API_NO_AUTH, api.isLogin());
+		CfgModular modular = cfgModularDao.getByKey((int) param.getSid());
+		Assert.notNull(AuthCode.MODULAR_NOT_EXIST, modular);
+		authMappingDao.insert(EntityGenerator.newAuthMapping(AuthMappingType.MODULAR_API, param.getSid(), param.getTid()));
+	}
+	
+	public void roleAuth(AuthParam param) {
+		CfgRole role = cfgRoleDao.getByKey((int) param.getSid());
+		Assert.notNull(AuthCode.ROLE_NOT_EXIST, role);
+		CfgModular modular = cfgModularDao.getByKey((int) param.getTid());
+		Assert.notNull(AuthCode.MODULAR_NOT_EXIST, modular);
+		authMappingDao.insert(EntityGenerator.newAuthMapping(AuthMappingType.ROLE_MODULAR, param.getSid(), param.getTid()));
+	}
+	
+	public void userAuth(AuthParam param) {
+		CfgRole role = cfgRoleDao.getByKey((int) param.getTid());
+		Assert.notNull(AuthCode.ROLE_NOT_EXIST, role);
+		authMappingDao.insert(EntityGenerator.newAuthMapping(AuthMappingType.USER_ROLE, param.getSid(), param.getTid()));
+	}
+	
+	public void auth(User user, CfgApi api) {
+		int modularCount = authMappingDao.modularCountByApi(api.getId());
+		if (modularCount == 0)
+			return;
+		int roleCount = authMappingDao.roleCountByApi(user.getId(), api.getId());
+		Assert.isTrue(AuthCode.AUTH_FAIL, roleCount >= 1);
 	}
 	
 	public CfgApi api(Query query) {

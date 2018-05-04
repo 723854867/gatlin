@@ -33,6 +33,13 @@ public class UserServiceImpl implements UserService {
 	private ThreadsafeInvoker threadsafeInvoker;
 	
 	@Override
+	public User user(long uid) {
+		UserInfo user = userManager.user(uid);
+		Assert.notNull(UserCode.USER_NOT_EIXST, user);
+		return _user(user, null);
+	}
+	
+	@Override
 	public User user(String token) {
 		UserDevice device = userManager.device(token);
 		Assert.notNull(UserCode.INVITOR_NOT_EXIST, device);

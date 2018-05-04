@@ -94,8 +94,12 @@ public class GatewayInterceptor {
 				}
 			}
 			if (null != api) {
-				if (api.isLogin())			// 检测登录
+				if (api.isLogin()) {			// 检测登录
 					Assert.notNull(UserCode.USER_UNLOGIN, user);
+					// 检测授权
+					if (null != authService)
+						authService.auth(user, api);
+				}
 				if (0 != api.getDeviceMod()) {
 					DeviceType deviceType = user.getDeviceType();
 					Assert.isTrue(UserCode.DEVICE_UNSUPPORT, (api.getDeviceMod() & deviceType.mark()) == deviceType.mark());

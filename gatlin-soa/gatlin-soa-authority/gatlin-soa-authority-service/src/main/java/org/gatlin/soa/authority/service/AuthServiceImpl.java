@@ -12,10 +12,12 @@ import org.gatlin.soa.authority.bean.entity.CfgModular;
 import org.gatlin.soa.authority.bean.entity.CfgRole;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
+import org.gatlin.soa.authority.bean.param.AuthParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.ModularModifyParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
 import org.gatlin.soa.authority.manager.AuthManager;
+import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
@@ -97,5 +99,24 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public void roleModify(NameIdParam param) {
 		authManager.roleModify(param);
+	}
+	
+	@Override
+	public void modularAuth(AuthParam param) {
+		authManager.modularAuth(param);
+	}
+	
+	@Override
+	public void roleAuth(AuthParam param) {
+		authManager.roleAuth(param);
+	}
+	
+	public void userAuth(AuthParam param) {
+		authManager.userAuth(param);
+	}
+	
+	@Override
+	public void auth(User user, CfgApi api) {
+		authManager.auth(user, api);
 	}
 }

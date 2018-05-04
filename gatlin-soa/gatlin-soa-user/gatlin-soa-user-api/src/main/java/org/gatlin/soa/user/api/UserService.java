@@ -13,6 +13,8 @@ import org.gatlin.soa.user.bean.param.RegisterParam;
  * @author lynn
  */
 public interface UserService {
+	
+	User user(long uid);
 
 	User user(String token);
 	

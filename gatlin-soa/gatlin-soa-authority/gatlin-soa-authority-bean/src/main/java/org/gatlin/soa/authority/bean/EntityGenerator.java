@@ -1,8 +1,10 @@
 package org.gatlin.soa.authority.bean;
 
+import org.gatlin.soa.authority.bean.entity.AuthMapping;
 import org.gatlin.soa.authority.bean.entity.CfgApi;
 import org.gatlin.soa.authority.bean.entity.CfgModular;
 import org.gatlin.soa.authority.bean.entity.CfgRole;
+import org.gatlin.soa.authority.bean.enums.AuthMappingType;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.util.DateUtil;
@@ -43,6 +45,15 @@ public class EntityGenerator {
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final AuthMapping newAuthMapping(AuthMappingType type, long sid, long tid) {
+		AuthMapping instance = new AuthMapping();
+		instance.setSid(sid);
+		instance.setTid(tid);
+		instance.setType(type.mark());
+		instance.setCreated(DateUtil.current());
 		return instance;
 	}
 }
