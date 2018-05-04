@@ -1,12 +1,15 @@
 package org.gatlin.soa.authority.service;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.authority.api.AuthService;
 import org.gatlin.soa.authority.bean.entity.CfgApi;
+import org.gatlin.soa.authority.bean.entity.CfgRole;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
@@ -15,6 +18,8 @@ import org.gatlin.soa.authority.manager.AuthManager;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
 
 @Service("authService")
 public class AuthServiceImpl implements AuthService {
@@ -25,6 +30,14 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public CfgApi api(Query query) {
 		return authManager.api(query);
+	}
+	
+	@Override
+	public Pager<CfgApi> apis(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		List<CfgApi> list = authManager.apis(query);
+		return new Pager<CfgApi>(list);
 	}
 	
 	@Override
@@ -55,6 +68,13 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public Set<Integer> modularDelete(SoaIdParam param) {
 		return authManager.modularDelete(param);
+	}
+	
+	@Override
+	public Pager<CfgRole> roles(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<CfgRole>(authManager.roles(query));
 	}
 	
 	@Override

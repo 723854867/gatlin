@@ -140,4 +140,12 @@ public class AuthManager {
 	public CfgApi api(Query query) {
 		return cfgApiDao.queryUnique(query);
 	}
+	
+	public List<CfgApi> apis(Query query) {
+		return cfgApiDao.queryList(query);
+	}
+	
+	public List<CfgRole> roles(Query query) {
+		return cfgRoleDao.queryList(query);
+	}
 }
