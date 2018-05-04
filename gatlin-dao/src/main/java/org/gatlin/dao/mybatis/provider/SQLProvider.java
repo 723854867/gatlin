@@ -96,6 +96,14 @@ public abstract class SQLProvider<T> {
         return sql.toString();
     }
 	
+	protected String replaceIntoTable(Class<?> entityClass, String tableName) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("REPLACE INTO ");
+        sql.append(tableName);
+        sql.append(" ");
+        return sql.toString();
+    }
+	
 	protected String insertColumns(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");

@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,10 +21,12 @@ import org.gatlin.core.bean.model.message.Request;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.bean.model.message.WrapResponse;
 import org.gatlin.core.util.Assert;
+import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.authority.api.AuthService;
+import org.gatlin.soa.authority.bean.entity.CfgApi;
+import org.gatlin.soa.authority.bean.enums.StorageType;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.config.api.ConfigService;
-import org.gatlin.soa.config.bean.entity.CfgApi;
-import org.gatlin.soa.config.bean.enums.StorageType;
 import org.gatlin.soa.log.api.LogService;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.UserCode;
@@ -53,6 +56,8 @@ public class GatewayInterceptor {
 	@Autowired(required = false)
 	private UserService userService;
 	@Autowired(required = false)
+	private AuthService authService;
+	@Resource
 	private ConfigService configService;
 
 	@Pointcut("execution(* org..controller.*.*(..))")
@@ -67,7 +72,7 @@ public class GatewayInterceptor {
 		HttpServletRequest request = WebUtil.getRequest();
 		LogRequest log = _logRequest(request, point);
 		int serverState = configService.config(WebConsts.Options.SERVER_STATE);
-		CfgApi api = null != configService ? configService.api(log.getPath()) : null;
+		CfgApi api = null != authService ? authService.api(new Query().eq("path", log.getPath())) : null;
 		int apiSecurityLevel = null == api ? 1 : api.getSecurityLevel();
 		Assert.isTrue(WebCode.SERVER_WARNING, apiSecurityLevel > serverState);
 		// 用户数据处理
@@ -89,10 +94,16 @@ public class GatewayInterceptor {
 				}
 			}
 			if (null != api) {
-				if (api.isLogin())			// 检测登录
+				if (api.isLogin()) {			// 检测登录
 					Assert.notNull(UserCode.USER_UNLOGIN, user);
-				DeviceType deviceType = user.getDeviceType();
-				Assert.isTrue(UserCode.DEVICE_UNSUPPORT, (api.getDeviceMod() & deviceType.mark()) == deviceType.mark());
+					// 检测授权
+					if (null != authService)
+						authService.auth(user, api);
+				}
+				if (0 != api.getDeviceMod()) {
+					DeviceType deviceType = user.getDeviceType();
+					Assert.isTrue(UserCode.DEVICE_UNSUPPORT, (api.getDeviceMod() & deviceType.mark()) == deviceType.mark());
+				}
 			}
 			Object result = point.proceed();
 			Object response = null;
@@ -127,7 +138,7 @@ public class GatewayInterceptor {
 				 StorageType type = StorageType.valueOf(api.getStorageType());
 				 switch (type) {
 				case FILE:
-					logger.info("客户端请求：{}", SerializeUtil.GSON.toJson(api));
+					logger.info("客户端请求：{}", SerializeUtil.GSON.toJson(log));
 					break;
 				case MONGO:
 					if (null != logService)

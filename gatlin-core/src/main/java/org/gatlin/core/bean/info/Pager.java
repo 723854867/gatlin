@@ -17,7 +17,9 @@ public class Pager<T> implements Serializable {
 	private long pages;			// 总页数
 	private List<T> list;
 	
-	public Pager() {}
+	public Pager() {
+		this.list = new ArrayList<T>();
+	}
 	
 	/**
 	 * 使用 PageHelper 分页返回的是一个继承了 List 的 {@link Page} 对象，改对象中包含了一些分页的属性，比如总页数什么的；

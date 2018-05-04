@@ -1,6 +1,6 @@
 package org.gatlin.soa.user;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import org.gatlin.soa.user.bean.UserUtil;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
@@ -15,10 +15,9 @@ public class EntityGenerator {
 
 	public static final UserInfo newUserInfo(String password) {
 		UserInfo instance = new UserInfo();
-		instance.setAvatar(StringUtil.EMPTY);
 		instance.setNickname(StringUtil.EMPTY);
 		instance.setSalt(KeyUtil.randomCode(6, false));
-		instance.setPwd(DigestUtils.md5Hex(password + "_" + instance.getSalt()));
+		instance.setPwd(UserUtil.pwd(password, instance.getSalt()));
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

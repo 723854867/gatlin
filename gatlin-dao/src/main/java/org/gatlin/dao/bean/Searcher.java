@@ -20,7 +20,7 @@ public class Searcher extends Param {
 		super.verify();
 		if (null != getPage())
 			Assert.notNull(CoreCode.PARAM_ERR, getPageSize());
-		if (null != query)
+		if (null == query)
 			this.query = new Query();
 		if (null != getPage())
 			this.query.page(getPage());

@@ -26,7 +26,7 @@ public interface DaoConsts {
 		// mybatis 配置
 		final StrOption DB_MYBATIS_BASE_PACKAGE							= new StrOption("db.mybatis.basePackage");
 		final BoolOption DB_MYBATIS_PAGE								= new BoolOption("db.mybatis.page", false);
-		final StrOption DB_MYBATIS_MAPPER_LOCATION						= new StrOption("db.mybatis.mapperLocation", "");
+		final StrOption DB_MYBATIS_MAPPER_LOCATION						= new StrOption("db.mybatis.mapperLocation", "classpath*:conf/mapper/*.xml");
 		final StrOption DB_MYBATIS_TYPE_ALIASES_PACKAGE					= new StrOption("db.mybatis.typeAliasesPackage", "");
 		final BoolOption DB_SESSION_CACHE_ENABLED						= new BoolOption("db.session.cacheEnabled", false);
 		final BoolOption DB_SESSION_CAMEL_2_UNDERLINE					= new BoolOption("db.session.camel2underline", true);

@@ -8,8 +8,8 @@ public class ResourceSearcher extends SoaParam {
 
 	private Integer id;
 	private String name;
-	private Integer cfgId;
 	private Integer owner;
+	private Integer cfgResourceId;
 
 	public Integer getId() {
 		return id;
@@ -27,20 +27,20 @@ public class ResourceSearcher extends SoaParam {
 		this.name = name;
 	}
 
-	public Integer getCfgId() {
-		return cfgId;
-	}
-	
-	public void setCfgId(Integer cfgId) {
-		this.cfgId = cfgId;
-	}
-
 	public Integer getOwner() {
 		return owner;
 	}
 
 	public void setOwner(Integer owner) {
 		this.owner = owner;
+	}
+	
+	public Integer getCfgResourceId() {
+		return cfgResourceId;
+	}
+	
+	public void setCfgResourceId(Integer cfgResourceId) {
+		this.cfgResourceId = cfgResourceId;
 	}
 	
 	@Override
@@ -50,8 +50,8 @@ public class ResourceSearcher extends SoaParam {
 			this.query.eq("id", id);
 		if (null != name)
 			this.query.like("name", name);
-		if (null != cfgId)
-			this.query.eq("cfg_id", cfgId);
+		if (null != cfgResourceId)
+			this.query.eq("cfg_id", cfgResourceId);
 		if (null != owner)
 			this.query.eq("owner", owner);
 		this.query.orderByAsc("priority");

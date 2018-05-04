@@ -12,7 +12,10 @@ public class User implements Serializable {
 
 	private OS os;
 	private long id;
+	private String pwd;
+	private String salt;
 	private Client client;
+	private long avatarId;
 	private String avatar;
 	private String lockId;
 	private String nickname;
@@ -33,6 +36,22 @@ public class User implements Serializable {
 	public void setId(long id) {
 		this.id = id;
 	}
+	
+	public String getPwd() {
+		return pwd;
+	}
+	
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+	
+	public String getSalt() {
+		return salt;
+	}
+	
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
 
 	public Client getClient() {
 		return client;
@@ -40,6 +59,14 @@ public class User implements Serializable {
 
 	public void setClient(Client client) {
 		this.client = client;
+	}
+	
+	public long getAvatarId() {
+		return avatarId;
+	}
+	
+	public void setAvatarId(long avatarId) {
+		this.avatarId = avatarId;
 	}
 
 	public String getAvatar() {

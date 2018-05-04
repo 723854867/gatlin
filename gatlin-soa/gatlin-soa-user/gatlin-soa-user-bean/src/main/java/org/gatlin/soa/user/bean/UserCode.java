@@ -15,4 +15,5 @@ public interface UserCode {
 	final Code USER_ROLE_MAXIMUM 			= new Code("code.user.role.maximum", "用户角色数量达到上限");
 	final Code DEVICE_UNSUPPORT 			= new Code("code.user.device.unsupport", "该接口暂不支持该设备");
 	final Code INVALID_TOKEN	 			= new Code("code.user.invalid.token", "无效的token");
+	final Code PWD_UNMODIFIED	 			= new Code("code.user.pwd.unmodified", "新密码不可以和旧密码相同");
 }
