@@ -13,6 +13,7 @@ import org.gatlin.soa.authority.bean.entity.CfgRole;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
+import org.gatlin.soa.authority.bean.param.ModularModifyParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
 import org.gatlin.soa.authority.manager.AuthManager;
 import org.gatlin.soa.bean.param.SoaIdParam;
@@ -61,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 	
 	@Override
-	public void modularModify(NameIdParam param) {
+	public void modularModify(ModularModifyParam param) {
 		authManager.modularModify(param);
 	}
 	
