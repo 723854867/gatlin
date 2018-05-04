@@ -365,7 +365,6 @@
 		<module>gatlin-soa</module>
 		<module>gatlin-soa-util</module>
 		<module>gatlin-web-util</module>
-		<module>gatlin-soa-all</module>
 		<module>gatlin-sdk</module>
 	</modules>
 </project>
