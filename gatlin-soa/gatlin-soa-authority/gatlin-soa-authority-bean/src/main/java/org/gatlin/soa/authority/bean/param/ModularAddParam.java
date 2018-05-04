@@ -3,8 +3,6 @@ package org.gatlin.soa.authority.bean.param;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
-import org.gatlin.core.CoreCode;
-import org.gatlin.core.util.Assert;
 import org.gatlin.soa.bean.param.SoaParam;
 
 public class ModularAddParam extends SoaParam {
@@ -17,7 +15,6 @@ public class ModularAddParam extends SoaParam {
 	private String name;
 	@Min(0)
 	private int priority;
-	private Integer trunk;
 	private Integer parent;
 	
 	public String getUrl() {
@@ -44,14 +41,6 @@ public class ModularAddParam extends SoaParam {
 		this.priority = priority;
 	}
 
-	public Integer getTrunk() {
-		return trunk;
-	}
-
-	public void setTrunk(Integer trunk) {
-		this.trunk = trunk;
-	}
-
 	public Integer getParent() {
 		return parent;
 	}
@@ -63,7 +52,5 @@ public class ModularAddParam extends SoaParam {
 	@Override
 	public void verify() {
 		super.verify();
-		if (null != parent)
-			Assert.notNull(CoreCode.PARAM_ERR, trunk);
 	}
 }

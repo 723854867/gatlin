@@ -13,12 +13,9 @@ public class CfgModular implements Entity<Integer> {
 	@GeneratedValue
 	private int id;
 	private String name;
-	private String trunk;
-	private int left;
-	private int right;
-	private int layer;
 	private String url;
 	private int priority;
+	private int parent;
 	private int created;
 	private int updated;
 
@@ -38,44 +35,20 @@ public class CfgModular implements Entity<Integer> {
 		this.name = name;
 	}
 
-	public String getTrunk() {
-		return trunk;
-	}
-	
-	public void setTrunk(String trunk) {
-		this.trunk = trunk;
-	}
-
-	public int getLeft() {
-		return left;
-	}
-
-	public void setLeft(int left) {
-		this.left = left;
-	}
-
-	public int getRight() {
-		return right;
-	}
-
-	public void setRight(int right) {
-		this.right = right;
-	}
-
-	public int getLayer() {
-		return layer;
-	}
-
-	public void setLayer(int layer) {
-		this.layer = layer;
-	}
-	
 	public String getUrl() {
 		return url;
 	}
 	
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public int getParent() {
+		return parent;
+	}
+	
+	public void setParent(int parent) {
+		this.parent = parent;
 	}
 	
 	public int getPriority() {

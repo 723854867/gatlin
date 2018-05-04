@@ -6,7 +6,6 @@ import org.gatlin.soa.authority.bean.entity.CfgRole;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.util.DateUtil;
-import org.gatlin.util.IDWorker;
 
 public class EntityGenerator {
 	
@@ -31,17 +30,7 @@ public class EntityGenerator {
 		instance.setUrl(param.getUrl());
 		instance.setName(param.getName());
 		instance.setPriority(param.getPriority());
-		if (null == parent) {
-			instance.setLeft(1);
-			instance.setRight(2);
-			instance.setLayer(1);
-			instance.setTrunk(IDWorker.INSTANCE.nextSid());
-		} else {
-			instance.setTrunk(parent.getTrunk());
-			instance.setLeft(parent.getRight());
-			instance.setRight(parent.getLeft() + 1);
-			instance.setLayer(parent.getLayer() + 1);
-		}
+		instance.setParent(null == parent ? 0 : parent.getId());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

@@ -1,7 +1,6 @@
 package org.gatlin.soa.authority.service;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -17,6 +16,7 @@ import org.gatlin.soa.authority.bean.param.ModularModifyParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
 import org.gatlin.soa.authority.manager.AuthManager;
 import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.springframework.stereotype.Service;
 
@@ -48,12 +48,12 @@ public class AuthServiceImpl implements AuthService {
 	
 	@Override
 	public void apiModify(ApiModifyParam param) {
-		
+		authManager.apiModify(param);
 	}
 	
 	@Override
 	public void apiDelete(SoaIdParam param) {
-		
+		authManager.apiDelete(param);
 	}
 	
 	@Override
@@ -67,8 +67,8 @@ public class AuthServiceImpl implements AuthService {
 	}
 	
 	@Override
-	public Set<Integer> modularDelete(SoaIdParam param) {
-		return authManager.modularDelete(param);
+	public void modularDelete(SoaIdsParam param) {
+		authManager.modularDelete(param);
 	}
 	
 	@Override

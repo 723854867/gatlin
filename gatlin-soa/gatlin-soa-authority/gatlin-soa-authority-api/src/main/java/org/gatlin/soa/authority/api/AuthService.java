@@ -1,7 +1,5 @@
 package org.gatlin.soa.authority.api;
 
-import java.util.Set;
-
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.authority.bean.entity.CfgApi;
@@ -12,6 +10,7 @@ import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.ModularModifyParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
 import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 
 public interface AuthService {
@@ -30,7 +29,7 @@ public interface AuthService {
 	
 	void modularModify(ModularModifyParam param);
 	
-	Set<Integer> modularDelete(SoaIdParam param);
+	void modularDelete(SoaIdsParam param);
 	
 	Pager<CfgRole> roles(Query query);
 	

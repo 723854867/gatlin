@@ -1,8 +1,6 @@
 package org.gatlin.soa.authority.manager;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -23,6 +21,7 @@ import org.gatlin.soa.authority.mybatis.dao.CfgApiDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgModularDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgRoleDao;
 import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.util.DateUtil;
 import org.springframework.stereotype.Component;
@@ -72,13 +71,7 @@ public class AuthManager {
 		CfgModular parent = null == param.getParent() ? null : cfgModularDao.getByKey(param.getParent());
 		if (null != param.getParent())
 			Assert.notNull(AuthCode.MODULAR_NOT_EXIST, parent);
-		if (null != parent) 
-			_lockTrunk(parent.getTrunk());
 		CfgModular modular = EntityGenerator.newCfgModular(param, parent);
-		if (null != parent) {
-			cfgModularDao.updateInsertLeft(parent.getTrunk(), parent.getRight());
-			cfgModularDao.updateInsertRight(parent.getTrunk(), parent.getRight());
-		} 
 		cfgModularDao.insert(modular);
 		return modular.getId();
 	}
@@ -94,29 +87,9 @@ public class AuthManager {
 	}
 	
 	@Transactional
-	public Set<Integer> modularDelete(SoaIdParam param) {
-		CfgModular modular = cfgModularDao.getByKey(param.getId());
-		Assert.notNull(AuthCode.MODULAR_NOT_EXIST, modular);
-		_lockTrunk(modular.getTrunk());
-		int width = modular.getRight() - modular.getLeft() + 1;
-		Set<Integer> deleted = new HashSet<Integer>();
-		deleted.add(modular.getId());
-		if (width == 2) {
-			cfgModularDao.deleteByKey(modular.getId());
-		} else {
-			List<CfgModular> modulars = cfgModularDao.children(modular);
-			modulars.forEach(item -> deleted.add(item.getId()));
-			cfgModularDao.deleteByKeys(deleted);
-		}
-		cfgModularDao.updateDeleteLeft(modular.getTrunk(), modular.getRight(), width);
-		cfgModularDao.updateDeleteRight(modular.getTrunk(), modular.getRight(), width);
-		authMappingDao.deleteModulars(deleted);
-		return deleted;
-	}
-	
-	private void _lockTrunk(String trunk) {
-		Query query = new Query().eq("trunk", trunk).forUpdate();
-		cfgModularDao.queryList(query);
+	public void modularDelete(SoaIdsParam param) {
+		cfgModularDao.deleteByKeys(param.getIds());
+		authMappingDao.deleteModulars(param.getIds());
 	}
 	
 	public int roleAdd(SoaSidParam param) {
