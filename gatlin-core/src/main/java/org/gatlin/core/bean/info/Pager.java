@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.gatlin.core.bean.model.Paginate;
 import org.gatlin.util.callback.Callback;
+import org.gatlin.util.callback.NullParamCallback;
 
 import com.github.pagehelper.Page;
 
@@ -69,9 +70,9 @@ public class Pager<T> implements Serializable {
 		this.list = list;
 	}
 	
-	public static final <T, K> Pager<T> convert(List<K> list, Callback<List<K>, List<T>> callback) {
+	public static final <T, K> Pager<T> convert(List<K> list, NullParamCallback<List<T>> callback) {
 		Pager<T> pager = new Pager<T>();
-		pager.setList(callback.invoke(list));
+		pager.setList(callback.invoke());
 		if (list instanceof Page<?>) {
 			Page<K> page = (Page<K>)list;
 			pager.setPages(page.getPages());

@@ -1,6 +1,9 @@
 package org.gatlin.soa.user.api;
 
+import org.gatlin.core.bean.info.Pager;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.model.LoginModel;
 import org.gatlin.soa.user.bean.model.RegisterModel;
@@ -33,4 +36,6 @@ public interface UserService {
 	
 	// 新建用户(注册)
 	RegisterModel register(RegisterParam param);
+	
+	Pager<UserInfo> users(Query query); 
 }

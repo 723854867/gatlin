@@ -3,7 +3,9 @@ package org.gatlin.soa.user.service;
 import javax.annotation.Resource;
 
 import org.gatlin.core.bean.exceptions.CodeException;
+import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.user.EntityGenerator;
 import org.gatlin.soa.user.ThreadsafeInvoker;
@@ -23,6 +25,8 @@ import org.gatlin.util.bean.enums.DeviceType;
 import org.gatlin.util.bean.enums.OS;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -70,6 +74,7 @@ public class UserServiceImpl implements UserService {
 		user.setId(info.getId());
 		user.setPwd(info.getPwd());
 		user.setSalt(info.getSalt());
+		user.setCreated(info.getCreated());
 		user.setNickname(info.getNickname());
 		if (null != device) {
 			user.setOs(OS.match(device.getOs()));
@@ -106,5 +111,12 @@ public class UserServiceImpl implements UserService {
 		return threadsafeInvoker.invoke(username.getUid(), () -> {
 			return userManager.login(device, param.getPassword());
 		});
+	}
+	
+	@Override
+	public Pager<UserInfo> users(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<UserInfo>(userManager.users(query));
 	}
 }

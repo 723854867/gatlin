@@ -20,6 +20,11 @@
 			<artifactId>gatlin-soa-user-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.gatlin</groupId>
+			<artifactId>gatlin-soa-config-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>

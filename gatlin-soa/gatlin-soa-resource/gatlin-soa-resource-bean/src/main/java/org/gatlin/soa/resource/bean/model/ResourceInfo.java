@@ -14,6 +14,7 @@ public class ResourceInfo implements Serializable {
 	private String url;
 	private String name;
 	private String link;
+	private long owner;
 	private int priority;
 	private int created;
 	
@@ -24,6 +25,7 @@ public class ResourceInfo implements Serializable {
 		this.cfgId = resource.getCfgId();
 		this.url = resource.getUrl();
 		this.name = resource.getName();
+		this.owner = resource.getOwner();
 		this.priority = resource.getPriority();
 		this.created = resource.getCreated();
 		if (null != route)
@@ -68,6 +70,14 @@ public class ResourceInfo implements Serializable {
 
 	public void setLink(String link) {
 		this.link = link;
+	}
+	
+	public long getOwner() {
+		return owner;
+	}
+	
+	public void setOwner(long owner) {
+		this.owner = owner;
 	}
 
 	public int getPriority() {

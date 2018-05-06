@@ -1,5 +1,7 @@
 package org.gatlin.soa.user.manager;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.gatlin.core.util.Assert;
@@ -88,5 +90,9 @@ public class UserManager {
 	public Username username(UsernameType type, String username) {
 		Query query = new Query().eq("username", username).eq("type", type.mark());
 		return usernameDao.queryUnique(query);
+	}
+	
+	public List<UserInfo> users(Query query) {
+		return userInfoDao.queryList(query);
 	}
 }

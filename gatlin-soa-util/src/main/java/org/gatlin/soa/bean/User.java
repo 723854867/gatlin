@@ -13,6 +13,7 @@ public class User implements Serializable {
 	private OS os;
 	private long id;
 	private String pwd;
+	private int created;
 	private String salt;
 	private Client client;
 	private long avatarId;
@@ -43,6 +44,14 @@ public class User implements Serializable {
 	
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
+	}
+	
+	public int getCreated() {
+		return created;
+	}
+	
+	public void setCreated(int created) {
+		this.created = created;
 	}
 	
 	public String getSalt() {

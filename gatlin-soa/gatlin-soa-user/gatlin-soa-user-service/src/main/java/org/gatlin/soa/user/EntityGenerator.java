@@ -1,11 +1,13 @@
 package org.gatlin.soa.user;
 
 import org.gatlin.soa.user.bean.UserUtil;
+import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
+import org.gatlin.soa.user.bean.param.AddressAddparam;
 import org.gatlin.soa.user.bean.param.LoginParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.KeyUtil;
@@ -50,6 +52,23 @@ public class EntityGenerator {
 		instance.setType(param.getDeviceType().mark());
 		instance.setClient(param.getClient().mark());
 		instance.setCreated(DateUtil.current());
+		return instance;
+	}
+	
+	public static final UserAddress newUserAddress(AddressAddparam param) {
+		UserAddress instance = new UserAddress();
+		instance.setUid(param.getUser().getId());
+		instance.setCity(param.getCity());
+		instance.setCounty(param.getCounty());
+		instance.setProvince(param.getProvince());
+		instance.setUsed(param.isUsed());
+		instance.setMemo(param.getMemo());
+		instance.setDetail(param.getDetail());
+		instance.setContacts(param.getContacts());
+		instance.setContactsMobile(param.getContactsMobile());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
 		return instance;
 	}
 }

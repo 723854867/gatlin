@@ -16,4 +16,7 @@ public interface UserCode {
 	final Code DEVICE_UNSUPPORT 			= new Code("code.user.device.unsupport", "该接口暂不支持该设备");
 	final Code INVALID_TOKEN	 			= new Code("code.user.invalid.token", "无效的token");
 	final Code PWD_UNMODIFIED	 			= new Code("code.user.pwd.unmodified", "新密码不可以和旧密码相同");
+	final Code USER_ADDRESS_NOT_EXIST	 	= new Code("code.user.address.not.exist", "用户地址不存在");
+	final Code USER_ADDRESS_COUNT_LIMIT		= new Code("code.user.address.count.maximum", "用户地址数目已达上限");
+
 }
