@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.bean.EntityGenerator;
 import org.gatlin.soa.account.bean.entity.UserAccount;
 import org.gatlin.soa.account.bean.enums.UserAccountType;
@@ -26,5 +27,9 @@ public class AccountManager {
 		}
 		if (!CollectionUtil.isEmpty(accounts))
 			userAccountDao.batchInsert(accounts);
+	}
+	
+	public List<UserAccount> accounts(Query query) {
+		return userAccountDao.queryList(query);
 	}
 }
