@@ -1,4 +1,4 @@
-package org.gatlin.web.util.bean.param;
+package org.gatlin.web.bean.param;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;

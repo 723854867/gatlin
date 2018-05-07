@@ -15,10 +15,12 @@ import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
-import org.gatlin.soa.user.bean.info.LoginInfo;
+import org.gatlin.soa.user.bean.model.LoginInfo;
 import org.gatlin.soa.user.bean.model.LoginModel;
 import org.gatlin.soa.user.bean.model.RegisterModel;
+import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.RegisterParam;
+import org.gatlin.soa.user.bean.param.UserListParam;
 import org.gatlin.soa.user.mybatis.dao.UserDeviceDao;
 import org.gatlin.soa.user.mybatis.dao.UserInfoDao;
 import org.gatlin.soa.user.mybatis.dao.UserInvitationDao;
@@ -92,7 +94,7 @@ public class UserManager {
 		return usernameDao.queryUnique(query);
 	}
 	
-	public List<UserInfo> users(Query query) {
-		return userInfoDao.queryList(query);
+	public List<UserListInfo> users(UserListParam param) {
+		return userInfoDao.list(param);
 	}
 }

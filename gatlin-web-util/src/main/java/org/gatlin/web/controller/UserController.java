@@ -1,13 +1,21 @@
 package org.gatlin.web.controller;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.gatlin.core.bean.info.Pager;
-import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.resource.api.ResourceService;
+import org.gatlin.soa.resource.bean.enums.ResourceType;
+import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.user.api.UserService;
-import org.gatlin.soa.user.bean.entity.UserInfo;
+import org.gatlin.soa.user.bean.model.UserListInfo;
+import org.gatlin.soa.user.bean.param.UserListParam;
+import org.gatlin.util.lang.CollectionUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +32,27 @@ public class UserController {
 
 	@ResponseBody
 	@RequestMapping("list")
-	public Object users(@RequestBody @Valid SoaParam param) {
-		Pager<UserInfo> pager = userService.users(param.query());
-		return null;
+	public Object users(@RequestBody @Valid UserListParam param) {
+		Pager<UserListInfo> pager = userService.users(param);
+		if (CollectionUtil.isEmpty(pager.getList()))
+			return pager;
+		Set<Long> uids = new HashSet<Long>();
+		pager.getList().forEach(item -> uids.add(item.getUid()));
+		Query query = new Query().eq("cfg_id", ResourceType.AVATAR.mark()).in("owner", uids);
+		Pager<ResourceInfo> resources = resourceService.resources(query);
+		if (CollectionUtil.isEmpty(resources.getList()))
+			return pager;
+		for (UserListInfo info : pager.getList()) {
+			Iterator<ResourceInfo> itr = resources.getList().iterator();
+			while (itr.hasNext()) {
+				ResourceInfo resource = itr.next();
+				if (resource.getOwner() == info.getUid()) {
+					itr.remove();
+					info.setAvatar(resource.getUrl());
+					break;
+				}
+			}
+		}
+		return pager;
 	}
 }

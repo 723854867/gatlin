@@ -1,4 +1,4 @@
-package org.gatlin.web.util.bean.param;
+package org.gatlin.web.bean.param;
 
 import org.gatlin.soa.bean.param.SoaParam;
 

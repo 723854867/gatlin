@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gatlin.core.bean.model.Paginate;
-import org.gatlin.util.callback.Callback;
 import org.gatlin.util.callback.NullParamCallback;
 
 import com.github.pagehelper.Page;
@@ -82,11 +81,11 @@ public class Pager<T> implements Serializable {
 		return pager;
 	}
 	
-	public static final <T, K> Pager<T> convert(Pager<K> pager, Callback<List<K>, List<T>> callback) {
+	public static final <T, K> Pager<T> convert(Pager<K> pager, NullParamCallback<List<T>> callback) {
 		Pager<T> npager = new Pager<T>();
 		npager.setTotal(pager.getTotal());
 		npager.setPages(pager.getPages());
-		npager.setList(callback.invoke(pager.getList()));
+		npager.setList(callback.invoke());
 		return npager;
 	}
 	

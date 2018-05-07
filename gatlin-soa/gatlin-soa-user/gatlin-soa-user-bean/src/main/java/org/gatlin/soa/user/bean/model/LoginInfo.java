@@ -1,4 +1,4 @@
-package org.gatlin.soa.user.bean.info;
+package org.gatlin.soa.user.bean.model;
 
 import java.io.Serializable;
 

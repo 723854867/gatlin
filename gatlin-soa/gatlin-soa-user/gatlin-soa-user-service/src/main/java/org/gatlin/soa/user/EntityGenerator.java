@@ -44,10 +44,11 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final UserDevice newUserDevice(long uid, LoginParam param) {
+	public static final UserDevice newUserDevice(Username username, LoginParam param) {
 		UserDevice instance = new UserDevice();
 		instance.setToken(StringUtil.uuid());
-		instance.setUid(uid);
+		instance.setUid(username.getId());
+		instance.setUsername(username.getId());
 		instance.setOs(param.getOs().mark());
 		instance.setType(param.getDeviceType().mark());
 		instance.setClient(param.getClient().mark());

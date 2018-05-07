@@ -23,8 +23,8 @@ public class UserDevice implements Entity<String> {
 	private int os;
 	private int type;
 	private int client;
+	private long username;
 	private int created;
-	
 
 	public long getUid() {
 		return uid;
@@ -64,6 +64,14 @@ public class UserDevice implements Entity<String> {
 	
 	public void setToken(String token) {
 		this.token = token;
+	}
+	
+	public long getUsername() {
+		return username;
+	}
+	
+	public void setUsername(long username) {
+		this.username = username;
 	}
 
 	public int getCreated() {

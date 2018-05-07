@@ -4,7 +4,7 @@ import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.user.bean.UserCode;
-import org.gatlin.web.util.bean.param.ResourceUploadParam;
+import org.gatlin.web.bean.param.ResourceUploadParam;
 
 public abstract class ResourceHook {
 

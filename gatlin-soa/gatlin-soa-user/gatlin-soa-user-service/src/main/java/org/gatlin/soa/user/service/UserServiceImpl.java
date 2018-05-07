@@ -5,7 +5,6 @@ import javax.annotation.Resource;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
-import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.user.EntityGenerator;
 import org.gatlin.soa.user.ThreadsafeInvoker;
@@ -17,8 +16,10 @@ import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.model.LoginModel;
 import org.gatlin.soa.user.bean.model.RegisterModel;
+import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.LoginParam;
 import org.gatlin.soa.user.bean.param.RegisterParam;
+import org.gatlin.soa.user.bean.param.UserListParam;
 import org.gatlin.soa.user.manager.UserManager;
 import org.gatlin.util.bean.enums.Client;
 import org.gatlin.util.bean.enums.DeviceType;
@@ -46,7 +47,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User user(String token) {
 		UserDevice device = userManager.device(token);
-		Assert.notNull(UserCode.INVITOR_NOT_EXIST, device);
+		Assert.notNull(UserCode.INVALID_TOKEN, device);
 		return _user(userManager.user(device.getUid()), device);
 	}
 	
@@ -107,16 +108,16 @@ public class UserServiceImpl implements UserService {
 	public LoginModel login(LoginParam param) {
 		Username username = userManager.username(param.getUsernameType(), param.getUsername());
 		Assert.notNull(UserCode.USERNAME_NOT_EXIST, username);
-		UserDevice device = EntityGenerator.newUserDevice(username.getUid(), param);
+		UserDevice device = EntityGenerator.newUserDevice(username, param);
 		return threadsafeInvoker.invoke(username.getUid(), () -> {
 			return userManager.login(device, param.getPassword());
 		});
 	}
 	
 	@Override
-	public Pager<UserInfo> users(Query query) {
-		if (null != query.getPage())
-			PageHelper.startPage(query.getPage(), query.getPageSize());
-		return new Pager<UserInfo>(userManager.users(query));
+	public Pager<UserListInfo> users(UserListParam param) {
+		if (null != param.getPage())
+			PageHelper.startPage(param.getPage(), param.getPageSize());
+		return new Pager<UserListInfo>(userManager.users(param));
 	}
 }
