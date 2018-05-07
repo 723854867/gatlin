@@ -71,6 +71,10 @@ public class UserManager {
 		return new LoginModel(new LoginInfo(user.getId(), device.getToken()), device, odevice);
 	}
 	
+	public void logout(String token) {
+		userDeviceDao.deleteByKey(token);
+	}
+	
 	public void update(User user) {
 		UserInfo info = userInfoDao.getByKey(user.getId());
 		if (StringUtil.hasText(user.getPwd()))

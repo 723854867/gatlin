@@ -77,6 +77,13 @@ public class CommonController {
 	}
 	
 	@ResponseBody
+	@RequestMapping("logout")
+	public Object logout(@RequestBody @Valid SoaParam param) {
+		userService.logout(param.getToken());
+		return Response.ok();
+	}
+	
+	@ResponseBody
 	@RequestMapping("pwd/reset")
 	public Object pwdReset(@RequestBody @Valid PwdResetParam param) {
 		User user = userService.user(param.getUsernameType(), param.getUsername());

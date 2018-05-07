@@ -29,6 +29,8 @@ public interface UserService {
 	// 登录
 	LoginModel login(LoginParam param);
 	
+	void logout(String token);
+	
 	// 释放用户锁
 	boolean releaseLock(long uid, String lockId);
 	

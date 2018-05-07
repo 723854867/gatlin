@@ -115,6 +115,11 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
+	public void logout(String token) {
+		userManager.logout(token);
+	}
+	
+	@Override
 	public Pager<UserListInfo> users(UserListParam param) {
 		if (null != param.getPage())
 			PageHelper.startPage(param.getPage(), param.getPageSize());
