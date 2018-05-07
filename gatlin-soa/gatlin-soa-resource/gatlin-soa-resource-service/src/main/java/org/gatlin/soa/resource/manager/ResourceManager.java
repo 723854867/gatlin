@@ -69,6 +69,10 @@ public class ResourceManager {
 		return resourceDao.queryList(query);
 	}
 	
+	public List<CfgResource> configs() {
+		return cfgResourceDao.getAllList();
+	}
+	
 	public ResourceRoute resourceRoute(Query query) { 
 		return resourceRouteDao.queryUnique(query);
 	}

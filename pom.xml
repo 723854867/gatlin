@@ -24,6 +24,7 @@
 		<junit.version>4.12</junit.version>
 		<jedis.version>2.9.0</jedis.version>
 		<mongo.version>3.6.2</mongo.version>
+		<cglib.version>3.2.5</cglib.version>
 		<okhttp.version>3.9.1</okhttp.version>
 		<janino.version>3.0.8</janino.version>
 		<servlet.version>3.1.0</servlet.version>
@@ -282,6 +283,22 @@
 				<groupId>commons-fileupload</groupId>
 				<artifactId>commons-fileupload</artifactId>
 				<version>${commons-fileupload.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<version>${cglib.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.ow2.asm</groupId>
+						<artifactId>asm</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

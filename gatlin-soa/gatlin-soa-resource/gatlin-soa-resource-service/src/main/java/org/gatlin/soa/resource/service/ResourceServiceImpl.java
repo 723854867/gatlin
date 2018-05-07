@@ -30,6 +30,11 @@ public class ResourceServiceImpl implements ResourceService {
 	private ResourceManager resourceManager;
 	
 	@Override
+	public List<CfgResource> configs() {
+		return resourceManager.configs();
+	}
+	
+	@Override
 	public CfgResource uploadVerify(int cfgId, long owner, long bytes) {
 		CfgResource cfgResource = resourceManager.cfgResource(cfgId);
 		Assert.notNull(ResourceCode.RESOURCE_CONFIG_NOT_EXIST, cfgResource);
