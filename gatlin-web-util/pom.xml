@@ -45,6 +45,11 @@
 			<artifactId>gatlin-soa-account-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.gatlin</groupId>
+			<artifactId>gatlin-soa-courier-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
