@@ -1,6 +1,9 @@
 package org.gatlin.web.bean.param;
 
+import java.util.Set;
+
 import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.util.lang.CollectionUtil;
 
 public class ResourceListParam extends SoaParam {
 
@@ -9,7 +12,7 @@ public class ResourceListParam extends SoaParam {
 	private Integer id;
 	private String name;
 	private Integer owner;
-	private Integer cfgResourceId;
+	private Set<Integer> cfgIds;
 
 	public Integer getId() {
 		return id;
@@ -35,12 +38,12 @@ public class ResourceListParam extends SoaParam {
 		this.owner = owner;
 	}
 	
-	public Integer getCfgResourceId() {
-		return cfgResourceId;
+	public Set<Integer> getCfgIds() {
+		return cfgIds;
 	}
 	
-	public void setCfgResourceId(Integer cfgResourceId) {
-		this.cfgResourceId = cfgResourceId;
+	public void setCfgIds(Set<Integer> cfgIds) {
+		this.cfgIds = cfgIds;
 	}
 	
 	@Override
@@ -50,8 +53,8 @@ public class ResourceListParam extends SoaParam {
 			this.query.eq("id", id);
 		if (null != name)
 			this.query.like("name", name);
-		if (null != cfgResourceId)
-			this.query.eq("cfg_id", cfgResourceId);
+		if (!CollectionUtil.isEmpty(cfgIds))
+			this.query.in("cfg_id", cfgIds);
 		if (null != owner)
 			this.query.eq("owner", owner);
 		this.query.orderByAsc("priority");
