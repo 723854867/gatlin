@@ -12,4 +12,6 @@ public interface AccountService {
 	Pager<UserAccount> accounts(Query query);
 	
 	Object recharge(UserRecharge recharge);
+	
+	void rechargeNotice(String id, boolean success);
 }

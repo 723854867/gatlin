@@ -2,7 +2,7 @@ package org.gatlin.web.bean.param;
 
 import org.gatlin.soa.bean.param.SoaParam;
 
-public class ResourceSearcher extends SoaParam {
+public class ResourceListParam extends SoaParam {
 
 	private static final long serialVersionUID = -7722967233692883158L;
 

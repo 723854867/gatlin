@@ -34,4 +34,9 @@ public class AccountServiceImpl implements AccountService {
 	public Object recharge(UserRecharge recharge) {
 		return accountManager.recharge(recharge);
 	}
+	
+	@Override
+	public void rechargeNotice(String id, boolean success) {
+		accountManager.rechargeNotice(id, success);
+	}
 }

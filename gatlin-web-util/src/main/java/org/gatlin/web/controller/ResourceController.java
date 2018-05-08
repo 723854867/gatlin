@@ -13,8 +13,8 @@ import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
 import org.gatlin.soa.resource.bean.param.ResourceLinkParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
-import org.gatlin.web.bean.param.CfgResourceSearcher;
-import org.gatlin.web.bean.param.ResourceSearcher;
+import org.gatlin.web.bean.param.CfgResourceListParam;
+import org.gatlin.web.bean.param.ResourceListParam;
 import org.gatlin.web.bean.param.ResourceUploadParam;
 import org.gatlin.web.util.Uploader;
 import org.gatlin.web.util.hook.ResourceHook;
@@ -37,13 +37,13 @@ public class ResourceController {
 	
 	@ResponseBody
 	@RequestMapping("configs")
-	public Object configs(@RequestBody @Valid CfgResourceSearcher param) {
+	public Object configs(@RequestBody @Valid CfgResourceListParam param) {
 		return resourceService.configs(param.query());
 	}
 
 	@ResponseBody
 	@RequestMapping("list")
-	public Object pictures(@RequestBody @Valid ResourceSearcher param) {
+	public Object pictures(@RequestBody @Valid ResourceListParam param) {
 		return resourceService.resources(param.query());
 	}
 	

@@ -15,4 +15,12 @@ public enum RechargeState {
 	public int mark() {
 		return mark;
 	}
+	
+	public static final RechargeState match(int mark) { 
+		for (RechargeState state : RechargeState.values()) {
+			if (state.mark == mark)
+				return state;
+		}
+		return null;
+	}
 }
