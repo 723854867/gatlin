@@ -57,6 +57,15 @@ public class ResourceController {
 	}
 	
 	@ResponseBody
+	@RequestMapping("deleteByAjax")
+	public Object deleteByAjax(@Valid SoaSidParam param) {
+		Resource resource = resourceService.delete(param.getId());
+		File file = new File(resource.getPath());
+		file.delete();
+		return Response.ok();
+	}
+	
+	@ResponseBody
 	@RequestMapping("link")
 	public Object link(@RequestBody @Valid ResourceLinkParam param) {
 		resourceService.link(param.getId(), param.getLink());
