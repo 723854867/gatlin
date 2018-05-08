@@ -11,7 +11,7 @@ import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 
 public interface ResourceService {
 	
-	List<CfgResource> configs();
+	List<CfgResource> configs(Query query);
 	
 	CfgResource uploadVerify(int cfgId, long owner, long bytes);
 	

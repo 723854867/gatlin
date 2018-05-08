@@ -69,8 +69,8 @@ public class ResourceManager {
 		return resourceDao.queryList(query);
 	}
 	
-	public List<CfgResource> configs() {
-		return cfgResourceDao.getAllList();
+	public List<CfgResource> configs(Query query) {
+		return cfgResourceDao.queryList(query);
 	}
 	
 	public ResourceRoute resourceRoute(Query query) { 
