@@ -21,6 +21,7 @@ import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
+import org.gatlin.soa.bean.param.SoaUidParam;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -65,6 +66,11 @@ public class AuthServiceImpl implements AuthService {
 	}
 	
 	@Override
+	public List<CfgModular> userModulars(long uid) {
+		return authManager.userModulars(uid);
+	}
+	
+	@Override
 	public int modularAdd(ModularAddParam param) {
 		return authManager.modularAdd(param);
 	}
@@ -84,6 +90,13 @@ public class AuthServiceImpl implements AuthService {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
 		return new Pager<CfgRole>(authManager.roles(query));
+	}
+	
+	@Override
+	public Pager<CfgRole> userRoles(SoaUidParam param) {
+		if (null != param.getPage())
+			PageHelper.startPage(param.getPage(), param.getPageSize());
+		return new Pager<CfgRole>(authManager.userRoles(param.getUid()));
 	}
 	
 	@Override

@@ -16,6 +16,7 @@ import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
+import org.gatlin.soa.bean.param.SoaUidParam;
 import org.gatlin.soa.user.api.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,6 +65,12 @@ public class AuthorityController {
 	}
 	
 	@ResponseBody
+	@RequestMapping("modular/list/users")
+	public Object userModulars(@RequestBody @Valid SoaParam param) {
+		return authService.userModulars(param.getUser().getId());
+	}
+	
+	@ResponseBody
 	@RequestMapping("modular/add")
 	public Object modularAdd(@RequestBody @Valid ModularAddParam param) {
 		return authService.modularAdd(param);
@@ -87,6 +94,12 @@ public class AuthorityController {
 	@RequestMapping("role/list")
 	public Object roles(@RequestBody @Valid SoaParam param) {
 		return authService.roles(param.query());
+	}
+	
+	@ResponseBody
+	@RequestMapping("role/list/users")
+	public Object userRoles(@RequestBody @Valid SoaUidParam param) {
+		return authService.userRoles(param);
 	}
 	
 	@ResponseBody
