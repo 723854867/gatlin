@@ -17,6 +17,7 @@ import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
+import org.gatlin.soa.bean.param.SoaUidParam;
 
 public interface AuthService {
 
@@ -32,6 +33,8 @@ public interface AuthService {
 	
 	List<CfgModular> modulars();
 	
+	List<CfgModular> userModulars(long uid);
+	
 	int modularAdd(ModularAddParam param);
 	
 	void modularModify(ModularModifyParam param);
@@ -40,6 +43,8 @@ public interface AuthService {
 	
 	Pager<CfgRole> roles(Query query);
 	
+	Pager<CfgRole> userRoles(SoaUidParam param);
+	 
 	int roleAdd(SoaSidParam param);
 	
 	void roleModify(NameIdParam param);

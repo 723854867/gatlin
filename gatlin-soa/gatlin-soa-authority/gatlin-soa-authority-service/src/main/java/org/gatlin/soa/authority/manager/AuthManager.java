@@ -147,6 +147,14 @@ public class AuthManager {
 		Assert.isTrue(AuthCode.AUTH_FAIL, roleCount >= 1);
 	}
 	
+	public List<CfgModular> userModulars(long uid) {
+		return cfgModularDao.userModulars(uid);
+	}
+	
+	public List<CfgRole> userRoles(long uid) {
+		return cfgRoleDao.userRoles(uid);
+	}
+	
 	public CfgApi api(Query query) {
 		return cfgApiDao.queryUnique(query);
 	}

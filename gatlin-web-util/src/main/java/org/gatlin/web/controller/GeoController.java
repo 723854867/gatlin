@@ -26,7 +26,7 @@ public class GeoController {
 	@ResponseBody
 	@RequestMapping("addresses/user")
 	public Object addresses(@RequestBody @Valid SoaParam param) {
-		Query query = new Query().eq("uid", param.getUser().getId());
+		Query query = new Query().eq("deleted", 0).eq("uid", param.getUser().getId());
 		return geoService.addresses(query);
 	}
 	
