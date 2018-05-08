@@ -13,6 +13,7 @@ public class ModularModifyParam extends SoaIdParam {
 	private String url;
 	@NotEmpty
 	private String name;
+	private String css;
 	@Min(0)
 	private int priority;
 	
@@ -30,6 +31,14 @@ public class ModularModifyParam extends SoaIdParam {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getCss() {
+		return css;
+	}
+	
+	public void setCss(String css) {
+		this.css = css;
 	}
 	
 	public int getPriority() {

@@ -14,6 +14,7 @@ public class CfgModular implements Entity<Integer> {
 	private int id;
 	private String name;
 	private String url;
+	private String css;
 	private int priority;
 	private int parent;
 	private int created;
@@ -41,6 +42,14 @@ public class CfgModular implements Entity<Integer> {
 	
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public String getCss() {
+		return css;
+	}
+	
+	public void setCss(String css) {
+		this.css = css;
 	}
 	
 	public int getParent() {

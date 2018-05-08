@@ -29,6 +29,7 @@ public class EntityGenerator {
 
 	public static final CfgModular newCfgModular(ModularAddParam param, CfgModular parent) {
 		CfgModular instance = new CfgModular();
+		instance.setCss(param.getCss());
 		instance.setUrl(param.getUrl());
 		instance.setName(param.getName());
 		instance.setPriority(param.getPriority());

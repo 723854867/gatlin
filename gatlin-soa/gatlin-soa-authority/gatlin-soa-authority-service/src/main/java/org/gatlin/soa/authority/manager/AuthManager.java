@@ -82,6 +82,8 @@ public class AuthManager {
 	public void modularModify(ModularModifyParam param) {
 		CfgModular modular = cfgModularDao.getByKey(param.getId());
 		Assert.notNull(AuthCode.MODULAR_NOT_EXIST, modular);
+		if (null != param.getCss())
+			modular.setCss(param.getCss());
 		modular.setUrl(param.getUrl());
 		modular.setName(param.getName());
 		modular.setPriority(param.getPriority());
