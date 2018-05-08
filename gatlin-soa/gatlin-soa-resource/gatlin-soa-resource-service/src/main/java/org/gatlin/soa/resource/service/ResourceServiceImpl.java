@@ -30,8 +30,8 @@ public class ResourceServiceImpl implements ResourceService {
 	private ResourceManager resourceManager;
 	
 	@Override
-	public List<CfgResource> configs() {
-		return resourceManager.configs();
+	public List<CfgResource> configs(Query query) {
+		return resourceManager.configs(query);
 	}
 	
 	@Override

@@ -7,13 +7,13 @@ import javax.validation.Valid;
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.util.Assert;
-import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
 import org.gatlin.soa.resource.bean.param.ResourceLinkParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
+import org.gatlin.web.bean.param.CfgResourceSearcher;
 import org.gatlin.web.bean.param.ResourceSearcher;
 import org.gatlin.web.bean.param.ResourceUploadParam;
 import org.gatlin.web.util.Uploader;
@@ -37,8 +37,8 @@ public class ResourceController {
 	
 	@ResponseBody
 	@RequestMapping("configs")
-	public Object configs(@RequestBody @Valid SoaParam param) {
-		return resourceService.configs();
+	public Object configs(@RequestBody @Valid CfgResourceSearcher param) {
+		return resourceService.configs(param.query());
 	}
 
 	@ResponseBody
