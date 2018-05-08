@@ -25,6 +25,8 @@ public interface AuthService {
 	
 	Pager<CfgApi> apis(Query query);
 	
+	Pager<CfgApi> modularApis(SoaIdParam param);
+	
 	int apiAdd(ApiAddParam param);
 	
 	void apiModify(ApiModifyParam param);

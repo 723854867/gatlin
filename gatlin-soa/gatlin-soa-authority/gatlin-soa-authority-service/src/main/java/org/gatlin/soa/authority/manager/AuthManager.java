@@ -147,6 +147,10 @@ public class AuthManager {
 		Assert.isTrue(AuthCode.AUTH_FAIL, roleCount >= 1);
 	}
 	
+	public List<CfgApi> modularApis(int modularId) {
+		return cfgApiDao.modularApis(modularId);
+	}
+	
 	public List<CfgModular> userModulars(long uid) {
 		return cfgModularDao.userModulars(uid);
 	}

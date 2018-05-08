@@ -37,6 +37,12 @@ public class AuthorityController {
 	public Object apis(ApisParam param) {
 		return authService.apis(param.query());
 	}
+	
+	@ResponseBody
+	@RequestMapping("api/list/modular")
+	public Object modularApis(SoaIdParam param) {
+		return authService.modularApis(param);
+	}
 
 	@ResponseBody
 	@RequestMapping("api/add")
@@ -65,7 +71,7 @@ public class AuthorityController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("modular/list/users")
+	@RequestMapping("modular/list/user")
 	public Object userModulars(@RequestBody @Valid SoaParam param) {
 		return authService.userModulars(param.getUser().getId());
 	}
@@ -97,7 +103,7 @@ public class AuthorityController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("role/list/users")
+	@RequestMapping("role/list/user")
 	public Object userRoles(@RequestBody @Valid SoaUidParam param) {
 		return authService.userRoles(param);
 	}

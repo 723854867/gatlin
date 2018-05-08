@@ -46,6 +46,13 @@ public class AuthServiceImpl implements AuthService {
 	}
 	
 	@Override
+	public Pager<CfgApi> modularApis(SoaIdParam param) {
+		if (null != param.getPage())
+			PageHelper.startPage(param.getPage(), param.getPageSize());
+		return new Pager<CfgApi>(authManager.modularApis(param.getId()));
+	}
+	
+	@Override
 	public int apiAdd(ApiAddParam param) {
 		return authManager.apiAdd(param);
 	}
