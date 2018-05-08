@@ -87,4 +87,8 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 		this.headers.put(name, value);
 		return (REQUEST) this;
 	}
+	
+	public Map<String, String> params() {
+		return params;
+	}
 }

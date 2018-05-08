@@ -12,10 +12,14 @@ public class Param implements Request {
 	private Integer page;
 	private LogRequest meta;
 	private Integer pageSize;
-
+	
 	@Override
 	public void dispose() {
 		this.meta = null;
+	}
+	
+	public LogRequest meta() {
+		return meta;
 	}
 	
 	public Integer getPage() {

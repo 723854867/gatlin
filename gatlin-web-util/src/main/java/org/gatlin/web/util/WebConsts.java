@@ -16,5 +16,7 @@ public interface WebConsts {
 		final StrOption RESOURCE_PATH								= new StrOption("resource.path");
 		final StrOption RESOURCE_PREFIX								= new StrOption("resource.prefix");
 		final IntegerOption ACCOUNT_MOD								= new IntegerOption("account.mod", 0);
+		final IntegerOption ACCOUNT_RECHARGE_MOD					= new IntegerOption("account.recharge.mod", 0);
+		final IntegerOption RECHARGE_TIMEOUT						= new IntegerOption("recharge.timeout", 30);
 	}
 }

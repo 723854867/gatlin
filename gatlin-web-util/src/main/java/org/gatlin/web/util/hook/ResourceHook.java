@@ -15,6 +15,7 @@ public abstract class ResourceHook {
 			break;
 		case 2:
 			Assert.notNull(UserCode.USER_NOT_EIXST, param.getUser());
+			param.setOwner(param.getUser().getId());
 			break;
 		default:
 			verify(resource, param);

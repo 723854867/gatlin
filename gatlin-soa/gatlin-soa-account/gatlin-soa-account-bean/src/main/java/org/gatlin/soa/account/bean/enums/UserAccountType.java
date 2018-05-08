@@ -20,4 +20,12 @@ public enum UserAccountType {
 	public int mark() {
 		return mark;
 	}
+	
+	public static final UserAccountType match(int mark) {
+		for (UserAccountType temp : UserAccountType.values()) {
+			if (temp.mark == mark)
+				return temp;
+		}
+		return null;
+	}
 }

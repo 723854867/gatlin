@@ -1,9 +1,13 @@
 package org.gatlin.util.serial;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import org.gatlin.util.Consts;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 public interface SerializeUtil {
 	
@@ -28,6 +32,14 @@ public interface SerializeUtil {
 		
 		private static final byte[] _encode(String value) {
 			return value.getBytes(Consts.UTF_8);
+		}
+	}
+	
+	class JSON {
+		private static final Type MAP = new TypeToken<Map<String, String>>() {}.getType();
+		public static final Map<String, String> beanToMap(Gson gson, Object bean) {
+			String json = gson.toJson(bean);
+			return gson.fromJson(json, MAP);
 		}
 	}
 }

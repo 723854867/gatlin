@@ -13,15 +13,14 @@ public class UserRecharge implements Entity<String> {
 	@Id
 	private String id;
 	private int os;
-	private String ip;
+	private int plat;
 	private int state;
-	private int channel;
+	private String ip;
 	private int goodsType;
 	private String goodsId;
 	private long rechargee;
 	private long recharger;
 	private BigDecimal fee;
-	private String requestId;
 	private BigDecimal amount;
 	private int expiry;
 	private int created;
@@ -42,6 +41,14 @@ public class UserRecharge implements Entity<String> {
 	public void setOs(int os) {
 		this.os = os;
 	}
+	
+	public int getPlat() {
+		return plat;
+	}
+	
+	public void setPlat(int plat) {
+		this.plat = plat;
+	}
 
 	public String getIp() {
 		return ip;
@@ -57,14 +64,6 @@ public class UserRecharge implements Entity<String> {
 
 	public void setState(int state) {
 		this.state = state;
-	}
-
-	public int getChannel() {
-		return channel;
-	}
-
-	public void setChannel(int channel) {
-		this.channel = channel;
 	}
 
 	public int getGoodsType() {
@@ -105,14 +104,6 @@ public class UserRecharge implements Entity<String> {
 
 	public void setFee(BigDecimal fee) {
 		this.fee = fee;
-	}
-
-	public String getRequestId() {
-		return requestId;
-	}
-
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
 	}
 
 	public BigDecimal getAmount() {
