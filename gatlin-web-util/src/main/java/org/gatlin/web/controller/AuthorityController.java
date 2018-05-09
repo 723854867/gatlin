@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.gatlin.core.bean.model.message.Response;
+import org.gatlin.core.util.Assert;
 import org.gatlin.soa.authority.api.AuthService;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
@@ -12,12 +13,14 @@ import org.gatlin.soa.authority.bean.param.AuthParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.ModularModifyParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
+import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.bean.param.SoaUidParam;
 import org.gatlin.soa.user.api.UserService;
+import org.gatlin.soa.user.bean.UserCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -145,7 +148,8 @@ public class AuthorityController {
 	@ResponseBody
 	@RequestMapping("auth/user")
 	public Object userAuth(@RequestBody @Valid AuthParam param) {
-		userService.user(param.getSid());
+		User user = userService.user(param.getSid());
+		Assert.notNull(UserCode.USER_NOT_EIXST, user);
 		authService.userAuth(param);
 		return Response.ok();
 	}

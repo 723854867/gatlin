@@ -1,4 +1,4 @@
-package org.gatlin.soa.authority.bean;
+package org.gatlin.soa.authority;
 
 import org.gatlin.soa.authority.bean.entity.AuthMapping;
 import org.gatlin.soa.authority.bean.entity.CfgApi;

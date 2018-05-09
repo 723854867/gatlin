@@ -10,20 +10,20 @@ import org.gatlin.util.IDWorker;
 
 public class AccountUtil {
 	
-	public static final LogUserAccount log(long uid, BigDecimal amount, int bizType, String bizId) {
+	public static final LogUserAccount log(long uid, BigDecimal amount, int bizType, Object bizId) {
 		return log(UserAccountType.BASIC, AccountField.USABLE, uid, amount, bizType, bizId);
 	}
 
-	public static final LogUserAccount log(UserAccountType type, long uid, BigDecimal amount, int bizType, String bizId) {
+	public static final LogUserAccount log(UserAccountType type, long uid, BigDecimal amount, int bizType, Object bizId) {
 		return log(type, AccountField.USABLE, uid, amount, bizType, bizId);
 	}
 	
-	public static final LogUserAccount log(UserAccountType type, AccountField field, long uid, BigDecimal amount, int bizType, String bizId) {
+	public static final LogUserAccount log(UserAccountType type, AccountField field, long uid, BigDecimal amount, int bizType, Object bizId) {
 		LogUserAccount log = new LogUserAccount();
 		log.setUid(uid);
-		log.setBizId(bizId);
 		log.setAmount(amount);
 		log.setBizType(bizType);
+		log.setBizId(bizId.toString());
 		log.setFieldType(field.mark());
 		log.setAccountType(type.mark());
 		log.setCreated(DateUtil.current());

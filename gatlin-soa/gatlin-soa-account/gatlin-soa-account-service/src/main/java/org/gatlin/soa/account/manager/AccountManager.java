@@ -87,7 +87,7 @@ public class AccountManager {
 		if (log.getAmount().compareTo(BigDecimal.ZERO) == 0)
 			return;
 		Query query = new Query().eq("type", log.getAccountType()).eq("uid", log.getUid()).forUpdate();
-		UserAccount account = userAccountDao.queryUnique(query);
+		UserAccount account = account(query);
 		AccountField field = AccountField.match(log.getFieldType());
 		switch (field) {
 		case USABLE:
@@ -119,6 +119,10 @@ public class AccountManager {
 		Assert.isTrue(AccountCode.FROZEN_LACK, account.getFrozen().compareTo(BigDecimal.ZERO) >= 0);
 		userAccountDao.update(account);
 		logUserAccountDao.insert(log);
+	}
+	
+	public UserAccount account(Query query) {
+		return userAccountDao.queryUnique(query);
 	}
 	
 	public List<UserAccount> accounts(Query query) {

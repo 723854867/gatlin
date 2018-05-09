@@ -8,8 +8,8 @@ import javax.annotation.Resource;
 
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.authority.EntityGenerator;
 import org.gatlin.soa.authority.bean.AuthCode;
-import org.gatlin.soa.authority.bean.EntityGenerator;
 import org.gatlin.soa.authority.bean.entity.AuthMapping;
 import org.gatlin.soa.authority.bean.entity.CfgApi;
 import org.gatlin.soa.authority.bean.entity.CfgModular;

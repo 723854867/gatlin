@@ -40,8 +40,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User user(long uid) {
 		UserInfo user = userManager.user(uid);
-		Assert.notNull(UserCode.USER_NOT_EIXST, user);
-		return _user(user, null);
+		return null == user ? null : _user(user, null);
 	}
 	
 	@Override

@@ -14,6 +14,8 @@ import org.gatlin.soa.account.bean.enums.UserAccountType;
 import org.gatlin.soa.account.bean.param.RechargeParam;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.config.api.ConfigService;
+import org.gatlin.soa.user.api.UserService;
+import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
 import org.gatlin.web.util.WebConsts;
@@ -21,12 +23,15 @@ import org.gatlin.web.util.WebConsts;
 public abstract class RechargeHook {
 	
 	@Resource
+	private UserService userService;
+	@Resource
 	protected ConfigService configService;
 
 	public UserRecharge rechargeVerify(RechargeParam param) {
 		try {
 			switch (param.getGoodsType()) {
 			case 1:
+				rechargeeVerify(param);
 				UserAccountType accountType = UserAccountType.match(Integer.valueOf(param.getGoodsId()));
 				Assert.notNull(CoreCode.PARAM_ERR, accountType);
 				int mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD);
@@ -39,6 +44,15 @@ public abstract class RechargeHook {
 			if (e instanceof CodeException)
 				throw e;
 			throw new CodeException(CoreCode.PARAM_ERR, e);
+		}
+	}
+	
+	protected void rechargeeVerify(RechargeParam param) {
+		if (null == param.getRechargee()) 
+			param.setRechargee(param.getUser().getId());
+		else {
+			if (param.getRechargee() != param.getUser().getId())
+				Assert.notNull(UserCode.USER_NOT_EIXST, userService.user(param.getRechargee()));
 		}
 	}
 	

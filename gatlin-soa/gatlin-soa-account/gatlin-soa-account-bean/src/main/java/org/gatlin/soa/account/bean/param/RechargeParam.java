@@ -19,7 +19,7 @@ public class RechargeParam extends SoaParam {
 	private PlatType plat;
 	@Min(1)
 	private int goodsType;
-	private long rechargee;
+	private Long rechargee;
 	@NotEmpty
 	private String goodsId;
 	@NotNull
@@ -43,11 +43,11 @@ public class RechargeParam extends SoaParam {
 		this.goodsType = goodsType;
 	}
 	
-	public long getRechargee() {
+	public Long getRechargee() {
 		return rechargee;
 	}
 	
-	public void setRechargee(long rechargee) {
+	public void setRechargee(Long rechargee) {
 		this.rechargee = rechargee;
 	}
 
@@ -65,5 +65,10 @@ public class RechargeParam extends SoaParam {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+	
+	@Override
+	public void verify() {
+		super.verify();
 	}
 }

@@ -37,6 +37,11 @@ public class GeoServiceImpl implements GeoService {
 	}
 	
 	@Override
+	public UserAddress address(long id) {
+		return geoManager.address(id);
+	}
+	
+	@Override
 	public Pager<UserAddress> addresses(Query query) {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());

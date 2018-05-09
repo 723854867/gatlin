@@ -1,7 +1,5 @@
 package org.gatlin.soa.user.bean.param;
 
-import javax.validation.constraints.NotEmpty;
-
 import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.util.validate.Mobile;
 
@@ -9,13 +7,10 @@ public class AddressModifyParam extends SoaLidParam {
 
 	private static final long serialVersionUID = -1824255171495807061L;
 
-	@NotEmpty
 	private String memo;
 	private String county;
-	@NotEmpty
 	private String detail;
 	private Boolean used;
-	@NotEmpty
 	private String contacts;
 	@Mobile
 	private String contactsMobile;

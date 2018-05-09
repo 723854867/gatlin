@@ -18,6 +18,7 @@ import org.gatlin.soa.user.bean.param.AddressAddparam;
 import org.gatlin.soa.user.bean.param.AddressModifyParam;
 import org.gatlin.soa.user.mybatis.dao.UserAddressDao;
 import org.gatlin.util.DateUtil;
+import org.gatlin.util.lang.StringUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,10 +54,14 @@ public class GeoManager {
 		}
 		if (null != param.getUsed())
 			address.setUsed(param.getUsed());
-		address.setMemo(param.getMemo());
-		address.setDetail(param.getDetail());
-		address.setContacts(param.getContacts());
-		address.setContactsMobile(param.getContactsMobile());
+		if (StringUtil.hasText(param.getMemo()))
+			address.setMemo(param.getMemo());
+		if (StringUtil.hasText(param.getDetail()))
+			address.setDetail(param.getDetail());
+		if (StringUtil.hasText(param.getContacts()))
+			address.setContacts(param.getContacts());
+		if (StringUtil.hasText(param.getContactsMobile()))
+			address.setContactsMobile(param.getContactsMobile());
 		address.setUpdated(DateUtil.current());
 		userAddressDao.update(address);
 	}
@@ -83,6 +88,10 @@ public class GeoManager {
 			}
 		}
 		return list.size();
+	}
+	
+	public UserAddress address(long id) {
+		return userAddressDao.getByKey(id);
 	}
 	
 	public List<UserAddress> addresses(Query query) {

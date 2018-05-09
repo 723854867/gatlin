@@ -16,5 +16,7 @@ public interface GeoService {
 	
 	void addressDelete(SoaLidParam param);
 	
+	UserAddress address(long id);
+	
 	Pager<UserAddress> addresses(Query query);
 }
