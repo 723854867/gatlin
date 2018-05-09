@@ -1,6 +1,6 @@
 package org.gatlin.soa.config.bean.enums;
 
-public enum DistrictType {
+public enum DistrictLevel {
 
 	// 国
 	COUNTRY(0),
@@ -13,7 +13,7 @@ public enum DistrictType {
 	
 	private int mark;
 	
-	private DistrictType(int mark) {
+	private DistrictLevel(int mark) {
 		this.mark = mark;
 	}
 	

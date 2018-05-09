@@ -1,7 +1,7 @@
 package org.gatlin.soa.config.bean.param;
 
 import org.gatlin.soa.bean.param.SoaSidParam;
-import org.gatlin.soa.config.bean.enums.DistrictType;
+import org.gatlin.soa.config.bean.enums.DistrictLevel;
 
 public class DistrictModifyParam extends SoaSidParam {
 
@@ -11,7 +11,7 @@ public class DistrictModifyParam extends SoaSidParam {
 	private String abname;
 	private String parent;
 	private Boolean valid;
-	private DistrictType type;
+	private DistrictLevel level;
 
 	public String getName() {
 		return name;
@@ -45,11 +45,11 @@ public class DistrictModifyParam extends SoaSidParam {
 		this.valid = valid;
 	}
 
-	public DistrictType getType() {
-		return type;
+	public DistrictLevel getLevel() {
+		return level;
 	}
-
-	public void setType(DistrictType type) {
-		this.type = type;
+	
+	public void setLevel(DistrictLevel level) {
+		this.level = level;
 	}
 }

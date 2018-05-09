@@ -11,7 +11,7 @@ public class CfgDistrict implements Entity<String> {
 	@Id
 	private String code;
 	private String name;
-	private int type;
+	private int level;
 	private boolean valid;
 	private String abname;
 	private String parent;
@@ -34,12 +34,12 @@ public class CfgDistrict implements Entity<String> {
 		this.name = name;
 	}
 
-	public int getType() {
-		return type;
+	public int getLevel() {
+		return level;
 	}
-
-	public void setType(int type) {
-		this.type = type;
+	
+	public void setLevel(int level) {
+		this.level = level;
 	}
 	
 	public boolean isValid() {
