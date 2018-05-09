@@ -91,6 +91,7 @@ public class AuthManager {
 		modular.setUrl(param.getUrl());
 		modular.setName(param.getName());
 		modular.setPriority(param.getPriority());
+		modular.setParent(param.getParent());
 		modular.setUpdated(DateUtil.current());
 		cfgModularDao.update(modular);
 	}

@@ -14,37 +14,46 @@ public class ModularModifyParam extends SoaIdParam {
 	@NotEmpty
 	private String name;
 	private String css;
+	private Integer parent;
 	@Min(0)
 	private int priority;
-	
+
+	public void setParent(Integer parent) {
+		this.parent = parent;
+	}
+
+	public Integer getParent() {
+		return parent;
+	}
+
 	public String getUrl() {
 		return url;
 	}
-	
+
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getCss() {
 		return css;
 	}
-	
+
 	public void setCss(String css) {
 		this.css = css;
 	}
-	
+
 	public int getPriority() {
 		return priority;
 	}
-	
+
 	public void setPriority(int priority) {
 		this.priority = priority;
 	}
