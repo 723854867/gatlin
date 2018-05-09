@@ -12,7 +12,6 @@ public class CfgGlobal implements Entity<String> {
 	private String key;
 	private String value;
 	private String desc;
-	private int type;
 	private boolean visible;
 	private int created;
 	private int updated;
@@ -39,14 +38,6 @@ public class CfgGlobal implements Entity<String> {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
-	}
-
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
 	}
 
 	public boolean isVisible() {

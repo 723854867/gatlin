@@ -1,14 +1,13 @@
 package org.gatlin.soa.bean.enums;
 
-public enum ConfigType {
+public enum BizType {
 
-	COURIER(1),
-	RESOURCE(2),
-	ACCOUNT(3);
+	// 充值成功
+	RECHARGE_SUCCESS(100);
 	
 	private int mark;
 	
-	private ConfigType(int mark) {
+	private BizType(int mark) {
 		this.mark = mark;
 	}
 	

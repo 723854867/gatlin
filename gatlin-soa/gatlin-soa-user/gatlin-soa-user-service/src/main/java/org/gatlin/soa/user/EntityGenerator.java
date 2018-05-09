@@ -1,5 +1,6 @@
 package org.gatlin.soa.user;
 
+import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.user.bean.UserUtil;
 import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.soa.user.bean.entity.UserDevice;
@@ -56,12 +57,12 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final UserAddress newUserAddress(AddressAddparam param) {
+	public static final UserAddress newUserAddress(AddressAddparam param, Geo geo) {
 		UserAddress instance = new UserAddress();
 		instance.setUid(param.getUser().getId());
-		instance.setCity(param.getCity());
-		instance.setCounty(param.getCounty());
-		instance.setProvince(param.getProvince());
+		instance.setCity(geo.getCity());
+		instance.setCounty(geo.getCounty());
+		instance.setProvince(geo.getProvince());
 		instance.setUsed(param.isUsed());
 		instance.setMemo(param.getMemo());
 		instance.setDetail(param.getDetail());

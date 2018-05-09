@@ -4,6 +4,7 @@ import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.bean.entity.UserAccount;
 import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.enums.RechargeState;
 
 public interface AccountService {
 
@@ -13,5 +14,5 @@ public interface AccountService {
 	
 	Object recharge(UserRecharge recharge);
 	
-	void rechargeNotice(String id, boolean success);
+	void rechargeNotice(String id, RechargeState update);
 }

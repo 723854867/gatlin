@@ -8,6 +8,7 @@ import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.model.option.Option;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.ConfigCode;
 import org.gatlin.soa.config.bean.entity.CfgDistrict;
@@ -15,6 +16,7 @@ import org.gatlin.soa.config.bean.entity.CfgGlobal;
 import org.gatlin.soa.config.bean.model.Configs;
 import org.gatlin.soa.config.bean.param.DistrictAddParam;
 import org.gatlin.soa.config.bean.param.DistrictModifyParam;
+import org.gatlin.soa.config.manager.DistrictManager;
 import org.gatlin.soa.config.mybatis.dao.CfgGlobalDao;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ public class ConfigServiceImpl implements ConfigService {
 	
 	@Resource
 	private CfgGlobalDao cfgGlobalDao;
+	@Resource
+	private DistrictManager districtManager;
 
 	@Override
 	public <T> T config(Option<T> option) {
@@ -39,20 +43,22 @@ public class ConfigServiceImpl implements ConfigService {
 	}
 	
 	@Override
+	public Geo geo(String code, boolean validCheck) {
+		return districtManager.geo(code, validCheck);
+	}
+	
+	@Override
 	public List<CfgDistrict> districts(Query query) {
-		// TODO Auto-generated method stub
-		return null;
+		return districtManager.districts(query);
 	}
 	
 	@Override
 	public void districtAdd(DistrictAddParam param) {
-		// TODO Auto-generated method stub
-		
+		districtManager.add(param);
 	}
 	
 	@Override
 	public void districtModify(DistrictModifyParam param) {
-		// TODO Auto-generated method stub
-		
+		districtManager.modify(param);
 	}
 }

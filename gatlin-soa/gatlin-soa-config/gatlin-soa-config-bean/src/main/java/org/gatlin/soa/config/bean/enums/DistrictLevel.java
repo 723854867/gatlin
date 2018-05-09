@@ -20,4 +20,12 @@ public enum DistrictLevel {
 	public int mark() {
 		return mark;
 	}
+	
+	public static final DistrictLevel match(int level) {
+		for (DistrictLevel temp : DistrictLevel.values()) {
+			if (temp.mark == level)
+				return temp;
+		}
+		return null;
+	}
 }

@@ -11,12 +11,8 @@ public class AddressAddparam extends SoaParam {
 
 	@NotEmpty
 	private String memo;
-	private String city;
-	private int cityCode;
+	@NotEmpty
 	private String county;
-	private int countyCode;
-	private String province;
-	private int provinceCode;
 	@NotEmpty
 	private String detail;
 	private boolean used;
@@ -32,55 +28,15 @@ public class AddressAddparam extends SoaParam {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public int getCityCode() {
-		return cityCode;
-	}
-
-	public void setCityCode(int cityCode) {
-		this.cityCode = cityCode;
-	}
-
+	
 	public String getCounty() {
 		return county;
 	}
-
+	
 	public void setCounty(String county) {
 		this.county = county;
 	}
-
-	public int getCountyCode() {
-		return countyCode;
-	}
-
-	public void setCountyCode(int countyCode) {
-		this.countyCode = countyCode;
-	}
-
-	public String getProvince() {
-		return province;
-	}
-
-	public void setProvince(String province) {
-		this.province = province;
-	}
-
-	public int getProvinceCode() {
-		return provinceCode;
-	}
-
-	public void setProvinceCode(int provinceCode) {
-		this.provinceCode = provinceCode;
-	}
-
+	
 	public String getDetail() {
 		return detail;
 	}

@@ -3,14 +3,19 @@ package org.gatlin.web.controller;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.model.message.Response;
+import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.user.api.GeoService;
 import org.gatlin.soa.user.bean.param.AddressAddparam;
 import org.gatlin.soa.user.bean.param.AddressModifyParam;
 import org.gatlin.soa.user.bean.param.AddressesParam;
+import org.gatlin.util.lang.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +27,8 @@ public class GeoController {
 	
 	@Resource
 	private GeoService geoService;
+	@Resource
+	private ConfigService configService;
 	
 	@ResponseBody
 	@RequestMapping("addresses/user")
@@ -39,13 +46,20 @@ public class GeoController {
 	@ResponseBody
 	@RequestMapping("address/add")
 	public Object addressAdd(@RequestBody @Valid AddressAddparam param) {
-		return geoService.addressAdd(param);
+		Geo geo = configService.geo(param.getCounty(), true);
+		Assert.hasText(CoreCode.PARAM_ERR, geo.getCounty());
+		return geoService.addressAdd(param, geo);
 	}
 	
 	@ResponseBody
 	@RequestMapping("address/modify")
 	public Object addressModify(@RequestBody @Valid AddressModifyParam param) {
-		geoService.addressModify(param);
+		Geo geo = null;
+		if (StringUtil.hasText(param.getCounty())) {
+			geo = configService.geo(param.getCounty(), true);
+			Assert.hasText(CoreCode.PARAM_ERR, geo.getCounty());
+		}
+		geoService.addressModify(param, geo);
 		return Response.ok();
 	}
 	

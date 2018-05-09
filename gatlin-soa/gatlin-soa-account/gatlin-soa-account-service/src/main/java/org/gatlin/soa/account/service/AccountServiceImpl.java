@@ -7,6 +7,7 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.UserAccount;
 import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.manager.AccountManager;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	@Override
-	public void rechargeNotice(String id, boolean success) {
-		accountManager.rechargeNotice(id, success);
+	public void rechargeNotice(String id, RechargeState update) {
+		accountManager.rechargeNotice(id, update);
 	}
 }

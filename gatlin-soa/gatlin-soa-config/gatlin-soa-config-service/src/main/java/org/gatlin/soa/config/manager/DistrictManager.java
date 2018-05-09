@@ -1,8 +1,17 @@
 package org.gatlin.soa.config.manager;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.config.EntityGenerator;
 import org.gatlin.soa.config.bean.ConfigCode;
 import org.gatlin.soa.config.bean.entity.CfgDistrict;
@@ -13,13 +22,6 @@ import org.gatlin.soa.config.mybatis.dao.CfgDistrictDao;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +31,7 @@ public class DistrictManager {
 	@Resource
 	private CfgDistrictDao cfgDistrictDao;
 	
-	public void districtAdd(DistrictAddParam param) {
+	public void add(DistrictAddParam param) {
 		if (StringUtil.hasText(param.getParent())) {
 			CfgDistrict parent = cfgDistrictDao.getByKey(param.getParent());
 			Assert.notNull(ConfigCode.DISTRICT_NOT_EXIST, parent);
@@ -40,7 +42,7 @@ public class DistrictManager {
 	}
 	
 	@Transactional
-	public void districtModify(DistrictModifyParam param) {
+	public void modify(DistrictModifyParam param) {
 		CfgDistrict district = cfgDistrictDao.getByKey(param.getId());
 		Assert.notNull(ConfigCode.DISTRICT_NOT_EXIST, district);
 		if (StringUtil.hasText(param.getName()))
@@ -61,7 +63,7 @@ public class DistrictManager {
 		if (null != param.getValid() && district.isValid() ^ param.getValid()) {
 			district.setValid(param.getValid());
 			if (district.isValid()) {
-				LinkedList<CfgDistrict> list = parents(district);
+				Collection<CfgDistrict> list = parents(district).values();
 				if (!CollectionUtil.isEmpty(list)) {
 					list.forEach(item -> {
 						item.setValid(true);
@@ -83,11 +85,34 @@ public class DistrictManager {
 		cfgDistrictDao.update(district);
 	}
 	
-	public LinkedList<CfgDistrict> parents(CfgDistrict district) {
-		LinkedList<CfgDistrict> list = new LinkedList<CfgDistrict>();
-		while(StringUtil.hasText(district.getParent())) 
-			list.addFirst(district(district.getParent()));
-		return list;
+	public Geo geo(String code, boolean validCheck) {
+		CfgDistrict district = district(code);
+		Assert.notNull(ConfigCode.DISTRICT_NOT_EXIST, district);
+		Map<DistrictLevel, CfgDistrict> m = parents(district);
+		m.put(DistrictLevel.match(district.getLevel()), district);
+		CfgDistrict city = m.get(DistrictLevel.CITY);
+		CfgDistrict county = m.get(DistrictLevel.COUNTY);
+		CfgDistrict country = m.get(DistrictLevel.COUNTRY);
+		CfgDistrict province = m.get(DistrictLevel.PROVINCE);
+		Geo geo = new Geo();
+		if (null != city && ((validCheck && city.isValid()) || !validCheck))
+			geo.setCity(city.getName());
+		if (null != county && ((validCheck && county.isValid()) || !validCheck))
+			geo.setCounty(county.getName());
+		if (null != country && ((validCheck && country.isValid()) || !validCheck))
+			geo.setCountry(country.getName());
+		if (null != province && ((validCheck && province.isValid()) || !validCheck))
+			geo.setProvince(province.getName());
+		return geo;
+	}
+	
+	public Map<DistrictLevel, CfgDistrict> parents(CfgDistrict district) {
+		Map<DistrictLevel, CfgDistrict> map = new HashMap<DistrictLevel, CfgDistrict>();
+		while(StringUtil.hasText(district.getParent())) {
+			district = district(district.getParent());
+			map.put(DistrictLevel.match(district.getLevel()), district);
+		}
+		return map;
 	}
 	
 	public List<CfgDistrict> childrens(CfgDistrict district) { 

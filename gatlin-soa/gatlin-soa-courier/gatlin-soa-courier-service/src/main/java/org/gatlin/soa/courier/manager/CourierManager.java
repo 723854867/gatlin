@@ -7,7 +7,6 @@ import org.gatlin.core.bean.enums.Env;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.dao.redis.Redis;
-import org.gatlin.soa.bean.enums.ConfigType;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.model.Configs;
 import org.gatlin.soa.courier.CaptchaType;
@@ -28,8 +27,7 @@ public class CourierManager {
 	private ConfigService configService;
 
 	public String captchaAcquire(CaptchaType type, String receiver) {
-		Query query = new Query().eq("type", ConfigType.COURIER.mark());
-		Configs configs = configService.configs(query);
+		Configs configs = configService.configs(new Query());
 		String captcha = KeyUtil.randomCode(configs.get(GlobalKeys.CAPTCHA_BIT_NUM), true);
 		String key = KeyGenerator.captchaKey(type, receiver);
 		String countKey = KeyGenerator.captchaCountKey(type, receiver);
