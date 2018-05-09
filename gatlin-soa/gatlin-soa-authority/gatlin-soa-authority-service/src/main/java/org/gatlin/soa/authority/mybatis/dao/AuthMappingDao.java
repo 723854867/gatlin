@@ -1,6 +1,7 @@
 package org.gatlin.soa.authority.mybatis.dao;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
@@ -18,9 +19,9 @@ public interface AuthMappingDao extends DBDao<Long, AuthMapping> {
 	
 	long deleteModulars(Collection<Integer> modulars);
 	
-	@Select("SELECT COUNT(*) FROM auth_mapping WHERE `type`=1 AND tid=#{apiId}")
-	int modularCountByApi(int apiId);
+	@Select("SELECT tid FROM auth_mapping WHERE `type`=#{type} AND sid=#{sid}")
+	Set<Long> tids(@Param("type") int type, @Param("sid") long sid);
 	
-	@Select("SELECT COUNT(*) FROM auth_mapping WHERE `type`=3 AND sid=#{uid} AND tid IN(SELECT sid FROM auth_mapping WHERE `type`=2 AND tid IN(SELECT sid FROM auth_mapping WHERE `type`=1 AND tid=#{apiId}))")
-	int roleCountByApi(@Param("uid") long uid, @Param("apiId") int apiId);
+	@Select("SELECT sid FROM auth_mapping WHERE `type`=#{type} AND tid=#{tid}")
+	Set<Long> sids(@Param("type") int type, @Param("tid") long tid);
 }

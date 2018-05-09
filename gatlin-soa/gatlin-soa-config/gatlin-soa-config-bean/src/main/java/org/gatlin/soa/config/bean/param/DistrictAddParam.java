@@ -3,8 +3,10 @@ package org.gatlin.soa.config.bean.param;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.gatlin.core.CoreCode;
+import org.gatlin.core.util.Assert;
 import org.gatlin.soa.bean.param.SoaParam;
-import org.gatlin.soa.config.bean.enums.DistrictType;
+import org.gatlin.soa.config.bean.enums.DistrictLevel;
 import org.gatlin.util.lang.StringUtil;
 
 public class DistrictAddParam extends SoaParam {
@@ -18,7 +20,7 @@ public class DistrictAddParam extends SoaParam {
 	private String abname;
 	private String parent;
 	@NotNull
-	private DistrictType type;
+	private DistrictLevel level;
 
 	public String getCode() {
 		return code;
@@ -52,12 +54,12 @@ public class DistrictAddParam extends SoaParam {
 		this.parent = parent;
 	}
 
-	public DistrictType getType() {
-		return type;
+	public DistrictLevel getLevel() {
+		return level;
 	}
-
-	public void setType(DistrictType type) {
-		this.type = type;
+	
+	public void setLevel(DistrictLevel level) {
+		this.level = level;
 	}
 	
 	@Override
@@ -67,5 +69,10 @@ public class DistrictAddParam extends SoaParam {
 			this.abname = StringUtil.EMPTY;
 		if (null == parent)
 			this.parent = StringUtil.EMPTY;
+		// 只有省才有简称
+		if (level == DistrictLevel.PROVINCE)
+			Assert.hasText(CoreCode.PARAM_ERR, abname);
+		else
+			Assert.hasNoText(CoreCode.PARAM_ERR, abname);
 	}
 }

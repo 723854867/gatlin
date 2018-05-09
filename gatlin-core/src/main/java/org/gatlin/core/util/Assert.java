@@ -50,4 +50,10 @@ public class Assert {
 			throw new CodeException(code);
 		return content;
 	}
+	
+	public static final String hasNoText(Code code, String content) {
+		if (StringUtil.hasText(content))
+			throw new CodeException(code);
+		return content;
+	}
 }

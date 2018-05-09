@@ -1,6 +1,8 @@
 package org.gatlin.soa.authority.manager;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -8,6 +10,7 @@ import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.authority.bean.AuthCode;
 import org.gatlin.soa.authority.bean.EntityGenerator;
+import org.gatlin.soa.authority.bean.entity.AuthMapping;
 import org.gatlin.soa.authority.bean.entity.CfgApi;
 import org.gatlin.soa.authority.bean.entity.CfgModular;
 import org.gatlin.soa.authority.bean.entity.CfgRole;
@@ -27,6 +30,7 @@ import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.util.DateUtil;
+import org.gatlin.util.lang.CollectionUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,23 +146,36 @@ public class AuthManager {
 	}
 	
 	public void auth(User user, CfgApi api) {
-		int modularCount = authMappingDao.modularCountByApi(api.getId());
-		if (modularCount == 0)
+		Set<Long> set = authMappingDao.sids(AuthMappingType.MODULAR_API.mark(), api.getId());
+		if (CollectionUtil.isEmpty(set))
 			return;
-		int roleCount = authMappingDao.roleCountByApi(user.getId(), api.getId());
-		Assert.isTrue(AuthCode.AUTH_FAIL, roleCount >= 1);
+		List<CfgModular> modulars = userModulars(user.getId());
+		Set<Long> has = new HashSet<Long>();
+		modulars.forEach(item -> has.add(Long.valueOf(item.getId())));
+		set.retainAll(has);
+		Assert.isTrue(AuthCode.AUTH_FAIL, !CollectionUtil.isEmpty(set));
 	}
 	
 	public List<CfgApi> modularApis(int modularId) {
-		return cfgApiDao.modularApis(modularId);
+		Set<Long> set = authMappingDao.tids(AuthMappingType.MODULAR_API.mark(), modularId);
+		return CollectionUtil.isEmpty(set) ? CollectionUtil.emptyList() : cfgApiDao.queryList(new Query().in("id", set));
 	}
 	
 	public List<CfgModular> userModulars(long uid) {
-		return cfgModularDao.userModulars(uid);
+		Set<Long> set = authMappingDao.tids(AuthMappingType.USER_ROLE.mark(), uid);
+		if (CollectionUtil.isEmpty(set))
+			return CollectionUtil.emptyList();
+		List<AuthMapping> l = authMappingDao.queryList(new Query().eq("type", AuthMappingType.ROLE_MODULAR.mark()).in("sid", set));
+		if (CollectionUtil.isEmpty(l))
+			return CollectionUtil.emptyList();
+		set.clear();
+		l.forEach(item -> set.add(item.getTid()));
+		return cfgModularDao.queryList(new Query().in("id", set));
 	}
 	
 	public List<CfgRole> userRoles(long uid) {
-		return cfgRoleDao.userRoles(uid);
+		Set<Long> set = authMappingDao.tids(AuthMappingType.USER_ROLE.mark(), uid);
+		return CollectionUtil.isEmpty(set) ? CollectionUtil.emptyList() : cfgRoleDao.queryList(new Query().in("id", set));
 	}
 	
 	public CfgApi api(Query query) {
