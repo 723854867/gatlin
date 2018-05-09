@@ -2,8 +2,6 @@ package org.gatlin.soa.account.bean.param;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,9 +20,6 @@ public class RechargeParam extends SoaParam {
 	private Long rechargee;
 	@NotEmpty
 	private String goodsId;
-	@NotNull
-	@DecimalMin("0.01")
-	@DecimalMax("10000000")
 	private BigDecimal amount;
 
 	public PlatType getPlat() {

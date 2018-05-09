@@ -1,6 +1,7 @@
 package org.gatlin.web.util.hook;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.annotation.Resource;
 
@@ -32,6 +33,8 @@ public abstract class RechargeHook {
 			switch (param.getGoodsType()) {
 			case 1:
 				rechargeeVerify(param);
+				Assert.isTrue(CoreCode.PARAM_ERR, null != param.getAmount() && param.getAmount().compareTo(BigDecimal.ZERO) > 0);
+				param.setAmount(param.getAmount().setScale(2, RoundingMode.UP));
 				UserAccountType accountType = UserAccountType.match(Integer.valueOf(param.getGoodsId()));
 				Assert.notNull(CoreCode.PARAM_ERR, accountType);
 				int mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD);

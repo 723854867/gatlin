@@ -179,6 +179,11 @@ public class AuthManager {
 		return CollectionUtil.isEmpty(set) ? CollectionUtil.emptyList() : cfgRoleDao.queryList(new Query().in("id", set));
 	}
 	
+	public List<CfgModular> roleModulars(int roleId) {
+		Set<Long> set = authMappingDao.tids(AuthMappingType.ROLE_MODULAR.mark(), roleId);
+		return CollectionUtil.isEmpty(set) ? CollectionUtil.emptyList() : cfgModularDao.queryList(new Query().in("id", set));
+	}
+	
 	public CfgApi api(Query query) {
 		return cfgApiDao.queryUnique(query);
 	}

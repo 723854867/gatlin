@@ -106,6 +106,12 @@ public class AuthorityController {
 	}
 	
 	@ResponseBody
+	@RequestMapping("role/list/modular")
+	public Object roleModulars(@RequestBody @Valid SoaIdParam param) {
+		return authService.roleModulars(param.getId());
+	}
+	
+	@ResponseBody
 	@RequestMapping("role/list/user")
 	public Object userRoles(@RequestBody @Valid SoaUidParam param) {
 		return authService.userRoles(param);

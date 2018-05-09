@@ -100,6 +100,11 @@ public class AuthServiceImpl implements AuthService {
 	}
 	
 	@Override
+	public List<CfgModular> roleModulars(int roleId) {
+		return authManager.roleModulars(roleId);
+	}
+	
+	@Override
 	public Pager<CfgRole> userRoles(SoaUidParam param) {
 		if (null != param.getPage())
 			PageHelper.startPage(param.getPage(), param.getPageSize());

@@ -45,6 +45,8 @@ public interface AuthService {
 	
 	Pager<CfgRole> roles(Query query);
 	
+	List<CfgModular> roleModulars(int roleId);
+	
 	Pager<CfgRole> userRoles(SoaUidParam param);
 	 
 	int roleAdd(SoaSidParam param);
