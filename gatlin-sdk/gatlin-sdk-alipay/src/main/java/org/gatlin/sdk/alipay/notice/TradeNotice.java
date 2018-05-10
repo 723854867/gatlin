@@ -1,5 +1,7 @@
 package org.gatlin.sdk.alipay.notice;
 
+import javax.validation.constraints.NotEmpty;
+
 public class TradeNotice extends AlipayNotice {
 
 	private static final long serialVersionUID = 1372605764527831328L;
@@ -22,6 +24,7 @@ public class TradeNotice extends AlipayNotice {
 	// 支付宝交易凭证号
 	private String trade_no;
 	// 原支付请求的商户订单号
+	@NotEmpty
 	private String out_trade_no;
 	// 商户业务号，主要是退款通知中返回退款申请的流水号
 	private String out_biz_no;
@@ -33,6 +36,7 @@ public class TradeNotice extends AlipayNotice {
 	private String seller_id;
 	// 卖家支付宝账号
 	private String seller_email;
+	@NotEmpty
 	private String trade_status;
 	// 订单金额
 	private String total_amount;
