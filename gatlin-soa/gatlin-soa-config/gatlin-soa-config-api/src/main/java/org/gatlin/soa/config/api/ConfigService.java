@@ -7,6 +7,7 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.config.bean.entity.CfgDistrict;
 import org.gatlin.soa.config.bean.model.Configs;
+import org.gatlin.soa.config.bean.param.CfgGlobalParam;
 import org.gatlin.soa.config.bean.param.DistrictAddParam;
 import org.gatlin.soa.config.bean.param.DistrictModifyParam;
 
@@ -23,4 +24,6 @@ public interface ConfigService {
 	void districtAdd(DistrictAddParam param);
 	
 	void districtModify(DistrictModifyParam param);
+
+	void configUpdate(CfgGlobalParam cfgGlobalParam);
 }

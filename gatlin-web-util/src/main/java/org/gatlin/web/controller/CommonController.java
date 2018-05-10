@@ -17,6 +17,7 @@ import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.entity.CfgGlobal;
 import org.gatlin.soa.config.bean.model.Configs;
+import org.gatlin.soa.config.bean.param.CfgGlobalParam;
 import org.gatlin.soa.courier.api.EmailService;
 import org.gatlin.soa.courier.api.SmsService;
 import org.gatlin.soa.resource.api.ResourceService;
@@ -145,6 +146,13 @@ public class CommonController {
 		for (Entry<String, CfgGlobal> entry : configs.getGlobals().entrySet()) 
 			map.put(entry.getKey(), entry.getValue().getValue());
 		return map;
+	}
+	
+	@ResponseBody
+	@RequestMapping("configs/update")
+	public Object configs(@RequestBody @Valid CfgGlobalParam param) {
+		configService.configUpdate(param);
+		return Response.ok();
 	}
 	
 	@ResponseBody
