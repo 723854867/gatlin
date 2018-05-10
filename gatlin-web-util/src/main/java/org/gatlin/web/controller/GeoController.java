@@ -31,6 +31,19 @@ public class GeoController {
 	private ConfigService configService;
 	
 	@ResponseBody
+	@RequestMapping("districts")
+	public Object districts(@RequestBody @Valid SoaParam param) {
+		Query query = new Query().eq("valid", 1);
+		return configService.districts(query);
+	}
+	
+	@ResponseBody
+	@RequestMapping("districts/all")
+	public Object districtsAll(@RequestBody @Valid SoaParam param) {
+		return configService.districts(new Query());
+	}
+	
+	@ResponseBody
 	@RequestMapping("addresses/user")
 	public Object addresses(@RequestBody @Valid SoaParam param) {
 		Query query = new Query().eq("deleted", 0).eq("uid", param.getUser().getId());

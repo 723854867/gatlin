@@ -101,4 +101,8 @@ public class UserManager {
 	public List<UserListInfo> users(UserListParam param) {
 		return userInfoDao.list(param);
 	}
+	
+	public List<Username> usernames(Query query) {
+		return usernameDao.queryList(query);
+	}
 }

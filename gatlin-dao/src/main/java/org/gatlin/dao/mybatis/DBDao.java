@@ -15,6 +15,7 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.dao.mybatis.provider.BatchInsertSQLProvider;
 import org.gatlin.dao.mybatis.provider.DeleteByKeySQLProvider;
 import org.gatlin.dao.mybatis.provider.DeleteByKeysSQLProvider;
+import org.gatlin.dao.mybatis.provider.DeleteByQuerySQLProvider;
 import org.gatlin.dao.mybatis.provider.GetAllSQLProvider;
 import org.gatlin.dao.mybatis.provider.GetByKeySQLProvider;
 import org.gatlin.dao.mybatis.provider.GetByKeysSQLProvider;
@@ -86,6 +87,7 @@ public interface DBDao<KEY, ENTITY extends Entity<KEY>> extends Dao<KEY, ENTITY>
 	long deleteByKey(KEY key);
 	
 	@Override
+	@DeleteProvider(type = DeleteByQuerySQLProvider.class, method = "dynamicSQL")
 	long deleteByQuery(Query query);
 	
 	@Override

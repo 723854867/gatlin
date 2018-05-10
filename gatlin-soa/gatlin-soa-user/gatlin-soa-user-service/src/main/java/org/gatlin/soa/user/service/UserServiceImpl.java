@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.user.EntityGenerator;
 import org.gatlin.soa.user.ThreadsafeInvoker;
@@ -123,5 +124,12 @@ public class UserServiceImpl implements UserService {
 		if (null != param.getPage())
 			PageHelper.startPage(param.getPage(), param.getPageSize());
 		return new Pager<UserListInfo>(userManager.users(param));
+	}
+	
+	@Override
+	public Pager<Username> usernames(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<Username>(userManager.usernames(query));
 	}
 }

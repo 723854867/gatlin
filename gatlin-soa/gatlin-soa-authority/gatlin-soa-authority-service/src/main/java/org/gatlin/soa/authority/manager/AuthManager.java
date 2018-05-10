@@ -1,6 +1,5 @@
 package org.gatlin.soa.authority.manager;
 
-import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
