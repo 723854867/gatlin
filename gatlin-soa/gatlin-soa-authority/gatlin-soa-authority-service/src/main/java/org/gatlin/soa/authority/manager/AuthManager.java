@@ -20,12 +20,12 @@ import org.gatlin.soa.authority.bean.param.ApiModifyParam;
 import org.gatlin.soa.authority.bean.param.AuthParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.ModularModifyParam;
-import org.gatlin.soa.authority.bean.param.NameIdParam;
 import org.gatlin.soa.authority.mybatis.dao.AuthMappingDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgApiDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgModularDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgRoleDao;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.bean.param.SoaNameIdParam;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
@@ -108,7 +108,7 @@ public class AuthManager {
 		return role.getId();
 	}
 	
-	public void roleModify(NameIdParam param) {
+	public void roleModify(SoaNameIdParam param) {
 		CfgRole role = cfgRoleDao.getByKey(param.getId());
 		Assert.notNull(AuthCode.ROLE_NOT_EXIST, role);
 		role.setName(param.getName());

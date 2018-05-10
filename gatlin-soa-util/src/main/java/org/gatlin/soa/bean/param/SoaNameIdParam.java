@@ -1,10 +1,8 @@
-package org.gatlin.soa.authority.bean.param;
+package org.gatlin.soa.bean.param;
 
 import javax.validation.constraints.NotEmpty;
 
-import org.gatlin.soa.bean.param.SoaIdParam;
-
-public class NameIdParam extends SoaIdParam {
+public class SoaNameIdParam extends SoaIdParam {
 
 	private static final long serialVersionUID = -2697177843839151725L;
 
