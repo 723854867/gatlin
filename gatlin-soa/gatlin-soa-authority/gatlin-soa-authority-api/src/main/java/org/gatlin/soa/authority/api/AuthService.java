@@ -12,11 +12,11 @@ import org.gatlin.soa.authority.bean.param.ApiModifyParam;
 import org.gatlin.soa.authority.bean.param.AuthParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.ModularModifyParam;
-import org.gatlin.soa.authority.bean.param.NameIdParam;
+import org.gatlin.soa.authority.bean.param.RoleAddParam;
+import org.gatlin.soa.authority.bean.param.RoleModifyParam;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
-import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.bean.param.SoaUidParam;
 
 public interface AuthService {
@@ -49,9 +49,9 @@ public interface AuthService {
 	
 	Pager<CfgRole> userRoles(SoaUidParam param);
 	 
-	int roleAdd(SoaSidParam param);
+	int roleAdd(RoleAddParam param);
 	
-	void roleModify(NameIdParam param);
+	void roleModify(RoleModifyParam param);
 	
 	void roleDelete(SoaIdParam param);
 	

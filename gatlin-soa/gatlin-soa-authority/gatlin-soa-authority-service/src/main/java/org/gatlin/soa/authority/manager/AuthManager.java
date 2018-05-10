@@ -1,7 +1,10 @@
 package org.gatlin.soa.authority.manager;
 
+import java.awt.event.ItemEvent;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -20,7 +23,8 @@ import org.gatlin.soa.authority.bean.param.ApiModifyParam;
 import org.gatlin.soa.authority.bean.param.AuthParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.ModularModifyParam;
-import org.gatlin.soa.authority.bean.param.NameIdParam;
+import org.gatlin.soa.authority.bean.param.RoleAddParam;
+import org.gatlin.soa.authority.bean.param.RoleModifyParam;
 import org.gatlin.soa.authority.mybatis.dao.AuthMappingDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgApiDao;
 import org.gatlin.soa.authority.mybatis.dao.CfgModularDao;
@@ -28,7 +32,6 @@ import org.gatlin.soa.authority.mybatis.dao.CfgRoleDao;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
-import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.springframework.stereotype.Component;
@@ -75,8 +78,8 @@ public class AuthManager {
 	
 	@Transactional
 	public int modularAdd(ModularAddParam param) {
-		CfgModular parent = null == param.getParent() ? null : cfgModularDao.getByKey(param.getParent());
-		if (null != param.getParent())
+		CfgModular parent = 0 == param.getParent() ? null : cfgModularDao.getByKey(param.getParent());
+		if (0 != param.getParent())
 			Assert.notNull(AuthCode.MODULAR_NOT_EXIST, parent);
 		CfgModular modular = EntityGenerator.newCfgModular(param, parent);
 		cfgModularDao.insert(modular);
@@ -102,18 +105,29 @@ public class AuthManager {
 		authMappingDao.deleteModulars(param.getIds());
 	}
 	
-	public int roleAdd(SoaSidParam param) {
-		CfgRole role = EntityGenerator.newCfgRole(param.getId());
+	@Transactional
+	public int roleAdd(RoleAddParam param) {
+		CfgRole role = EntityGenerator.newCfgRole(param.getName());
 		cfgRoleDao.insert(role);
+		List<AuthMapping> list = new ArrayList<AuthMapping>();
+		param.getIds().forEach(item->{list.add(EntityGenerator.newAuthMapping(AuthMappingType.ROLE_MODULAR, role.getId(), item));});
+		authMappingDao.batchInsert(list);
 		return role.getId();
 	}
 	
-	public void roleModify(NameIdParam param) {
+	@Transactional
+	public void roleModify(RoleModifyParam param) {
 		CfgRole role = cfgRoleDao.getByKey(param.getId());
 		Assert.notNull(AuthCode.ROLE_NOT_EXIST, role);
 		role.setName(param.getName());
 		role.setUpdated(DateUtil.current());
-		cfgRoleDao.insert(role);
+		cfgRoleDao.update(role);
+		if(!param.getIds().isEmpty()) {
+			List<AuthMapping> list = new ArrayList<AuthMapping>();
+			param.getIds().forEach(item->{list.add(EntityGenerator.newAuthMapping(AuthMappingType.ROLE_MODULAR, role.getId(), item));});
+			authMappingDao.deleteRoleMordulByRoleId(role.getId());
+			authMappingDao.batchInsert(list);
+		}
 	}
 	
 	@Transactional
@@ -123,27 +137,47 @@ public class AuthManager {
 		authMappingDao.deleteRole(param.getId());
 	}
 	
+	@Transactional
 	public void modularAuth(AuthParam param) {
-		CfgApi api = cfgApiDao.getByKey((int) param.getTid());
-		Assert.notNull(AuthCode.API_NOT_EXIST, api);
-		Assert.isTrue(AuthCode.UNLOGIN_API_NO_AUTH, api.isLogin());
-		CfgModular modular = cfgModularDao.getByKey((int) param.getSid());
-		Assert.notNull(AuthCode.MODULAR_NOT_EXIST, modular);
-		authMappingDao.insert(EntityGenerator.newAuthMapping(AuthMappingType.MODULAR_API, param.getSid(), param.getTid()));
+		if(param.getTid().isEmpty()) {
+			authMappingDao.deleteByModularId(param.getSid());
+		}else {
+			Map<Integer, CfgApi> api = cfgApiDao.getByKeys(param.getTid());
+			Assert.isTrue(AuthCode.API_NOT_EXIST, api.size() == param.getTid().size());
+			api.values().forEach(item->Assert.isTrue(AuthCode.UNLOGIN_API_NO_AUTH, item.isLogin()));
+			CfgModular modular = cfgModularDao.getByKey((int) param.getSid());
+			Assert.notNull(AuthCode.MODULAR_NOT_EXIST, modular);
+			authMappingDao.deleteByModularId(param.getSid());
+			List<AuthMapping> list = new ArrayList<>();
+			api.values().forEach(item->list.add(EntityGenerator.newAuthMapping(AuthMappingType.MODULAR_API, param.getSid(), item.getId())));
+			authMappingDao.batchInsert(list);
+		}
 	}
 	
+	@Transactional
 	public void roleAuth(AuthParam param) {
 		CfgRole role = cfgRoleDao.getByKey((int) param.getSid());
 		Assert.notNull(AuthCode.ROLE_NOT_EXIST, role);
-		CfgModular modular = cfgModularDao.getByKey((int) param.getTid());
-		Assert.notNull(AuthCode.MODULAR_NOT_EXIST, modular);
-		authMappingDao.insert(EntityGenerator.newAuthMapping(AuthMappingType.ROLE_MODULAR, param.getSid(), param.getTid()));
+		Map<Integer, CfgModular> modular = cfgModularDao.getByKeys(param.getTid());
+		Assert.isTrue(AuthCode.MODULAR_NOT_EXIST, modular.size() == param.getTid().size());
+		
+		List<AuthMapping> list = new ArrayList<>();
+		modular.values().forEach(item->list.add(EntityGenerator.newAuthMapping(AuthMappingType.ROLE_MODULAR, param.getSid(), item.getId())));
+		authMappingDao.batchInsert(list);
 	}
 	
+	@Transactional
 	public void userAuth(AuthParam param) {
-		CfgRole role = cfgRoleDao.getByKey((int) param.getTid());
-		Assert.notNull(AuthCode.ROLE_NOT_EXIST, role);
-		authMappingDao.insert(EntityGenerator.newAuthMapping(AuthMappingType.USER_ROLE, param.getSid(), param.getTid()));
+		if(param.getTid().isEmpty()) {
+			authMappingDao.deleteByUserId(param.getSid());
+		}else {
+			Map<Integer, CfgRole> role = cfgRoleDao.getByKeys(param.getTid());
+			Assert.isTrue(AuthCode.MODULAR_NOT_EXIST, role.size() == param.getTid().size());
+			authMappingDao.deleteByUserId(param.getSid());
+			List<AuthMapping> list = new ArrayList<>();
+			role.values().forEach(item->list.add(EntityGenerator.newAuthMapping(AuthMappingType.USER_ROLE, param.getSid(), item.getId())));
+			authMappingDao.batchInsert(list);
+		}
 	}
 	
 	public void auth(User user, CfgApi api) {

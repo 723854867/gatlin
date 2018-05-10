@@ -1,6 +1,9 @@
 package org.gatlin.soa.authority.bean.param;
 
+import java.util.Set;
+
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import org.gatlin.soa.bean.param.SoaParam;
 
@@ -10,8 +13,8 @@ public class AuthParam extends SoaParam {
 
 	@Min(1)
 	private long sid;
-	@Min(1)
-	private long tid;
+	@NotNull
+	private Set<Integer> tid;
 
 	public long getSid() {
 		return sid;
@@ -21,11 +24,12 @@ public class AuthParam extends SoaParam {
 		this.sid = sid;
 	}
 
-	public long getTid() {
+	public void setTid(Set<Integer> tid) {
+		this.tid = tid;
+	}
+	
+	public Set<Integer> getTid() {
 		return tid;
 	}
 
-	public void setTid(long tid) {
-		this.tid = tid;
-	}
 }

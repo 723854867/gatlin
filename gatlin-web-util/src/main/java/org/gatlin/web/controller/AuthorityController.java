@@ -12,12 +12,12 @@ import org.gatlin.soa.authority.bean.param.ApisParam;
 import org.gatlin.soa.authority.bean.param.AuthParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.ModularModifyParam;
-import org.gatlin.soa.authority.bean.param.NameIdParam;
+import org.gatlin.soa.authority.bean.param.RoleAddParam;
+import org.gatlin.soa.authority.bean.param.RoleModifyParam;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaParam;
-import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.bean.param.SoaUidParam;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.UserCode;
@@ -37,13 +37,13 @@ public class AuthorityController {
 	
 	@ResponseBody
 	@RequestMapping("api/list")
-	public Object apis(ApisParam param) {
+	public Object apis(@RequestBody @Valid ApisParam param) {
 		return authService.apis(param.query());
 	}
 	
 	@ResponseBody
 	@RequestMapping("api/list/modular")
-	public Object modularApis(SoaIdParam param) {
+	public Object modularApis(@RequestBody SoaIdParam param) {
 		return authService.modularApis(param);
 	}
 
@@ -119,13 +119,13 @@ public class AuthorityController {
 	
 	@ResponseBody
 	@RequestMapping("role/add")
-	public Object roleAdd(@RequestBody @Valid SoaSidParam param) {
+	public Object roleAdd(@RequestBody @Valid RoleAddParam param) {
 		return authService.roleAdd(param);
 	}
 	
 	@ResponseBody
 	@RequestMapping("role/modify")
-	public Object roleModify(@RequestBody @Valid NameIdParam param) {
+	public Object roleModify(@RequestBody @Valid RoleModifyParam param) {
 		authService.roleModify(param);
 		return Response.ok();
 	}

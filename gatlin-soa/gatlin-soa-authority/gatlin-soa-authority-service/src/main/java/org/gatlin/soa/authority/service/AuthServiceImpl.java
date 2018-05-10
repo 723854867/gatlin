@@ -15,12 +15,12 @@ import org.gatlin.soa.authority.bean.param.ApiModifyParam;
 import org.gatlin.soa.authority.bean.param.AuthParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.ModularModifyParam;
-import org.gatlin.soa.authority.bean.param.NameIdParam;
+import org.gatlin.soa.authority.bean.param.RoleAddParam;
+import org.gatlin.soa.authority.bean.param.RoleModifyParam;
 import org.gatlin.soa.authority.manager.AuthManager;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
-import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.bean.param.SoaUidParam;
 import org.springframework.stereotype.Service;
 
@@ -112,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 	
 	@Override
-	public int roleAdd(SoaSidParam param) {
+	public int roleAdd(RoleAddParam param) {
 		return authManager.roleAdd(param);
 	}
 	
@@ -122,7 +122,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 	
 	@Override
-	public void roleModify(NameIdParam param) {
+	public void roleModify(RoleModifyParam param) {
 		authManager.roleModify(param);
 	}
 	

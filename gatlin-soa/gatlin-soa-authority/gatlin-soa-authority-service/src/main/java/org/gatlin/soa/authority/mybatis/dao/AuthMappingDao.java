@@ -24,4 +24,13 @@ public interface AuthMappingDao extends DBDao<Long, AuthMapping> {
 	
 	@Select("SELECT sid FROM auth_mapping WHERE `type`=#{type} AND tid=#{tid}")
 	Set<Long> sids(@Param("type") int type, @Param("tid") long tid);
+
+	@Delete("DELETE FROM auth_mapping where sid=#{roleId} and `type`=2")
+	void deleteRoleMordulByRoleId(int roleId);
+
+	@Delete("DELETE FROM auth_mapping where sid=#{modularId} and `type`=1")
+	void deleteByModularId(long modularId);
+	
+	@Delete("DELETE FROM auth_mapping where sid=#{userId} and `type`=3")
+	void deleteByUserId(long userId);
 }
