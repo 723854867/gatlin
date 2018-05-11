@@ -145,13 +145,6 @@ public class AuthorityController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("auth/role")
-	public Object roleAuth(@RequestBody @Valid AuthParam param) {
-		authService.roleAuth(param);
-		return Response.ok();
-	}
-	
-	@ResponseBody
 	@RequestMapping("auth/user")
 	public Object userAuth(@RequestBody @Valid AuthParam param) {
 		User user = userService.user(param.getSid());

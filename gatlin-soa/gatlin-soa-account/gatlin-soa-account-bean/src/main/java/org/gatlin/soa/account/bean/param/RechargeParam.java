@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.bean.param.SoaParam;
@@ -13,7 +12,6 @@ public class RechargeParam extends SoaParam {
 
 	private static final long serialVersionUID = -2284951160155633004L;
 
-	@NotNull
 	private PlatType plat;
 	@Min(1)
 	private int goodsType;
@@ -29,7 +27,7 @@ public class RechargeParam extends SoaParam {
 	public void setPlat(PlatType plat) {
 		this.plat = plat;
 	}
-
+	
 	public int getGoodsType() {
 		return goodsType;
 	}

@@ -78,7 +78,7 @@ public abstract class RechargeHook {
 		instance.setRechargee(param.getRechargee());
 		instance.setRecharger(user.getId());
 		instance.setFee(fee);
-		instance.setAmount(param.getAmount());
+		instance.setAmount(param.getAmount().add(fee));
 		int timeout = configService.config(WebConsts.Options.RECHARGE_TIMEOUT);
 		timeout = Math.max(0, timeout);
 		int time = DateUtil.current();
