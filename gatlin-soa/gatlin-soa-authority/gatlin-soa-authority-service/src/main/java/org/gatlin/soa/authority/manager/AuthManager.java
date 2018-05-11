@@ -154,22 +154,10 @@ public class AuthManager {
 	}
 	
 	@Transactional
-	public void roleAuth(AuthParam param) {
-		CfgRole role = cfgRoleDao.getByKey((int) param.getSid());
-		Assert.notNull(AuthCode.ROLE_NOT_EXIST, role);
-		Map<Integer, CfgModular> modular = cfgModularDao.getByKeys(param.getTid());
-		Assert.isTrue(AuthCode.MODULAR_NOT_EXIST, modular.size() == param.getTid().size());
-		
-		List<AuthMapping> list = new ArrayList<>();
-		modular.values().forEach(item->list.add(EntityGenerator.newAuthMapping(AuthMappingType.ROLE_MODULAR, param.getSid(), item.getId())));
-		authMappingDao.batchInsert(list);
-	}
-	
-	@Transactional
 	public void userAuth(AuthParam param) {
 		if(param.getTid().isEmpty()) {
 			authMappingDao.deleteByUserId(param.getSid());
-		}else {
+		} else {
 			Map<Integer, CfgRole> role = cfgRoleDao.getByKeys(param.getTid());
 			Assert.isTrue(AuthCode.MODULAR_NOT_EXIST, role.size() == param.getTid().size());
 			authMappingDao.deleteByUserId(param.getSid());

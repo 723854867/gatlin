@@ -131,11 +131,6 @@ public class AuthServiceImpl implements AuthService {
 		authManager.modularAuth(param);
 	}
 	
-	@Override
-	public void roleAuth(AuthParam param) {
-		authManager.roleAuth(param);
-	}
-	
 	public void userAuth(AuthParam param) {
 		authManager.userAuth(param);
 	}

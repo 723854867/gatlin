@@ -72,7 +72,7 @@ public class GatewayInterceptor {
 		HttpServletRequest request = WebUtil.getRequest();
 		LogRequest log = _logRequest(request, point);
 		int serverState = configService.config(WebConsts.Options.SERVER_STATE);
-		CfgApi api = null != authService ? authService.api(new Query().eq("path", log.getPath())) : null;
+		CfgApi api = null != authService ? authService.api(new Query().eq("path", request.getServletPath())) : null;
 		int apiSecurityLevel = null == api ? 1 : api.getSecurityLevel();
 		Assert.isTrue(WebCode.SERVER_WARNING, apiSecurityLevel > serverState);
 		// 用户数据处理

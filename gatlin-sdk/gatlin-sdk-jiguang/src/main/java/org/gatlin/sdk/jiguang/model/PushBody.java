@@ -2,10 +2,12 @@ package org.gatlin.sdk.jiguang.model;
 
 import java.io.Serializable;
 
+import org.gatlin.core.service.http.HttpPost.Body;
+
 import com.google.gson.annotations.SerializedName;
 
 @SuppressWarnings("unused")
-public class PushBody implements Serializable {
+public class PushBody implements Body {
 
 	private static final long serialVersionUID = -702566920001727190L;
 

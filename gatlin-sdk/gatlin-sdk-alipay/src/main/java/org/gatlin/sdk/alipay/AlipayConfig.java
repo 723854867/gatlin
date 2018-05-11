@@ -32,8 +32,8 @@ public class AlipayConfig {
 	
 	private static final StrOption APP_ID							= new StrOption("alipay.appid");
 	private static final StrOption HOST								= new StrOption("alipay.host");
-	private static final IntegerOption PORT							= new IntegerOption("alipay.port");
 	private static final StrOption PATH								= new StrOption("alipay.path");
 	private static final StrOption PRI_KEY							= new StrOption("alipay.priKey");
+	private static final IntegerOption PORT							= new IntegerOption("alipay.port");
 	private static final StrOption RECHARGE_NOTIFY_URL				= new StrOption("alipay.notify.url.recharge");
 }

@@ -27,6 +27,10 @@ public class HttpPost<RESPONSE extends HttpResponse, REQUEST extends HttpPost<RE
 		super(host, port, path);
 		this.contentType = contentType;
 	}
+	
+	public Body getBody() {
+		return body;
+	}
 
 	public ContentType contentType() {
 		return contentType;

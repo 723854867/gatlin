@@ -57,8 +57,6 @@ public interface AuthService {
 	
 	void modularAuth(AuthParam param);
 	
-	void roleAuth(AuthParam param);
-	
 	void userAuth(AuthParam param);
 	
 	void auth(User user, CfgApi api);

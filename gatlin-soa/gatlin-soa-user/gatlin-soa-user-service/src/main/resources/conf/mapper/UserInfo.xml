@@ -23,7 +23,7 @@
 				`user_info` b ON a.`uid`=b.`id` 
 			LEFT JOIN 
 				`user_device` c ON a.`id`=c.`username`
-		) a
+		) d
 		<where>
 			<if test="null != os">
 				`os`=#{os}
