@@ -1,5 +1,6 @@
 package org.gatlin.soa.config.manager;
 
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import org.gatlin.soa.config.bean.entity.CfgDistrict;
 import org.gatlin.soa.config.bean.enums.DistrictLevel;
 import org.gatlin.soa.config.bean.param.DistrictAddParam;
 import org.gatlin.soa.config.bean.param.DistrictModifyParam;
+import org.gatlin.soa.config.bean.param.DistrictsParam;
 import org.gatlin.soa.config.mybatis.dao.CfgDistrictDao;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
@@ -135,5 +137,13 @@ public class DistrictManager {
 	
 	public List<CfgDistrict> districts(Query query) {
 		return cfgDistrictDao.queryList(query);
+	}
+
+	@Transactional
+	public void auth(DistrictsParam param) {
+		cfgDistrictDao.updateAllToInvalid();
+		List<CfgDistrict> list = cfgDistrictDao.queryList(new Query().in("code", param.getCodes()));
+		list.forEach(item -> item.setValid(true));
+		cfgDistrictDao.updateCollection(list);
 	}
 }
