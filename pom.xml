@@ -382,6 +382,5 @@
 		<module>gatlin-soa-util</module>
 		<module>gatlin-web-util</module>
 		<module>gatlin-sdk</module>
-    <module>gatlin-skd-sinapay</module>
   </modules>
 </project>
