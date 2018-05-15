@@ -19,7 +19,7 @@ import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
-import org.gatlin.web.util.WebConsts;
+import org.gatlin.web.WebConsts;
 
 public abstract class RechargeHook {
 	

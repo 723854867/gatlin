@@ -9,5 +9,5 @@ public interface CoreCode {
 	final Code PARAM_ERR			= new Code("code.param.err", "参数错误");
 	final Code SYSTEM_ERR 			= new Code("code.system.err", "系统错误");
 	final Code RESOURCE_LOCKED		= new Code("code.resource.locked", "资源正在被使用");
-	final Code SYS_CONFIG_ERR		= new Code("code.sys.config.err", "系统配置错误");
+	final Code SDK_INVOKE_FAIL		= new Code("code.sdk.invoke.fail", "第三方调用失败");
 }

@@ -382,6 +382,5 @@
 		<module>gatlin-soa-util</module>
 		<module>gatlin-web-util</module>
 		<module>gatlin-sdk</module>
-    	<module>gatlin-web-sina</module>
   </modules>
 </project>

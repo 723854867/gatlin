@@ -126,6 +126,14 @@ public class UserManager {
 		return usernameDao.queryUnique(query);
 	}
 	
+	public Username username(Query query) {
+		return usernameDao.queryUnique(query);
+	}
+	
+	public UserSecurity security(long uid) {
+		return userSecurityDao.getByKey(uid);
+	}
+	
 	public List<UserListInfo> users(UserListParam param) {
 		return userInfoDao.list(param);
 	}

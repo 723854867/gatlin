@@ -3,9 +3,11 @@ package org.gatlin.core;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.model.option.Option;
@@ -22,6 +24,12 @@ public class GatlinConfigration {
 	private static final Map<String, String> properties = new HashMap<String, String>();
 	public static final ConfigurableConversionService CONVERSION_SERVICE = new DefaultConversionService();
 	public static final PathMatchingResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
+	private static final Set<String> UNIQUE_PROPERTIES = new HashSet<String>() {
+		private static final long serialVersionUID = 4782320407934522986L;
+		{
+			add("http.enable");
+		}
+	};
 	
 	static {
 		loadProperties("classpath*:conf/*.properties");
@@ -36,9 +44,11 @@ public class GatlinConfigration {
 				properties.load(new InputStreamReader(in, Consts.UTF_8));
 				for (Entry<Object, Object> entry : properties.entrySet()) {
 					String value = entry.getValue().toString();
-					String cvalue = GatlinConfigration.properties.get(entry.getKey().toString());
-					if (StringUtil.hasText(cvalue))
-						value = cvalue + "," + value;
+					if (!UNIQUE_PROPERTIES.contains(entry.getKey().toString())) {
+						String cvalue = GatlinConfigration.properties.get(entry.getKey().toString());
+						if (StringUtil.hasText(cvalue))
+							value = cvalue + "," + value;
+					}
 					GatlinConfigration.properties.put(entry.getKey().toString(), value);
 				}
 				in.close();
