@@ -32,6 +32,7 @@ import org.gatlin.soa.user.bean.param.LoginParam;
 import org.gatlin.soa.user.bean.param.PwdModifyParam;
 import org.gatlin.soa.user.bean.param.PwdResetParam;
 import org.gatlin.soa.user.bean.param.UsernameParam;
+import org.gatlin.util.lang.StringUtil;
 import org.gatlin.web.bean.model.UserTips;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -97,13 +98,13 @@ public class CommonController {
 			smsService.captchaVerify(param.getUsername(), param.getCaptcha());
 			break;
 		case COMMON:
-			String cpwd = UserUtil.pwd(param.getOpwd(), param.getUser().getSalt());
+			String cpwd = UserUtil.pwd(param.getOpassword(), param.getUser().getSalt());
 			Assert.isTrue(UserCode.LOGIN_PWD_ERROR, cpwd.equalsIgnoreCase(param.getUser().getPwd()));
 			break;
 		default:
 			throw new CodeException(CoreCode.FORBID);
 		}
-		user.setPwd(UserUtil.pwd(param.getPwd(), user.getSalt()));
+		user.setPwd(UserUtil.pwd(param.getPassword(), user.getSalt()));
 		userService.update(user);
 		return Response.ok();
 	}
@@ -127,6 +128,8 @@ public class CommonController {
 		if (null == user)
 			return mod;
 		mod |= UserMod.EXIST.mark();
+		if (!StringUtil.hasText(user.getPwd()))
+			mod |= UserMod.PWD_UNSET.mark();
 		return mod;
 	}
 	

@@ -10,8 +10,8 @@
 		<version>1.0</version>
 	</parent>
 	
-	<artifactId>gatlin-skd-chuanglan</artifactId>
-	<name>gatlin-skd-chuanglan</name>
+	<artifactId>gatlin-sdk-sinapay</artifactId>
+	<name>gatlin-sdk-sinapay</name>
 	<url>http://maven.apache.org</url>
 	
 	<dependencies>
@@ -23,7 +23,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 		</dependency>
-
+	
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>

@@ -32,7 +32,9 @@ public class EntityGenerator {
 		instance.setUid(user.getId());
 		instance.setType(type.mark());
 		instance.setUsername(username);
-		instance.setCreated(DateUtil.current());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
 		return instance;
 	}
 	

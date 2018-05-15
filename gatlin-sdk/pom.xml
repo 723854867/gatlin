@@ -25,6 +25,7 @@
 		<module>gatlin-sdk-ucpaas</module>
     <module>gatlin-sdk-jiguang</module>
     <module>gatlin-sdk-alipay</module>
-    <module>gatlin-skd-chuanglan</module>
+    <module>gatlin-sdk-chuanglan</module>
+    <module>gatlin-sdk-sinapay</module>
   </modules>
 </project>

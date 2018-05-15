@@ -25,6 +25,7 @@ public class Username implements Entity<Long> {
 	private int type;
 	private String username;
 	private int created;
+	private int updated;
 	
 	public long getId() {
 		return id;
@@ -64,6 +65,14 @@ public class Username implements Entity<Long> {
 
 	public void setCreated(int created) {
 		this.created = created;
+	}
+	
+	public int getUpdated() {
+		return updated;
+	}
+	
+	public void setUpdated(int updated) {
+		this.updated = updated;
 	}
 
 	@Override

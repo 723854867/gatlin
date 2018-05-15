@@ -7,6 +7,8 @@ import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.courier.api.EmailService;
+import org.gatlin.soa.courier.api.SmsService;
 import org.gatlin.soa.user.EntityGenerator;
 import org.gatlin.soa.user.ThreadsafeInvoker;
 import org.gatlin.soa.user.api.UserService;
@@ -21,6 +23,7 @@ import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.LoginParam;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.bean.param.UserListParam;
+import org.gatlin.soa.user.bean.param.UsernameResetParam;
 import org.gatlin.soa.user.manager.UserManager;
 import org.gatlin.util.bean.enums.Client;
 import org.gatlin.util.bean.enums.DeviceType;
@@ -34,7 +37,11 @@ import com.github.pagehelper.PageHelper;
 public class UserServiceImpl implements UserService {
 	
 	@Resource
+	private SmsService smsService;
+	@Resource
 	private UserManager userManager;
+	@Resource
+	private EmailService emailService;
 	@Resource
 	private ThreadsafeInvoker threadsafeInvoker;
 	
@@ -131,5 +138,22 @@ public class UserServiceImpl implements UserService {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
 		return new Pager<Username>(userManager.usernames(query));
+	}
+	
+	@Override
+	public void usernameReset(UsernameResetParam param) {
+		switch (param.getUsernameType()) {
+		case EMAIL:
+			emailService.captchaVerify(param.getUsername(), param.getCaptcha());
+			emailService.captchaVerify(param.getNusername(), param.getNcaptcha());
+			break;
+		case MOBILE:
+			smsService.captchaVerify(param.getUsername(), param.getCaptcha());
+			smsService.captchaVerify(param.getNusername(), param.getNcaptcha());
+			break;
+		default:
+			break;
+		}
+		userManager.usernameReset(param);
 	}
 }

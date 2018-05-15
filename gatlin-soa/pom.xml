@@ -29,5 +29,7 @@
     <module>gatlin-soa-resource</module>
     <module>gatlin-soa-account</module>
     <module>gatlin-soa-authority</module>
+    <module>gatlin-soa-sina</module>
+    <module>gatlin-soa-sinapay</module>
   </modules>
 </project>
