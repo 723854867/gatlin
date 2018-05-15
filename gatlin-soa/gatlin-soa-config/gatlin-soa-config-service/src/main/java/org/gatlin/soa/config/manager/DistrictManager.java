@@ -71,7 +71,7 @@ public class DistrictManager {
 						item.setValid(true);
 						item.setUpdated(DateUtil.current());
 					});
-					cfgDistrictDao.batchInsert(list);
+					cfgDistrictDao.updateCollection(list);
 				}
 			} else {
 				List<CfgDistrict> list = childrens(district);
@@ -80,7 +80,7 @@ public class DistrictManager {
 						item.setValid(false);
 						item.setUpdated(DateUtil.current());
 					});
-					cfgDistrictDao.batchInsert(list);
+					cfgDistrictDao.updateCollection(list);
 				}
 			}
 		}
