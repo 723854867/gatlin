@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
@@ -21,12 +22,14 @@ import org.gatlin.soa.user.bean.model.RegisterModel;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.bean.param.UserListParam;
+import org.gatlin.soa.user.bean.param.UsernameResetParam;
 import org.gatlin.soa.user.mybatis.dao.UserDeviceDao;
 import org.gatlin.soa.user.mybatis.dao.UserInfoDao;
 import org.gatlin.soa.user.mybatis.dao.UserInvitationDao;
 import org.gatlin.soa.user.mybatis.dao.UsernameDao;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.StringUtil;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,6 +76,20 @@ public class UserManager {
 	
 	public void logout(String token) {
 		userDeviceDao.deleteByKey(token);
+	}
+	
+	@Transactional
+	public void usernameReset(UsernameResetParam param) {
+		try {
+			Username username = username(param.getUsernameType(), param.getUsername());
+			Assert.notNull(UserCode.USERNAME_NOT_EXIST, username);
+			username.setUsername(param.getNusername());
+			username.setUpdated(DateUtil.current());
+			usernameDao.update(username);
+			userDeviceDao.deleteByQuery(new Query().eq("username", username.getId()));
+		} catch (DuplicateKeyException e) {
+			throw new CodeException(UserCode.USERNAME_EXIST, e);
+		}
 	}
 	
 	public void update(User user) {

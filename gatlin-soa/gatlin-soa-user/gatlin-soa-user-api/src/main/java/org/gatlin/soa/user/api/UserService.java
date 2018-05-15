@@ -11,6 +11,7 @@ import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.LoginParam;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.bean.param.UserListParam;
+import org.gatlin.soa.user.bean.param.UsernameResetParam;
 
 /**
  * 用户接口
@@ -44,4 +45,7 @@ public interface UserService {
 	Pager<UserListInfo> users(UserListParam param); 
 	
 	Pager<Username> usernames(Query query);
+	
+	// 重置账号
+	void usernameReset(UsernameResetParam param);
 }
