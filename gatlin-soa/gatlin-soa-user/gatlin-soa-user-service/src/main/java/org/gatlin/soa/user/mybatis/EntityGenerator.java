@@ -52,7 +52,7 @@ public class EntityGenerator {
 	public static final UserDevice newUserDevice(Username username, LoginParam param) {
 		UserDevice instance = new UserDevice();
 		instance.setToken(StringUtil.uuid());
-		instance.setUid(username.getId());
+		instance.setUid(username.getUid());
 		instance.setUsername(username.getId());
 		instance.setOs(param.getOs().mark());
 		instance.setType(param.getDeviceType().mark());

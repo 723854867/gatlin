@@ -14,10 +14,12 @@ import org.gatlin.soa.config.bean.ConfigCode;
 import org.gatlin.soa.config.bean.entity.CfgDistrict;
 import org.gatlin.soa.config.bean.entity.CfgGlobal;
 import org.gatlin.soa.config.bean.model.Configs;
+import org.gatlin.soa.config.bean.param.CfgGlobalParam;
 import org.gatlin.soa.config.bean.param.DistrictAddParam;
 import org.gatlin.soa.config.bean.param.DistrictModifyParam;
 import org.gatlin.soa.config.manager.DistrictManager;
 import org.gatlin.soa.config.mybatis.dao.CfgGlobalDao;
+import org.gatlin.util.DateUtil;
 import org.springframework.stereotype.Service;
 
 @Service("configService")
@@ -40,6 +42,16 @@ public class ConfigServiceImpl implements ConfigService {
 		Configs configs = new Configs();
 		configs.setGlobals(cfgGlobalDao.query(query));
 		return configs;
+	}
+	
+	@Override
+	public void configUpdate(CfgGlobalParam cfgGlobalParam) {
+		CfgGlobal cfgGlobal = cfgGlobalDao.getByKey(cfgGlobalParam.getKey());
+		Assert.notNull(ConfigCode.CONFIG_NOT_EXIST, cfgGlobal);
+		if(null != cfgGlobalParam.getValue()) 
+			cfgGlobal.setValue(cfgGlobalParam.getValue());
+		cfgGlobal.setUpdated(DateUtil.current());
+		cfgGlobalDao.update(cfgGlobal);
 	}
 	
 	@Override
