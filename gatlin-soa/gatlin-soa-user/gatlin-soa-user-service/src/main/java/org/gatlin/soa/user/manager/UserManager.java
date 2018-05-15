@@ -13,12 +13,14 @@ import org.gatlin.soa.user.bean.UserUtil;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
+import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.model.LoginInfo;
 import org.gatlin.soa.user.bean.model.LoginModel;
 import org.gatlin.soa.user.bean.model.RegisterModel;
 import org.gatlin.soa.user.bean.model.UserListInfo;
+import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.bean.param.UserListParam;
 import org.gatlin.soa.user.bean.param.UsernameResetParam;
@@ -26,6 +28,7 @@ import org.gatlin.soa.user.mybatis.EntityGenerator;
 import org.gatlin.soa.user.mybatis.dao.UserDeviceDao;
 import org.gatlin.soa.user.mybatis.dao.UserInfoDao;
 import org.gatlin.soa.user.mybatis.dao.UserInvitationDao;
+import org.gatlin.soa.user.mybatis.dao.UserSecurityDao;
 import org.gatlin.soa.user.mybatis.dao.UsernameDao;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.StringUtil;
@@ -42,6 +45,8 @@ public class UserManager {
 	private UsernameDao usernameDao;
 	@Resource
 	private UserDeviceDao userDeviceDao;
+	@Resource
+	private UserSecurityDao userSecurityDao;
 	@Resource
 	private UserInvitationDao userInvitationDao;
 
@@ -100,6 +105,12 @@ public class UserManager {
 			info.setNickname(user.getNickname());
 		info.setUpdated(DateUtil.current());
 		userInfoDao.update(info);
+	}
+	
+	public UserSecurity realname(RealnameParam param) { 
+		UserSecurity instance = EntityGenerator.newUserSecurity(param);
+		userSecurityDao.insert(instance);
+		return instance;
 	}
 	
 	public UserInfo user(long uid) {

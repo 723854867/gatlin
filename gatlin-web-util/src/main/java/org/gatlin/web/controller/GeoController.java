@@ -11,6 +11,8 @@ import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.config.api.ConfigService;
+import org.gatlin.soa.config.bean.param.DistrictAddParam;
+import org.gatlin.soa.config.bean.param.DistrictModifyParam;
 import org.gatlin.soa.user.api.GeoService;
 import org.gatlin.soa.user.bean.param.AddressAddparam;
 import org.gatlin.soa.user.bean.param.AddressModifyParam;
@@ -41,6 +43,20 @@ public class GeoController {
 	@RequestMapping("districts/all")
 	public Object districtsAll(@RequestBody @Valid SoaParam param) {
 		return configService.districts(new Query());
+	}
+	
+	@ResponseBody
+	@RequestMapping("districts/add")
+	public Object districtsAdd(@RequestBody @Valid DistrictAddParam param) {
+		configService.districtAdd(param);
+		return Response.ok();
+	}
+	
+	@ResponseBody
+	@RequestMapping("districts/modify")
+	public Object districtsModify(@RequestBody @Valid DistrictModifyParam param) {
+		configService.districtModify(param);
+		return Response.ok();
 	}
 	
 	@ResponseBody

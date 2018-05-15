@@ -7,11 +7,13 @@ import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
+import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.param.AddressAddparam;
 import org.gatlin.soa.user.bean.param.CompanyAddParam;
 import org.gatlin.soa.user.bean.param.LoginParam;
+import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.KeyUtil;
 import org.gatlin.util.lang.StringUtil;
@@ -89,6 +91,18 @@ public class EntityGenerator {
 		instance.setTelephone(param.getTelephone());
 		instance.setEmail(param.getEmail());
 		instance.setSummary(param.getSummary());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final UserSecurity newUserSecurity(RealnameParam param) {
+		UserSecurity instance = new UserSecurity();
+		instance.setUid(param.getUser().getId());
+		instance.setIdentity(param.getIdentity());
+		instance.setMobile(param.getMobile());
+		instance.setRealname(param.getRealname());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

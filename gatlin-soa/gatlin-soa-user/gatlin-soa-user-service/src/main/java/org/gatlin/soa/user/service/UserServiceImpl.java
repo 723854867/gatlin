@@ -14,12 +14,14 @@ import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
+import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.model.LoginModel;
 import org.gatlin.soa.user.bean.model.RegisterModel;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.LoginParam;
+import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.bean.param.UserListParam;
 import org.gatlin.soa.user.bean.param.UsernameResetParam;
@@ -155,5 +157,10 @@ public class UserServiceImpl implements UserService {
 			break;
 		}
 		userManager.usernameReset(param);
+	}
+	
+	@Override
+	public UserSecurity realname(RealnameParam param) {
+		return null;
 	}
 }

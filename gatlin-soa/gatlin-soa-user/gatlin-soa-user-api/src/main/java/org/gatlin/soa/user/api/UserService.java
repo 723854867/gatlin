@@ -3,12 +3,14 @@ package org.gatlin.soa.user.api;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.model.LoginModel;
 import org.gatlin.soa.user.bean.model.RegisterModel;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.LoginParam;
+import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.bean.param.UserListParam;
 import org.gatlin.soa.user.bean.param.UsernameResetParam;
@@ -48,4 +50,6 @@ public interface UserService {
 	
 	// 重置账号
 	void usernameReset(UsernameResetParam param);
+	
+	UserSecurity realname(RealnameParam param);
 }
