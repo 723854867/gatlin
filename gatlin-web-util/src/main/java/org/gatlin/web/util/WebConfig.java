@@ -5,6 +5,7 @@ import javax.validation.Validator;
 import org.gatlin.core.CoreConsts;
 import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.enums.Locale;
+import org.gatlin.web.WebConsts;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

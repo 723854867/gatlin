@@ -46,10 +46,14 @@ public interface UserService {
 	
 	Pager<UserListInfo> users(UserListParam param); 
 	
+	Username username(Query query);
+	
 	Pager<Username> usernames(Query query);
 	
 	// 重置账号
 	void usernameReset(UsernameResetParam param);
 	
 	UserSecurity realname(RealnameParam param);
+	
+	UserSecurity security(long uid);
 }

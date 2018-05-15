@@ -1,4 +1,4 @@
-package org.gatlin.web.util;
+package org.gatlin.web;
 
 import org.gatlin.core.bean.model.option.BoolOption;
 import org.gatlin.core.bean.model.option.IntegerOption;
@@ -18,5 +18,6 @@ public interface WebConsts {
 		final IntegerOption ACCOUNT_MOD								= new IntegerOption("account.mod", 0);
 		final IntegerOption ACCOUNT_RECHARGE_MOD					= new IntegerOption("account.recharge.mod", 0);
 		final IntegerOption RECHARGE_TIMEOUT						= new IntegerOption("recharge.timeout", 30);
+		final BoolOption SINAPAY_ENABLE								= new BoolOption("sinapay.enable", false);
 	}
 }

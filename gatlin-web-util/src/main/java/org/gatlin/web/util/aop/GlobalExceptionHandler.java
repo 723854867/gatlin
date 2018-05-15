@@ -9,6 +9,7 @@ import javax.validation.ConstraintViolationException;
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.exceptions.GatlinRuntimeException;
+import org.gatlin.core.bean.exceptions.SdkException;
 import org.gatlin.core.bean.model.code.Code;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.web.util.WebCode;
@@ -52,12 +53,19 @@ public class GlobalExceptionHandler {
 	}
 
 	@ResponseBody
-	@ExceptionHandler({ GatlinRuntimeException.class})
+	@ExceptionHandler({ GatlinRuntimeException.class })
 	public Response<Void> bizExceptionHandler(Exception e) {
 		if (e instanceof CodeException) {
 			CodeException exception = (CodeException) e;
 			Code code = exception.code();
+			if (code.key().equals(CoreCode.SYSTEM_ERR.key()))
+				logger.error("系统错误！", e);
 			return Response.error(code);
+		}
+		if (e instanceof SdkException) {
+			Response<Void> response = Response.error(CoreCode.SDK_INVOKE_FAIL);
+			response.appendDesc(((SdkException) e).desc());
+			return response;
 		}
 		return Response.error(CoreCode.SYSTEM_ERR);
 	}

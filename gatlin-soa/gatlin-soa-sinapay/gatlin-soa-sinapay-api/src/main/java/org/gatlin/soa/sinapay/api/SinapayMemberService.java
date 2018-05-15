@@ -1,6 +1,7 @@
 package org.gatlin.soa.sinapay.api;
 
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
+import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 
 /**
  * 新浪支付会员服务
@@ -28,4 +29,6 @@ public interface SinapayMemberService {
 	 * @param ip 认证客户端ip
 	 */
 	void realname(String tid, String realname, String identity, String ip);
+	
+	SinaUser user(String tid, MemberType type);
 }

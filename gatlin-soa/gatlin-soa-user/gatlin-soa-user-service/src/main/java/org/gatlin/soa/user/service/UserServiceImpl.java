@@ -136,6 +136,11 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
+	public Username username(Query query) {
+		return userManager.username(query);
+	}
+	
+	@Override
 	public Pager<Username> usernames(Query query) {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
@@ -161,6 +166,11 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public UserSecurity realname(RealnameParam param) {
-		return null;
+		return userManager.realname(param);
+	}
+	
+	@Override
+	public UserSecurity security(long uid) {
+		return userManager.security(uid);
 	}
 }

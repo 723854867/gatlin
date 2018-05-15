@@ -52,7 +52,7 @@ public class UsernameResetParam extends UsernameParam {
 			break;
 		case MOBILE:
 			Assert.isTrue(CoreCode.PARAM_ERR, PhoneUtil.isMobile(nusername));
-			setUsername(PhoneUtil.parseMobile(nusername));
+			setNusername(PhoneUtil.parseMobile(nusername));
 			break;
 		default:
 			throw new CodeException(CoreCode.PARAM_ERR);
