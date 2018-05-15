@@ -18,5 +18,4 @@ public interface UserCode {
 	final Code PWD_UNMODIFIED	 			= new Code("code.user.pwd.unmodified", "新密码不可以和旧密码相同");
 	final Code USER_ADDRESS_NOT_EXIST	 	= new Code("code.user.address.not.exist", "用户地址不存在");
 	final Code USER_ADDRESS_COUNT_LIMIT		= new Code("code.user.address.count.maximum", "用户地址数目已达上限");
-
 }

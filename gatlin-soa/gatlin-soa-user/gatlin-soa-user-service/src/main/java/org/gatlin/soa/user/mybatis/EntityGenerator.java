@@ -1,7 +1,8 @@
-package org.gatlin.soa.user;
+package org.gatlin.soa.user.mybatis;
 
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.user.bean.UserUtil;
+import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
@@ -9,6 +10,7 @@ import org.gatlin.soa.user.bean.entity.UserInvitation;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.param.AddressAddparam;
+import org.gatlin.soa.user.bean.param.CompanyAddParam;
 import org.gatlin.soa.user.bean.param.LoginParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.KeyUtil;
@@ -70,6 +72,23 @@ public class EntityGenerator {
 		instance.setDetail(param.getDetail());
 		instance.setContacts(param.getContacts());
 		instance.setContactsMobile(param.getContactsMobile());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final Company newCompany(CompanyAddParam param) {
+		Company instance = new Company();
+		instance.setName(param.getName());
+		instance.setAddress(param.getAddress());
+		instance.setIdentity(param.getIdentity());
+		instance.setLicenseAddress(param.getLicenseAddress());
+		instance.setLicenseExpiry(param.getLicenseExpiry());
+		instance.setBusinessScope(param.getBusinessScope());
+		instance.setTelephone(param.getTelephone());
+		instance.setEmail(param.getEmail());
+		instance.setSummary(param.getSummary());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

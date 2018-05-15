@@ -8,11 +8,11 @@ import org.gatlin.sdk.sinapay.response.SinapayResponse;
  * 
  * @author lynn
  */
-public class MemberActivateRequest extends MemberRequest<SinapayResponse, MemberActivateRequest> {
+public class ActivateRequest extends MemberRequest<SinapayResponse, ActivateRequest> {
 	
-	private MemberActivateRequest() {}
+	private ActivateRequest() {}
 
-	public static class Builder extends MemberRequest.Builder<SinapayResponse, MemberActivateRequest, Builder> {
+	public static class Builder extends MemberRequest.Builder<SinapayResponse, ActivateRequest, Builder> {
 
 		private static final long serialVersionUID = 3135017688140220L;
 		
@@ -32,8 +32,8 @@ public class MemberActivateRequest extends MemberRequest<SinapayResponse, Member
 		}
 		
 		@Override
-		protected MemberActivateRequest buildReq() {
-			return new MemberActivateRequest();
+		protected ActivateRequest buildReq() {
+			return new ActivateRequest();
 		}
 	}
 }

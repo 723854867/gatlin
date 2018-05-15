@@ -6,12 +6,19 @@
 
 	<parent>
 		<groupId>org.gatlin</groupId>
-		<artifactId>gatlin-soa-user</artifactId>
+		<artifactId>gatlin-soa-sinapay</artifactId>
 		<version>1.0</version>
 	</parent>
 
-	<artifactId>gatlin-soa-user-bean</artifactId>
-	<name>gatlin-soa-user-bean</name>
+	<artifactId>gatlin-soa-sinapay-api</artifactId>
+	<name>gatlin-soa-sinapay-api</name>
 	<url>http://maven.apache.org</url>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.gatlin</groupId>
+			<artifactId>gatlin-soa-sinapay-bean</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 </project>
