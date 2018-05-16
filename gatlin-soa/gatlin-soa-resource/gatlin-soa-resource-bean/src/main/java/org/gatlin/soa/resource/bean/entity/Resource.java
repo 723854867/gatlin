@@ -11,11 +11,12 @@ public class Resource implements Identifiable<String> {
 	@Id
 	private String id;
 	private int cfgId;
-	private long owner;
 	private long bytes;
 	private String url;
+	private String link;
 	private String name;
 	private String path;
+	private String owner;
 	private int priority;
 	private int created;
 	private int updated;
@@ -36,11 +37,11 @@ public class Resource implements Identifiable<String> {
 		this.cfgId = cfgId;
 	}
 	
-	public long getOwner() {
+	public String getOwner() {
 		return owner;
 	}
 	
-	public void setOwner(long owner) {
+	public void setOwner(String owner) {
 		this.owner = owner;
 	}
 
@@ -58,6 +59,14 @@ public class Resource implements Identifiable<String> {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public String getLink() {
+		return link;
+	}
+	
+	public void setLink(String link) {
+		this.link = link;
 	}
 
 	public String getPath() {

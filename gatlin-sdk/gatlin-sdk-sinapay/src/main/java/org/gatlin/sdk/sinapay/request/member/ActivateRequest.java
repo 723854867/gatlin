@@ -10,8 +10,6 @@ import org.gatlin.sdk.sinapay.response.SinapayResponse;
  */
 public class ActivateRequest extends MemberRequest<SinapayResponse, ActivateRequest> {
 	
-	private ActivateRequest() {}
-
 	public static class Builder extends MemberRequest.Builder<SinapayResponse, ActivateRequest, Builder> {
 
 		private static final long serialVersionUID = 3135017688140220L;
@@ -29,11 +27,6 @@ public class ActivateRequest extends MemberRequest<SinapayResponse, ActivateRequ
 		public Builder clientIp(String clientIp) {
 			this.params.put("client_ip", clientIp);
 			return this;
-		}
-		
-		@Override
-		protected ActivateRequest buildReq() {
-			return new ActivateRequest();
 		}
 	}
 }

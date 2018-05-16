@@ -5,8 +5,6 @@ import org.gatlin.sdk.sinapay.response.SinapayResponse;
 
 public class RealnameRequest extends MemberRequest<SinapayResponse, RealnameRequest> {
 	
-	private RealnameRequest() {}
-
 	public static class Builder extends MemberRequest.Builder<SinapayResponse, RealnameRequest, Builder> {
 
 		private static final long serialVersionUID = 3135017688140220L;
@@ -40,11 +38,6 @@ public class RealnameRequest extends MemberRequest<SinapayResponse, RealnameRequ
 		public Builder clientIp(String clientIp) {
 			this.params.put("client_ip", clientIp);
 			return this;
-		}
-
-		@Override
-		protected RealnameRequest buildReq() {
-			return new RealnameRequest();
 		}
 	}
 }

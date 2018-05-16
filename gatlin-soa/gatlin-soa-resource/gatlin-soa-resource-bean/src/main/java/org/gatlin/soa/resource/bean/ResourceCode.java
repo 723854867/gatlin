@@ -10,4 +10,5 @@ public interface ResourceCode {
 	final Code RESOURCE_COUNT_LIMIT 			= new Code("code.resource.count.limit", "资源数量限制");
 	final Code PICTURE_NOT_EXIST				= new Code("code.resource.picture.not.exist", "图片资源不存在");
 	final Code CONFG_UPLOAD_NOT_EXIST			= new Code("code.resource.config.upload.not.exist", "上传配置不存在");
+	final Code RESOURCE_LIN_DUPLICATED			= new Code("code.resource.link.duplicated", "链接资源不可再配置链接");
 }

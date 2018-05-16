@@ -13,7 +13,6 @@ import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.ResourceCode;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
-import org.gatlin.soa.resource.bean.entity.ResourceRoute;
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 import org.gatlin.soa.resource.manager.ResourceManager;
@@ -35,7 +34,7 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 	
 	@Override
-	public CfgResource uploadVerify(int cfgId, long owner, long bytes) {
+	public CfgResource uploadVerify(int cfgId, String owner, long bytes) {
 		CfgResource cfgResource = resourceManager.cfgResource(cfgId);
 		Assert.notNull(ResourceCode.RESOURCE_CONFIG_NOT_EXIST, cfgResource);
 		if (0 < cfgResource.getMaximum()) {
@@ -52,22 +51,17 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 	
 	@Override
-	public void upload(Resource resource) {
-		resourceManager.insert(resource);
+	public Resource upload(Resource resource) {
+		return resourceManager.upload(resource);
 	}
 	
 	@Override
-	public void modify(ResourceModifyParam param) {
-		resourceManager.modify(param);
+	public Resource modify(ResourceModifyParam param) {
+		return resourceManager.modify(param);
 	}
 	
 	@Override
-	public void link(String id, String link) {
-		resourceManager.link(id, link);
-	}
-	
-	@Override
-	public Resource delete(String id) {
+	public Set<Resource> delete(String id) {
 		return resourceManager.delete(id);
 	}
 	
@@ -76,8 +70,8 @@ public class ResourceServiceImpl implements ResourceService {
 		Resource resource = resourceManager.resource(query);
 		if (null == resource)
 			return null;
-		query = new Query().eq("resource_id", resource.getId());
-		return new ResourceInfo(resource, resourceManager.resourceRoute(query));
+		CfgResource cfgResource = resourceManager.cfgResource(resource.getCfgId());
+		return new ResourceInfo(resource, cfgResource);
 	}
 	
 	@Override
@@ -87,12 +81,12 @@ public class ResourceServiceImpl implements ResourceService {
 		List<Resource> resources = resourceManager.resources(query);
 		if (CollectionUtil.isEmpty(resources))
 			return Pager.<ResourceInfo>empty();
-		Set<String> set = new HashSet<String>();
-		resources.forEach(item -> set.add(item.getId()));
-		Map<String, ResourceRoute> routes = resourceManager.resourceRoutes(new Query().in("id", set));
+		Set<Integer> set = new HashSet<Integer>();
+		resources.forEach(item -> set.add(item.getCfgId()));
+		Map<Integer, CfgResource> map = resourceManager.cfgResources(new Query().in("id", set));
 		return Pager.<ResourceInfo, Resource>convert(resources, () -> {
 			List<ResourceInfo> infos = new ArrayList<ResourceInfo>();
-			resources.forEach(item -> infos.add(new ResourceInfo(item, routes.get(item.getId()))));
+			resources.forEach(item -> infos.add(new ResourceInfo(item, map.get(item.getCfgId()))));
 			return infos;
 		});
 	}

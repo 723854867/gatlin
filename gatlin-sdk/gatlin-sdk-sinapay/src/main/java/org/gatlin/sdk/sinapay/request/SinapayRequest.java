@@ -1,7 +1,8 @@
 package org.gatlin.sdk.sinapay.request;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -51,6 +52,7 @@ public class SinapayRequest<RESPONSE extends SinapayResponse, REQUEST extends Si
 		private static final long serialVersionUID = -4425607359267779464L;
 		
 		protected Map<String, String> params = new TreeMap<String, String>();
+		protected Class<REQUEST> clazz = null;
 		
 		protected Builder(String service) {
 			service(service);
@@ -61,6 +63,9 @@ public class SinapayRequest<RESPONSE extends SinapayResponse, REQUEST extends Si
 			this.params.put("_input_charset", "UTF-8");
 			this.params.put("partner_id", SinapayConfig.partnerId());
 			this.params.put("request_time", DateUtil.getDate(DateUtil.yyyyMMddHHmmss));
+			Type superType = getClass().getGenericSuperclass();   
+			Type[] generics = ((ParameterizedType) superType).getActualTypeArguments();  
+			this.clazz = (Class<REQUEST>) generics[1];
 		}
 		
 		private BUILDER service(String service) {
@@ -86,20 +91,19 @@ public class SinapayRequest<RESPONSE extends SinapayResponse, REQUEST extends Si
 		public REQUEST build() {
 			SignUtil.encrypt(params);
 			params.put("sign", SignUtil.sign(params));
+			REQUEST request = null;
 			for (Entry<String, String> entry : params.entrySet()) {
 				try {
 					String key = URLEncoder.encode(entry.getKey(), "UTF-8");
 					String value = URLEncoder.encode(entry.getValue(), "UTF-8");
 					this.params.put(key, value);
-				} catch (UnsupportedEncodingException e) {
-					throw new CodeException();
+					request = clazz.newInstance();
+				} catch (Exception e) {
+					throw new CodeException(e);
 				}
 			}
-			REQUEST request = buildReq();
 			request.setParams(this.params);
 			return request;
 		}
-		
-		protected abstract REQUEST buildReq();
 	}
 }

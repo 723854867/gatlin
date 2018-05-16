@@ -2,25 +2,27 @@ package org.gatlin.soa.resource.bean.model;
 
 import java.io.Serializable;
 
+import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
-import org.gatlin.soa.resource.bean.entity.ResourceRoute;
 
 public class ResourceInfo implements Serializable {
 
 	private static final long serialVersionUID = -8713101241024832832L;
 
+	private int type;
 	private String id;
 	private int cfgId;
 	private String url;
 	private String name;
 	private String link;
-	private long owner;
+	private String owner;
 	private int priority;
 	private int created;
 	
 	public ResourceInfo() {}
 	
-	public ResourceInfo(Resource resource, ResourceRoute route) {
+	public ResourceInfo(Resource resource, CfgResource cfgResource) {
+		this.type = cfgResource.getType();
 		this.id = resource.getId();
 		this.cfgId = resource.getCfgId();
 		this.url = resource.getUrl();
@@ -28,10 +30,16 @@ public class ResourceInfo implements Serializable {
 		this.owner = resource.getOwner();
 		this.priority = resource.getPriority();
 		this.created = resource.getCreated();
-		if (null != route)
-			this.link = route.getLink();
 	}
-
+	
+	public int getType() {
+		return type;
+	}
+	
+	public void setType(int type) {
+		this.type = type;
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -72,11 +80,11 @@ public class ResourceInfo implements Serializable {
 		this.link = link;
 	}
 	
-	public long getOwner() {
+	public String getOwner() {
 		return owner;
 	}
 	
-	public void setOwner(long owner) {
+	public void setOwner(String owner) {
 		this.owner = owner;
 	}
 

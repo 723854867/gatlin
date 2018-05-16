@@ -1,6 +1,7 @@
 package org.gatlin.web.controller;
 
 import java.io.File;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -11,8 +12,8 @@ import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
-import org.gatlin.soa.resource.bean.param.ResourceLinkParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
+import org.gatlin.util.lang.StringUtil;
 import org.gatlin.web.bean.param.CfgResourceListParam;
 import org.gatlin.web.bean.param.ResourceListParam;
 import org.gatlin.web.bean.param.ResourceUploadParam;
@@ -50,25 +51,22 @@ public class ResourceController {
 	@ResponseBody
 	@RequestMapping("delete")
 	public Object delete(@RequestBody @Valid SoaSidParam param) {
-		Resource resource = resourceService.delete(param.getId());
-		File file = new File(resource.getPath());
-		file.delete();
+		Set<Resource> resources = resourceService.delete(param.getId());
+		resources.forEach(item -> {
+			File file = new File(item.getPath());
+			file.delete();
+		});
 		return Response.ok();
 	}
 	
 	@ResponseBody
 	@RequestMapping("deleteByAjax")
 	public Object deleteByAjax(@Valid SoaSidParam param) {
-		Resource resource = resourceService.delete(param.getId());
-		File file = new File(resource.getPath());
-		file.delete();
-		return Response.ok();
-	}
-	
-	@ResponseBody
-	@RequestMapping("link")
-	public Object link(@RequestBody @Valid ResourceLinkParam param) {
-		resourceService.link(param.getId(), param.getLink());
+		Set<Resource> resources = resourceService.delete(param.getId());
+		resources.forEach(item -> {
+			File file = new File(item.getPath());
+			file.delete();
+		});
 		return Response.ok();
 	}
 	
@@ -82,10 +80,15 @@ public class ResourceController {
 			resourceHook.uploadVerify(cfgResource, param);
 		return uploader.upload(param.getSource(), cfgResource.getDirectory(), resource -> {
 			resource.setName(param.getName());
-			resource.setOwner(param.getOwner());
 			resource.setPriority(param.getPriority());
 			resource.setCfgId(param.getCfgResourceId());
-			resourceService.upload(resource);
+			resource.setLink(null == param.getLink() ? StringUtil.EMPTY : param.getLink());
+			resource.setOwner(null == param.getOwner() ? StringUtil.EMPTY : param.getOwner());
+			Resource deleted = resourceService.upload(resource);
+			if (null != deleted) {
+				File file = new File(deleted.getPath());
+				file.delete();
+			}
 			return resource;
 		});
 	}
@@ -93,7 +96,11 @@ public class ResourceController {
 	@ResponseBody
 	@RequestMapping("modify")
 	public Object modify(@RequestBody @Valid ResourceModifyParam param) {
-		resourceService.modify(param);
+		Resource deleted = resourceService.modify(param);
+		if (null != deleted) {
+			File file = new File(deleted.getPath());
+			file.delete();
+		}
 		return Response.ok();
 	}
 }

@@ -1,6 +1,6 @@
 package org.gatlin.soa.resource.bean.param;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Min;
 
 import org.gatlin.soa.bean.param.SoaSidParam;
 
@@ -8,9 +8,10 @@ public class ResourceModifyParam extends SoaSidParam {
 
 	private static final long serialVersionUID = 1979697622927062997L;
 
-	@NotEmpty
 	private String name;
-	private int priority;
+	private String link;
+	@Min(0)
+	private Integer priority;
 
 	public String getName() {
 		return name;
@@ -20,11 +21,19 @@ public class ResourceModifyParam extends SoaSidParam {
 		this.name = name;
 	}
 
-	public int getPriority() {
+	public String getLink() {
+		return link;
+	}
+	
+	public void setLink(String link) {
+		this.link = link;
+	}
+	
+	public Integer getPriority() {
 		return priority;
 	}
-
-	public void setPriority(int priority) {
+	
+	public void setPriority(Integer priority) {
 		this.priority = priority;
 	}
 }

@@ -51,7 +51,8 @@ public class UserController {
 			Iterator<ResourceInfo> itr = resources.getList().iterator();
 			while (itr.hasNext()) {
 				ResourceInfo resource = itr.next();
-				if (resource.getOwner() == info.getUid()) {
+				long owner = Long.valueOf(resource.getOwner());
+				if (owner == info.getUid()) {
 					itr.remove();
 					info.setAvatar(resource.getUrl());
 					break;

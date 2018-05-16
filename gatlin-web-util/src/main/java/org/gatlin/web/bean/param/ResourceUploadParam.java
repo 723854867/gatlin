@@ -11,9 +11,10 @@ public class ResourceUploadParam extends SoaParam {
 
 	private static final long serialVersionUID = -4042539380420527261L;
 
-	private long owner;
+	private String owner;
 	@NotEmpty
 	private String name;
+	private String link;
 	@Min(0)
 	private int priority;
 	@Min(0)
@@ -21,11 +22,11 @@ public class ResourceUploadParam extends SoaParam {
 	@NotNull
 	private MultipartFile source;
 	
-	public long getOwner() {
+	public String getOwner() {
 		return owner;
 	}
 	
-	public void setOwner(long owner) {
+	public void setOwner(String owner) {
 		this.owner = owner;
 	}
 	
@@ -35,6 +36,14 @@ public class ResourceUploadParam extends SoaParam {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getLink() {
+		return link;
+	}
+	
+	public void setLink(String link) {
+		this.link = link;
 	}
 
 	public int getPriority() {

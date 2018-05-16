@@ -32,7 +32,7 @@ public class SinaMemberTest extends SinaTest {
 	@Test
 	public void testRealname() {
 		RealnameRequest.Builder builder = new RealnameRequest.Builder();
-		builder.identityId("445948416376176640");
+		builder.identityId("446322135841898496");
 		builder.clientIp("127.0.0.1");
 		builder.certNo("330602198704222516");
 		builder.realname("樊水东");
