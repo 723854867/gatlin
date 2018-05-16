@@ -27,6 +27,7 @@ public class ResourceInfo implements Serializable {
 		this.cfgId = resource.getCfgId();
 		this.url = resource.getUrl();
 		this.name = resource.getName();
+		this.link = resource.getLink();
 		this.owner = resource.getOwner();
 		this.priority = resource.getPriority();
 		this.created = resource.getCreated();
