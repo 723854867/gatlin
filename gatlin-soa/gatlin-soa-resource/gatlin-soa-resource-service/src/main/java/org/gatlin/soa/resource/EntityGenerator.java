@@ -7,7 +7,7 @@ public class EntityGenerator {
 
 	public static final ResourceRoute newResourceRoute(String resourceId, String link) {
 		ResourceRoute instance = new ResourceRoute();
-		instance.setResourceId(resourceId);
+		instance.setId(resourceId);
 		instance.setLink(link);
 		instance.setCreated(DateUtil.current());
 		return instance;

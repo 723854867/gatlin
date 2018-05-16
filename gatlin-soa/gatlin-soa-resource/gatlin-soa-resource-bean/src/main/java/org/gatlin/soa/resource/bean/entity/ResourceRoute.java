@@ -9,16 +9,16 @@ public class ResourceRoute implements Identifiable<String> {
 	private static final long serialVersionUID = -8193627536431815031L;
 	
 	@Id
-	private String resourceId;
+	private String id;
 	private String link;
 	private int created;
 
-	public String getResourceId() {
-		return resourceId;
+	public String getId() {
+		return id;
 	}
 	
-	public void setResourceId(String resourceId) {
-		this.resourceId = resourceId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getLink() {
@@ -39,6 +39,6 @@ public class ResourceRoute implements Identifiable<String> {
 
 	@Override
 	public String key() {
-		return this.resourceId;
+		return this.id;
 	}
 }

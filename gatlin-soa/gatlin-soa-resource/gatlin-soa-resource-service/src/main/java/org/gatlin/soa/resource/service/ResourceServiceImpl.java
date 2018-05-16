@@ -89,7 +89,7 @@ public class ResourceServiceImpl implements ResourceService {
 			return Pager.<ResourceInfo>empty();
 		Set<String> set = new HashSet<String>();
 		resources.forEach(item -> set.add(item.getId()));
-		Map<String, ResourceRoute> routes = resourceManager.resourceRoutes(new Query().in("resource_id", set));
+		Map<String, ResourceRoute> routes = resourceManager.resourceRoutes(new Query().in("id", set));
 		return Pager.<ResourceInfo, Resource>convert(resources, () -> {
 			List<ResourceInfo> infos = new ArrayList<ResourceInfo>();
 			resources.forEach(item -> infos.add(new ResourceInfo(item, routes.get(item.getId()))));
