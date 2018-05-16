@@ -4,16 +4,29 @@ import org.gatlin.sdk.sinapay.bean.enums.CardAttribute;
 import org.gatlin.sdk.sinapay.bean.enums.CardType;
 import org.gatlin.sdk.sinapay.bean.enums.CardVerifyMode;
 import org.gatlin.sdk.sinapay.bean.enums.CertType;
-import org.gatlin.sdk.sinapay.response.SinapayResponse;
+import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
+import org.gatlin.util.IDWorker;
 
-public class BankCardBindRequest extends MemberRequest<SinapayResponse, BankCardBindRequest> {
+/**
+ * 1.绑定用户银行卡，支持银行卡认证服务。需要通过绑定或者快捷支付的银行卡必须通过认证方可使用，建议认证方式"SIGN"。
+ * 2.为了保证出款的成功率，城市商业银行还需要输入开户分支行。
+ * 3.当认证方式为"SIGN"时，需要后续调用绑定银行卡推进接口，才可返回card_id、is_verified信息，若认证方式为空，则不对卡信息做验证，可直接返回card_id、is_verified信息。
+ * 4.当认证方式为空，则绑定的银行卡只能用来提现，不能用来支付，且无需调用[绑卡推进接口]。
+ * 
+ * @author lynn
+ */
+public class BankCardBindRequest extends MemberRequest<BankCardBindResponse, BankCardBindRequest> {
 
-	public static class Builder extends MemberRequest.Builder<SinapayResponse, BankCardBindRequest, Builder> {
+	public static class Builder extends MemberRequest.Builder<BankCardBindResponse, BankCardBindRequest, Builder> {
 
 		private static final long serialVersionUID = 3135017688140220L;
 		
 		public Builder() {
 			super("binding_bank_card");
+			cardType(CardType.DEBIT);
+			cardAttribute(CardAttribute.C);
+			verifyMode(CardVerifyMode.SIGN);
+			requestNo(IDWorker.INSTANCE.nextSid());
 		}
 		
 		public Builder requestNo(String requestNo) {

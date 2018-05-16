@@ -1,7 +1,10 @@
 package org.gatlin.sdk.sinapay;
 
 import org.gatlin.sdk.sinapay.request.member.ActivateRequest;
+import org.gatlin.sdk.sinapay.request.member.BankCardBindConfirmRequest;
+import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
+import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
 import org.gatlin.sdk.sinapay.response.SinapayResponse;
 import org.gatlin.util.IDWorker;
 import org.gatlin.util.serial.SerializeUtil;
@@ -40,5 +43,27 @@ public class SinaMemberTest extends SinaTest {
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		SinapayResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testBankCardBind() {
+		BankCardBindRequest.Builder builder = new BankCardBindRequest.Builder();
+		builder.identityId("446322135841898496");
+		builder.clientIp("127.0.0.1");
+		builder.bankCode("ICBC");
+		builder.bankAccountNo("6212261202025453326");
+		builder.province("浙江省");
+		builder.city("杭州市");
+		builder.phoneNo("15888837752");
+		BankCardBindRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		BankCardBindResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testBankCardBindConfirm() {
+		BankCardBindConfirmRequest.Builder builder = new BankCardBindConfirmRequest.Builder();
+		
 	}
 }

@@ -60,8 +60,8 @@ public class ResourceController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("deleteByAjax")
-	public Object deleteByAjax(@Valid SoaSidParam param) {
+	@RequestMapping("delete/form")
+	public Object deleteFrom(@Valid SoaSidParam param) {
 		Set<Resource> resources = resourceService.delete(param.getId());
 		resources.forEach(item -> {
 			File file = new File(item.getPath());
