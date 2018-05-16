@@ -6,6 +6,6 @@ public interface Consts {
 
 	interface GlobalKeys {
 		// 每个用户可编辑的最大地址数
-		final IntegerOption ADDRESS_MAXIMUM				= new IntegerOption("address.maximum", 6);
+		final IntegerOption ADDRESS_MAXIMUM				= new IntegerOption("address_maximum", 6);
 	}
 }
