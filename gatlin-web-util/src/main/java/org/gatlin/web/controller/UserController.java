@@ -11,15 +11,16 @@ import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
-import org.gatlin.soa.bean.param.SoaNameParam;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.UserListParam;
+import org.gatlin.soa.user.bean.param.UserModifyParam;
 import org.gatlin.soa.user.bean.param.UsernameResetParam;
 import org.gatlin.util.lang.CollectionUtil;
+import org.gatlin.util.lang.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,9 +70,12 @@ public class UserController {
 	
 	@ResponseBody
 	@RequestMapping("modify")
-	public Object modify(@RequestBody @Valid SoaNameParam param) { 
+	public Object modify(@RequestBody @Valid UserModifyParam param) { 
 		User user = param.getUser();
-		user.setNickname(param.getName());
+		if (StringUtil.hasText(param.getName()))
+			user.setNickname(param.getName());
+		if (null != param.getMod())
+			user.setMod(param.getMod());
 		userService.update(user);
 		return Response.ok();
 	}

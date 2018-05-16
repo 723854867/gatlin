@@ -130,6 +130,7 @@ public class CommonController {
 		mod |= UserMod.EXIST.mark();
 		if (!StringUtil.hasText(user.getPwd()))
 			mod |= UserMod.PWD_UNSET.mark();
+		mod |= user.getMod();
 		return mod;
 	}
 	

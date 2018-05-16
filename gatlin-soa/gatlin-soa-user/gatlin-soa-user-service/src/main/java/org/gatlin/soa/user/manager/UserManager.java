@@ -103,6 +103,7 @@ public class UserManager {
 			info.setPwd(user.getPwd());
 		if (StringUtil.hasText(user.getNickname()))
 			info.setNickname(user.getNickname());
+		info.setMod(user.getMod());
 		info.setUpdated(DateUtil.current());
 		userInfoDao.update(info);
 	}

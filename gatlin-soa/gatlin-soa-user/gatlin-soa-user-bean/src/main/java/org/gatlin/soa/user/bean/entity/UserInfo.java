@@ -17,6 +17,7 @@ public class UserInfo implements Entity<Long> {
 	@Id
 	@GeneratedValue
 	private long id;
+	private int mod;
 	private String pwd;
 	private String salt;
 	private String nickname;
@@ -29,6 +30,14 @@ public class UserInfo implements Entity<Long> {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public int getMod() {
+		return mod;
+	}
+	
+	public void setMod(int mod) {
+		this.mod = mod;
 	}
 
 	public String getPwd() {

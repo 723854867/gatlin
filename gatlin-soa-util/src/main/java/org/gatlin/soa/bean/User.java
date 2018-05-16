@@ -12,6 +12,7 @@ public class User implements Serializable {
 
 	private OS os;
 	private long id;
+	private int mod;
 	private String pwd;
 	private int created;
 	private String salt;
@@ -36,6 +37,14 @@ public class User implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public int getMod() {
+		return mod;
+	}
+	
+	public void setMod(int mod) {
+		this.mod = mod;
 	}
 	
 	public String getPwd() {

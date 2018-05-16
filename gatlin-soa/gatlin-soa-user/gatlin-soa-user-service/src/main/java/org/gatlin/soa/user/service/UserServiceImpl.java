@@ -82,6 +82,7 @@ public class UserServiceImpl implements UserService {
 	private User _user(UserInfo info, UserDevice device) {
 		User user = new User();
 		user.setId(info.getId());
+		user.setMod(info.getMod());
 		user.setPwd(info.getPwd());
 		user.setSalt(info.getSalt());
 		user.setCreated(info.getCreated());

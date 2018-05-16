@@ -3,6 +3,8 @@ package org.gatlin.soa.user.bean.param;
 import javax.validation.constraints.NotEmpty;
 
 import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.util.PhoneUtil;
+import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.validate.Identity;
 import org.gatlin.util.validate.Mobile;
 
@@ -40,5 +42,12 @@ public class RealnameParam extends SoaParam {
 	
 	public void setRealname(String realname) {
 		this.realname = realname;
+	}
+	
+	@Override
+	public void verify() {
+		super.verify();
+		if (StringUtil.hasText(mobile))
+			this.mobile = PhoneUtil.parseMobile(this.mobile);
 	}
 }
