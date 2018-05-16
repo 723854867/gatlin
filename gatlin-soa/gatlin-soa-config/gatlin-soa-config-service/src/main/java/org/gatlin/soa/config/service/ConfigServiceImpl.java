@@ -17,7 +17,6 @@ import org.gatlin.soa.config.bean.model.Configs;
 import org.gatlin.soa.config.bean.param.CfgGlobalParam;
 import org.gatlin.soa.config.bean.param.DistrictAddParam;
 import org.gatlin.soa.config.bean.param.DistrictModifyParam;
-import org.gatlin.soa.config.bean.param.DistrictsParam;
 import org.gatlin.soa.config.manager.DistrictManager;
 import org.gatlin.soa.config.mybatis.dao.CfgGlobalDao;
 import org.gatlin.util.DateUtil;
@@ -73,10 +72,5 @@ public class ConfigServiceImpl implements ConfigService {
 	@Override
 	public void districtModify(DistrictModifyParam param) {
 		districtManager.modify(param);
-	}
-
-	@Override
-	public void districtAuth(DistrictsParam param) {
-		districtManager.auth(param);
 	}
 }

@@ -1,8 +1,8 @@
 package org.gatlin.dao.bean.entity;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class MongoKey implements Entity<String> {
+public class MongoKey implements Identifiable<String> {
 
 	private static final long serialVersionUID = 7711826634067853610L;
 	

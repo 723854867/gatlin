@@ -1,8 +1,6 @@
 package org.gatlin.soa.config.manager;
 
-import java.awt.event.ItemEvent;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +17,9 @@ import org.gatlin.soa.config.bean.entity.CfgDistrict;
 import org.gatlin.soa.config.bean.enums.DistrictLevel;
 import org.gatlin.soa.config.bean.param.DistrictAddParam;
 import org.gatlin.soa.config.bean.param.DistrictModifyParam;
-import org.gatlin.soa.config.bean.param.DistrictsParam;
 import org.gatlin.soa.config.mybatis.dao.CfgDistrictDao;
 import org.gatlin.util.DateUtil;
+import org.gatlin.util.algorithm.tree.TreeUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
 import org.springframework.stereotype.Component;
@@ -53,28 +51,28 @@ public class DistrictManager {
 			district.setAbname(param.getAbname());
 		if (null != param.getLevel())
 			district.setLevel(param.getLevel().mark());
-		if (district.getLevel() == DistrictLevel.PROVINCE.mark())
-			Assert.hasText(CoreCode.PARAM_ERR, param.getAbname());
-		else
-			Assert.hasNoText(CoreCode.PARAM_ERR, param.getAbname());
+		if (StringUtil.hasText(param.getAbname()))
+			Assert.isTrue(CoreCode.PARAM_ERR, district.getLevel() == DistrictLevel.PROVINCE.mark());
 		if (StringUtil.hasText(param.getParent()) && !district.getParent().equals(param.getParent())) {
 			CfgDistrict parent = cfgDistrictDao.getByKey(param.getParent());
 			Assert.notNull(ConfigCode.DISTRICT_NOT_EXIST, parent);
 			Assert.isTrue(parent.getLevel() == district.getLevel() + 1);
 		}
 		if (null != param.getValid() && district.isValid() ^ param.getValid()) {
-			district.setValid(param.getValid());
-			if (district.isValid()) {
-				Collection<CfgDistrict> list = parents(district).values();
-				if (!CollectionUtil.isEmpty(list)) {
-					list.forEach(item -> {
+			if (param.getValid()) {
+				Map<DistrictLevel, CfgDistrict> parents = parents(district);
+				parents.put(DistrictLevel.match(district.getLevel()), district);
+				if (!CollectionUtil.isEmpty(parents)) {
+					parents.values().forEach(item -> {
 						item.setValid(true);
 						item.setUpdated(DateUtil.current());
 					});
-					cfgDistrictDao.updateCollection(list);
+					cfgDistrictDao.updateCollection(parents.values());
 				}
 			} else {
-				List<CfgDistrict> list = childrens(district);
+				Query query = new Query().gt("level", district.getLevel()).eq("valid", 1);
+				List<CfgDistrict> list = TreeUtil.children(cfgDistrictDao.queryList(query), district);
+				list.add(district);
 				if (!CollectionUtil.isEmpty(list)) {
 					list.forEach(item -> {
 						item.setValid(false);
@@ -83,8 +81,8 @@ public class DistrictManager {
 					cfgDistrictDao.updateCollection(list);
 				}
 			}
-		}
-		cfgDistrictDao.update(district);
+		} else
+			cfgDistrictDao.update(district);
 	}
 	
 	public Geo geo(String code, boolean validCheck) {
@@ -125,7 +123,7 @@ public class DistrictManager {
 	
 	private void _childrens(CfgDistrict district, List<CfgDistrict> list) {
 		List<CfgDistrict> districts = cfgDistrictDao.queryList(new Query().eq("parent", district.getCode()));
-		if (CollectionUtil.isEmpty(list))
+		if (CollectionUtil.isEmpty(districts))
 			return;
 		list.addAll(districts);
 		districts.forEach(item -> _childrens(item, list));
@@ -137,13 +135,5 @@ public class DistrictManager {
 	
 	public List<CfgDistrict> districts(Query query) {
 		return cfgDistrictDao.queryList(query);
-	}
-
-	@Transactional
-	public void auth(DistrictsParam param) {
-		cfgDistrictDao.updateAllToInvalid();
-		List<CfgDistrict> list = cfgDistrictDao.queryList(new Query().in("code", param.getCodes()));
-		list.forEach(item -> item.setValid(true));
-		cfgDistrictDao.updateCollection(list);
 	}
 }

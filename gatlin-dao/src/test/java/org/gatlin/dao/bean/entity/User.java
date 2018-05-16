@@ -3,9 +3,9 @@ package org.gatlin.dao.bean.entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class User implements Entity<Long> {
+public class User implements Identifiable<Long> {
 
 	private static final long serialVersionUID = 1291603665465971543L;
 

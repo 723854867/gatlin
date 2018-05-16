@@ -9,14 +9,14 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.gatlin.core.bean.Entity;
 import org.gatlin.dao.Dao;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.util.bean.Identifiable;
 import org.gatlin.util.serial.SerializeUtil;
 import org.gatlin.util.serial.Serializer;
 
 @SuppressWarnings("unchecked")
-public class RedisDao<KEY, ENTITY extends Entity<KEY>> implements Dao<KEY, ENTITY> {
+public class RedisDao<KEY, ENTITY extends Identifiable<KEY>> implements Dao<KEY, ENTITY> {
 	
 	@Resource
 	protected Redis redis;

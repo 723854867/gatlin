@@ -10,7 +10,6 @@ import org.gatlin.soa.config.bean.model.Configs;
 import org.gatlin.soa.config.bean.param.CfgGlobalParam;
 import org.gatlin.soa.config.bean.param.DistrictAddParam;
 import org.gatlin.soa.config.bean.param.DistrictModifyParam;
-import org.gatlin.soa.config.bean.param.DistrictsParam;
 
 public interface ConfigService {
 	
@@ -27,6 +26,4 @@ public interface ConfigService {
 	void districtModify(DistrictModifyParam param);
 
 	void configUpdate(CfgGlobalParam cfgGlobalParam);
-
-	void districtAuth(DistrictsParam param);
 }

@@ -2,9 +2,9 @@ package org.gatlin.soa.config.bean.entity;
 
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class CfgGlobal implements Entity<String> {
+public class CfgGlobal implements Identifiable<String> {
 
 	private static final long serialVersionUID = 276816685147658470L;
 

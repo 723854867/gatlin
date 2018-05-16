@@ -11,13 +11,13 @@ import javax.annotation.PostConstruct;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.gatlin.core.GatlinConfigration;
-import org.gatlin.core.bean.Entity;
 import org.gatlin.core.bean.model.Paginate;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.DaoConsts.Options;
 import org.gatlin.dao.bean.enums.Comparison;
 import org.gatlin.dao.bean.model.Condition;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.util.bean.Identifiable;
 import org.gatlin.util.bean.model.Pair;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
@@ -97,7 +97,7 @@ public class Mongo {
 		return list;
 	}
 	
-	public <KEY, T extends Entity<KEY>> Map<KEY, T> findMap(String collectionName, Class<T> clazz) { 
+	public <KEY, T extends Identifiable<KEY>> Map<KEY, T> findMap(String collectionName, Class<T> clazz) { 
 		MongoCollection<Document> collection = collection(collectionName);
 		FindIterable<Document> iterable = collection.find();
 		Map<KEY, T> map = new HashMap<KEY, T>();
@@ -109,7 +109,7 @@ public class Mongo {
 		return map;
 	}
 	
-	public <KEY, T extends Entity<KEY>> Map<KEY, T> findMap(String collectionName, Bson filter, Class<T> clazz) { 
+	public <KEY, T extends Identifiable<KEY>> Map<KEY, T> findMap(String collectionName, Bson filter, Class<T> clazz) { 
 		MongoCollection<Document> collection = collection(collectionName);
 		FindIterable<Document> iterable = collection.find(filter);
 		Map<KEY, T> map = new HashMap<KEY, T>();
@@ -129,7 +129,7 @@ public class Mongo {
 		collection.bulkWrite(list);
 	}
 	
-	public <KEY, MODEL extends Entity<KEY>> long bulkReplaceOne(String collectionName, Map<KEY, MODEL> replaces) {
+	public <KEY, MODEL extends Identifiable<KEY>> long bulkReplaceOne(String collectionName, Map<KEY, MODEL> replaces) {
 		MongoCollection<Document> collection = collection(collectionName);
 		List<ReplaceOneModel<Document>> list = new ArrayList<ReplaceOneModel<Document>>(replaces.size());
 		for (MODEL model : replaces.values()) 

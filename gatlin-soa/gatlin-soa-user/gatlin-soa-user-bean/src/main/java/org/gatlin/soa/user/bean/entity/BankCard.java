@@ -2,9 +2,9 @@ package org.gatlin.soa.user.bean.entity;
 
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class BankCard implements Entity<String> {
+public class BankCard implements Identifiable<String> {
 
 	private static final long serialVersionUID = 1543997790553681229L;
 

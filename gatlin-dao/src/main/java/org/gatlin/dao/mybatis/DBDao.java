@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
-import org.gatlin.core.bean.Entity;
 import org.gatlin.dao.Dao;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.dao.mybatis.provider.BatchInsertSQLProvider;
@@ -25,8 +24,9 @@ import org.gatlin.dao.mybatis.provider.ReplaceIntoSQLProvider;
 import org.gatlin.dao.mybatis.provider.UpdateCollectionSQLProvider;
 import org.gatlin.dao.mybatis.provider.UpdateMapSQLProvider;
 import org.gatlin.dao.mybatis.provider.UpdateSQLProvider;
+import org.gatlin.util.bean.Identifiable;
 
-public interface DBDao<KEY, ENTITY extends Entity<KEY>> extends Dao<KEY, ENTITY> {
+public interface DBDao<KEY, ENTITY extends Identifiable<KEY>> extends Dao<KEY, ENTITY> {
 
 	@Override
 	@InsertProvider(type = InsertSQLProvider.class, method = "dynamicSQL")

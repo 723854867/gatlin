@@ -2,7 +2,7 @@ package org.gatlin.soa.user.bean.entity;
 
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
 /**
  * 用户设备信息:同一个设备只能登陆一个用户
@@ -13,7 +13,7 @@ import org.gatlin.core.bean.Entity;
  * 
  * @author lynn
  */
-public class UserDevice implements Entity<String> {
+public class UserDevice implements Identifiable<String> {
 
 	private static final long serialVersionUID = 4745108999226672474L;
 

@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class UserFrozen implements Entity<String> {
+public class UserFrozen implements Identifiable<String> {
 
 	private static final long serialVersionUID = 7088830119964678890L;
 

@@ -2,9 +2,9 @@ package org.gatlin.soa.sinapay.bean.entity;
 
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class SinaUser implements Entity<String> {
+public class SinaUser implements Identifiable<String> {
 
 	private static final long serialVersionUID = -3267822852357079661L;
 

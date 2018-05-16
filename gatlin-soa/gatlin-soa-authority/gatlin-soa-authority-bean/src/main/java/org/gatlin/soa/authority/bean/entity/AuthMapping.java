@@ -3,9 +3,9 @@ package org.gatlin.soa.authority.bean.entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class AuthMapping implements Entity<Long> {
+public class AuthMapping implements Identifiable<Long> {
 
 	private static final long serialVersionUID = -517918930137921374L;
 

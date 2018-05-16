@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class UserAccount implements Entity<Long> {
+public class UserAccount implements Identifiable<Long> {
 
 	private static final long serialVersionUID = 7283759456351585371L;
 

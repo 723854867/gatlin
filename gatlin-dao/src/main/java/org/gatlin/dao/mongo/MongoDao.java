@@ -8,13 +8,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.gatlin.core.bean.Entity;
 import org.gatlin.dao.Dao;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.util.bean.Identifiable;
 
 import com.mongodb.client.model.Filters;
 
-public class MongoDao<KEY, ENTITY extends Entity<KEY>> implements Dao<KEY, ENTITY> {
+public class MongoDao<KEY, ENTITY extends Identifiable<KEY>> implements Dao<KEY, ENTITY> {
 	
 	protected static final String FIELD_ID					= "_id";
 	

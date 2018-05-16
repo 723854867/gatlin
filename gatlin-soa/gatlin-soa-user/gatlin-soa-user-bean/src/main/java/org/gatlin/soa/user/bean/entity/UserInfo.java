@@ -3,14 +3,14 @@ package org.gatlin.soa.user.bean.entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
 /**
  * 用户基本信息
  * 
  * @author lynn
  */
-public class UserInfo implements Entity<Long> {
+public class UserInfo implements Identifiable<Long> {
 
 	private static final long serialVersionUID = 607168546448230962L;
 

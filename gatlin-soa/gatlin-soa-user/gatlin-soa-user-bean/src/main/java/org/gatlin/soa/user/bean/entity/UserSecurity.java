@@ -2,9 +2,9 @@ package org.gatlin.soa.user.bean.entity;
 
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class UserSecurity implements Entity<Long> {
+public class UserSecurity implements Identifiable<Long> {
 
 	private static final long serialVersionUID = 8354553364333737685L;
 

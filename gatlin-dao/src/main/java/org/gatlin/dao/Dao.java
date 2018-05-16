@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.gatlin.core.bean.Entity;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.util.bean.Identifiable;
 
-public interface Dao<KEY, ENTITY extends Entity<KEY>> {
+public interface Dao<KEY, ENTITY extends Identifiable<KEY>> {
 
 	/**
 	 * 插入一个对象

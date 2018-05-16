@@ -1,13 +1,13 @@
 package org.gatlin.core.bean.entity;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
 /**
  * 请求日志
  * 
  * @author lynn
  */
-public class LogRequest implements Entity<String> {
+public class LogRequest implements Identifiable<String> {
 
 	private static final long serialVersionUID = -1624110602560363089L;
 

@@ -1,5 +1,6 @@
 package org.gatlin.soa.user.bean.param;
 
+import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.user.bean.enums.UserMod;
@@ -31,6 +32,6 @@ public class UserModifyParam extends SoaParam {
 	public void verify() {
 		super.verify();
 		if (null != mod) 
-			Assert.isTrue(UserMod.checkModify(mod));
+			Assert.isTrue(CoreCode.PARAM_ERR, UserMod.checkModify(mod));
 	}
 }

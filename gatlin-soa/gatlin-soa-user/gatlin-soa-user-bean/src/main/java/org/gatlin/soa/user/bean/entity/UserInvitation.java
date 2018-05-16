@@ -2,7 +2,7 @@ package org.gatlin.soa.user.bean.entity;
 
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
 /**
  * 用户邀请表
@@ -12,7 +12,7 @@ import org.gatlin.core.bean.Entity;
  * 
  * @author lynn
  */
-public class UserInvitation implements Entity<String> {
+public class UserInvitation implements Identifiable<String> {
 
 	private static final long serialVersionUID = 1905258522210894033L;
 
