@@ -73,7 +73,16 @@ public class SinapayController {
 		Assert.isTrue(ConfigCode.BANK_UNSUPPORT, null != bank && bank.isValid());
 		Geo geo = configService.geo(param.getCity(), false);
 		Assert.hasText(CoreCode.PARAM_ERR, geo.getCity());
-		sinapayMemberService.bankCardBind(param, bank.getId(), geo);
-		return Response.ok();
+		return sinapayMemberService.bankCardBind(param, bank.getId(), geo);
+	}
+	
+	@ResponseBody
+	@RequestMapping("member/bank/card/bind/confirm")
+	public Object memberBankCardBindConfirm(@RequestBody @Valid BankCardBindParam param) {
+		CfgBank bank = configService.bank(param.getBankId());
+		Assert.isTrue(ConfigCode.BANK_UNSUPPORT, null != bank && bank.isValid());
+		Geo geo = configService.geo(param.getCity(), false);
+		Assert.hasText(CoreCode.PARAM_ERR, geo.getCity());
+		return sinapayMemberService.bankCardBind(param, bank.getId(), geo);
 	}
 }

@@ -90,7 +90,7 @@ public class SinaUserManager {
 	}
 	
 	@Transactional
-	public void bankCardBind(BankCardBindParam param, String bankId, Geo geo) { 
+	public String bankCardBind(BankCardBindParam param, String bankId, Geo geo) { 
 		Query query = new Query().eq("type", MemberType.PERSONAL.mark()).eq("tid", param.getUser().getId());
 		SinaUser user = user(query);
 		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, user);
@@ -116,6 +116,7 @@ public class SinaUserManager {
 		logger.info("新浪绑卡请求：{}", SerializeUtil.GSON.toJson(request.params()));
 		BankCardBindResponse response = request.sync();
 		logger.info("新浪绑卡响应：{}", SerializeUtil.GSON.toJson(response));
+		return response.getTicket();
 	}
 	
 	public SinaUser user(Query query) {

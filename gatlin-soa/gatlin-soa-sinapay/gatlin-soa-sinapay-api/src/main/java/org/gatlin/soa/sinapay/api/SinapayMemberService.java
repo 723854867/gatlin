@@ -33,7 +33,7 @@ public interface SinapayMemberService {
 	/**
 	 * 绑定银行卡
 	 */
-	void bankCardBind(BankCardBindParam param, String bankId, Geo geo);
+	String bankCardBind(BankCardBindParam param, String bankId, Geo geo);
 	
 	SinaUser user(String tid, MemberType type);
 }

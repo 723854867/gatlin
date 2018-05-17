@@ -30,8 +30,8 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	}
 	
 	@Override
-	public void bankCardBind(BankCardBindParam param, String bankId, Geo geo) {
-		sinaUserManager.bankCardBind(param, bankId, geo);
+	public String bankCardBind(BankCardBindParam param, String bankId, Geo geo) {
+		return sinaUserManager.bankCardBind(param, bankId, geo);
 	}
 	
 	@Override
