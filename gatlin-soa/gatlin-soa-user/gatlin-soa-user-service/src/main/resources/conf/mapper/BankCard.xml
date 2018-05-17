@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gatlin.soa.user.mybatis.dao.BankCardDao" >
+
+	<select id="list" parameterType="org.gatlin.soa.user.bean.param.BankCardsParam" resultType="org.gatlin.soa.user.bean.model.BankCardInfo">
+		SELECT * FROM
+		(
+			SELECT 
+				a.id,
+				a.owner,
+				a.bank_id,
+				a.owner_type,
+				a.no bank_no, 
+				a.used,
+				a.mobile,
+				a.province,
+				a.city,
+				a.branch,
+				a.created,
+				<choose>
+					<when test="ownerType == 1">
+						b.`realname` owner_name,
+						b.`identity` owner_identity,
+						b.`mobile` owner_phone
+					</when>
+					<otherwise>
+						b.`name` owner_name,
+						b.`identity` owner_identity,
+						b.`telephone` owner_phone
+					</otherwise>
+				</choose>
+			FROM
+				(SELECT * FROM bank_card WHERE owner_type=#{ownerType}) a 
+			LEFT JOIN
+			<choose>
+				<when test="ownerType == 1">
+					`user_security` b ON a.`owner`=b.`uid`
+				</when>
+				<otherwise>
+					`company` b ON a.`owner`=b.`id`
+				</otherwise>
+			</choose>
+		) c
+		<where>
+			<if test="null != id">
+				`id`=#{id}
+			</if>
+			<if test="null != owner">
+				AND `owner`=#{owner}
+			</if>
+			<if test="null != city">
+				AND `city` LIKE concat(concat('%',#{city}),'%')
+			</if>
+			<if test="null != branch">
+				AND `branch` LIKE concat(concat('%',#{branch}),'%')
+			</if>
+			<if test="null != bankNo">
+				AND `bank_no` LIKE concat(concat('%',#{bankNo}),'%')
+			</if>
+			<if test="null != mobile">
+				AND `mobile` LIKE concat(concat('%',#{mobile}),'%')
+			</if>
+			<if test="null != province">
+				AND `province` LIKE concat(concat('%',#{province}),'%')
+			</if>
+			<if test="null != ownerName">
+				AND `owner_name` LIKE concat(concat('%',#{ownerName}),'%')
+			</if>
+			<if test="null != timeStop">
+				<![CDATA[ AND `created`<=#{timeStop} ]]>     
+			</if>
+			<if test="null != timeStart">
+				<![CDATA[ AND `created`>=#{timeStart} ]]>     
+			</if>
+		</where>
+	</select>
+</mapper>

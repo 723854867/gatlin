@@ -3,7 +3,7 @@ package org.gatlin.web.bean.model;
 import java.io.Serializable;
 
 import org.gatlin.soa.bean.User;
-import org.gatlin.soa.resource.bean.model.ResourceInfo;
+import org.gatlin.soa.bean.model.ResourceInfo;
 
 public class UserTips implements Serializable {
 

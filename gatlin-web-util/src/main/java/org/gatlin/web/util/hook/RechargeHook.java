@@ -10,6 +10,7 @@ import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.enums.UserAccountType;
 import org.gatlin.soa.account.bean.param.RechargeParam;
@@ -28,7 +29,7 @@ public abstract class RechargeHook {
 	@Resource
 	protected ConfigService configService;
 
-	public UserRecharge rechargeVerify(RechargeParam param) {
+	public UserRecharge rechargeVerify(RechargeParam param, PlatType plat) {
 		try {
 			switch (param.getGoodsType()) {
 			case 1:
@@ -39,9 +40,9 @@ public abstract class RechargeHook {
 				Assert.notNull(CoreCode.PARAM_ERR, accountType);
 				int mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD);
 				Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) != accountType.mark());
-				return _userRecharge(param);
+				return _userRecharge(param, plat);
 			default:
-				return verify(param);
+				return verify(param, plat);
 			}
 		} catch (Exception e) {
 			if (e instanceof CodeException)
@@ -59,18 +60,18 @@ public abstract class RechargeHook {
 		}
 	}
 	
-	protected abstract UserRecharge verify(RechargeParam param);
+	protected abstract UserRecharge verify(RechargeParam param, PlatType plat);
 	
-	protected UserRecharge _userRecharge(RechargeParam param) {
-		return _userRecharge(param, BigDecimal.ZERO);
+	protected UserRecharge _userRecharge(RechargeParam param, PlatType plat) {
+		return _userRecharge(param, plat, BigDecimal.ZERO);
 	}
 	
-	protected UserRecharge _userRecharge(RechargeParam param, BigDecimal fee) {
+	protected UserRecharge _userRecharge(RechargeParam param, PlatType plat, BigDecimal fee) {
 		UserRecharge instance = new UserRecharge();
 		instance.setId(IDWorker.INSTANCE.nextSid());
 		User user = param.getUser();
 		instance.setOs(user.getOs().mark());
-		instance.setPlat(param.getPlat().mark());
+		instance.setPlat(plat.mark());
 		instance.setIp(param.meta().getIp());
 		instance.setState(RechargeState.INIT.mark());
 		instance.setGoodsType(param.getGoodsType());

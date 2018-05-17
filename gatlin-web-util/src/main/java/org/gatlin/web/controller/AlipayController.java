@@ -8,22 +8,41 @@ import org.gatlin.sdk.alipay.bean.enums.Code;
 import org.gatlin.sdk.alipay.bean.enums.TradeState;
 import org.gatlin.sdk.alipay.notice.TradeNotice;
 import org.gatlin.soa.account.api.AccountService;
+import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
+import org.gatlin.soa.account.bean.param.RechargeParam;
+import org.gatlin.soa.alipay.api.AlipayAccountService;
+import org.gatlin.web.AlipayCondition;
+import org.gatlin.web.util.hook.RechargeHook;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("notice/alipay")
+@RequestMapping("alipay")
+@Conditional(AlipayCondition.class)
 public class AlipayController {
 	
 	@Resource
+	private RechargeHook rechargeHook;
+	@Resource
 	private AccountService accountService;
-
+	@Resource
+	private AlipayAccountService alipayAccountService;
+	
 	@ResponseBody
 	@RequestMapping("recharge")
-	public Object recharge(@RequestBody @Valid TradeNotice param) {
+	public Object recharge(@RequestBody @Valid RechargeParam param) {
+		UserRecharge recharge = rechargeHook.rechargeVerify(param, PlatType.ALIPAY);
+		return alipayAccountService.recharge(recharge);
+	}
+	
+	@ResponseBody
+	@RequestMapping("notice/recharge")
+	public Object noticeRecharge(@RequestBody @Valid TradeNotice param) {
 		RechargeState state = _rechargeState(TradeState.valueOf(param.getTrade_status()));
 		accountService.rechargeNotice(param.getOut_trade_no(), state);
 		return "success";

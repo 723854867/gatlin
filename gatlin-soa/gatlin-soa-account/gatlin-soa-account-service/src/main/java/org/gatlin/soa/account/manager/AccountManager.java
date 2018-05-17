@@ -18,7 +18,6 @@ import org.gatlin.soa.account.bean.entity.UserFrozen;
 import org.gatlin.soa.account.bean.entity.UserRecharge;
 import org.gatlin.soa.account.bean.enums.AccountField;
 import org.gatlin.soa.account.bean.enums.FrozenState;
-import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.enums.UserAccountType;
 import org.gatlin.soa.account.istate.RechargeStateMachine;
@@ -26,7 +25,6 @@ import org.gatlin.soa.account.mybatis.dao.LogUserAccountDao;
 import org.gatlin.soa.account.mybatis.dao.UserAccountDao;
 import org.gatlin.soa.account.mybatis.dao.UserFrozenDao;
 import org.gatlin.soa.account.mybatis.dao.UserRechargeDao;
-import org.gatlin.soa.account.plat.Alipay;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class AccountManager {
 
-	@Resource
-	private Alipay alipay;
 	@Resource
 	private UserFrozenDao userFrozenDao;
 	@Resource
@@ -59,16 +55,8 @@ public class AccountManager {
 			userAccountDao.batchInsert(accounts);
 	}
 	
-	public Object recharge(UserRecharge recharge) {
+	public void recharge(UserRecharge recharge) {
 		userRechargeDao.insert(recharge);
-		PlatType plat = PlatType.match(recharge.getPlat());
-		switch (plat) {
-		case ALIPAY:
-			return alipay.appPay(recharge);
-		default:
-			break;
-		}
-		return recharge.getId();
 	}
 	
 	@Transactional

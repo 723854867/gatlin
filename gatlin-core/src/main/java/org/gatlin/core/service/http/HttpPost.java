@@ -56,7 +56,6 @@ public class HttpPost<RESPONSE extends HttpResponse, REQUEST extends HttpPost<RE
 			return fb.build();
 		case APPLICATION_JSON_UTF_8:
 			String body = SerializeUtil.GSON.toJson(this.body);
-			System.out.println(body);
 			return RequestBody.create(MediaType.parse(contentType.mark()), body);
 		default:
 			throw new CodeException();

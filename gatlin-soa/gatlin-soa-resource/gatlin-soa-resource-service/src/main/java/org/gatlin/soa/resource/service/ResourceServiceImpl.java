@@ -9,11 +9,11 @@ import java.util.Set;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.ResourceCode;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
-import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.bean.param.CfgResourceEditParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 import org.gatlin.soa.resource.manager.ResourceManager;
@@ -79,7 +79,7 @@ public class ResourceServiceImpl implements ResourceService {
 		if (null == resource)
 			return null;
 		CfgResource cfgResource = resourceManager.cfgResource(resource.getCfgId());
-		return new ResourceInfo(resource, cfgResource);
+		return _resourceInfo(resource, cfgResource);
 	}
 	
 	@Override
@@ -94,8 +94,22 @@ public class ResourceServiceImpl implements ResourceService {
 		Map<Integer, CfgResource> map = resourceManager.cfgResources(new Query().in("id", set));
 		return Pager.<ResourceInfo, Resource>convert(resources, () -> {
 			List<ResourceInfo> infos = new ArrayList<ResourceInfo>();
-			resources.forEach(item -> infos.add(new ResourceInfo(item, map.get(item.getCfgId()))));
+			resources.forEach(item -> infos.add(_resourceInfo(item, map.get(item.getCfgId()))));
 			return infos;
 		});
+	}
+	
+	private ResourceInfo _resourceInfo(Resource resource, CfgResource cfgResource) {
+		ResourceInfo info = new ResourceInfo();
+		info.setType(cfgResource.getType());
+		info.setId(resource.getId());
+		info.setCfgId(resource.getCfgId());
+		info.setUrl(resource.getUrl());
+		info.setName(resource.getName());
+		info.setLink(resource.getLink());
+		info.setOwner(resource.getOwner());
+		info.setPriority(resource.getPriority());
+		info.setCreated(resource.getCreated());
+		return info;
 	}
 }

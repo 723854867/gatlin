@@ -9,7 +9,7 @@ import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
-import org.gatlin.soa.sinapay.manager.SinaUserManager;
+import org.gatlin.soa.sinapay.manager.SinaMemberManager;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
@@ -19,40 +19,40 @@ import org.springframework.stereotype.Service;
 public class SinapayMemberServiceImpl implements SinapayMemberService {
 	
 	@Resource
-	private SinaUserManager sinaUserManager;
+	private SinaMemberManager sinaMemberManager;
 
 	@Override
 	public String activate(String tid, MemberType type, String ip) {
-		return sinaUserManager.activate(tid, type, ip);
+		return sinaMemberManager.activate(tid, type, ip);
 	}
 	
 	@Override
 	public UserSecurity realname(RealnameParam param) {
-		return sinaUserManager.realname(param);
+		return sinaMemberManager.realname(param);
 	}
 	
 	@Override
 	public String bankCardBind(BankCardBindParam param, String bankId, Geo geo) {
-		return sinaUserManager.bankCardBind(param, bankId, geo);
+		return sinaMemberManager.bankCardBind(param, bankId, geo);
 	}
 	
 	@Override
 	public String bankCardBindConfirm(BankCardConfirmParam param) {
-		return sinaUserManager.bankCardBindConfirm(param);
+		return sinaMemberManager.bankCardBindConfirm(param);
 	}
 	
 	@Override
 	public String bankCardUnbind(SoaSidParam param) {
-		return sinaUserManager.bankCardUnbind(param);
+		return sinaMemberManager.bankCardUnbind(param);
 	}
 	
 	@Override
 	public void bankCardUnbindConfirm(BankCardConfirmParam param) {
-		sinaUserManager.bankCardUnbindConfirm(param);
+		sinaMemberManager.bankCardUnbindConfirm(param);
 	}
 	
 	@Override
 	public SinaUser user(String tid, MemberType type) {
-		return sinaUserManager.user(new Query().eq("tid", tid).eq("type", type.mark()));
+		return sinaMemberManager.user(new Query().eq("tid", tid).eq("type", type.mark()));
 	}
 }

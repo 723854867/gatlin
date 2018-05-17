@@ -13,6 +13,7 @@ public class BankCard implements Identifiable<String> {
 	private long owner;
 	private int ownerType;
 	private String no;
+	private String bankId;
 	private boolean used;
 	private String mobile;
 	private String province;
@@ -51,6 +52,14 @@ public class BankCard implements Identifiable<String> {
 
 	public void setNo(String no) {
 		this.no = no;
+	}
+	
+	public String getBankId() {
+		return bankId;
+	}
+	
+	public void setBankId(String bankId) {
+		this.bankId = bankId;
 	}
 	
 	public boolean isUsed() {

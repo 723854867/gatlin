@@ -19,5 +19,6 @@ public interface WebConsts {
 		final IntegerOption ACCOUNT_RECHARGE_MOD					= new IntegerOption("account.recharge.mod", 0);
 		final IntegerOption RECHARGE_TIMEOUT						= new IntegerOption("recharge.timeout", 30);
 		final BoolOption SINAPAY_ENABLE								= new BoolOption("sinapay.enable", false);
+		final BoolOption ALIPAY_ENABLE								= new BoolOption("alipay.enable", false);
 	}
 }

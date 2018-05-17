@@ -4,7 +4,7 @@ import org.gatlin.core.condition.GatlinCondition;
 
 public class SinapayCondition extends GatlinCondition<Boolean> {
 
-	protected SinapayCondition() {
+	public SinapayCondition() {
 		super(WebConsts.Options.SINAPAY_ENABLE);
 	}
 

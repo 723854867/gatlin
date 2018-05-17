@@ -1,9 +1,6 @@
-package org.gatlin.soa.resource.bean.model;
+package org.gatlin.soa.bean.model;
 
 import java.io.Serializable;
-
-import org.gatlin.soa.resource.bean.entity.CfgResource;
-import org.gatlin.soa.resource.bean.entity.Resource;
 
 public class ResourceInfo implements Serializable {
 
@@ -18,20 +15,6 @@ public class ResourceInfo implements Serializable {
 	private String owner;
 	private int priority;
 	private int created;
-	
-	public ResourceInfo() {}
-	
-	public ResourceInfo(Resource resource, CfgResource cfgResource) {
-		this.type = cfgResource.getType();
-		this.id = resource.getId();
-		this.cfgId = resource.getCfgId();
-		this.url = resource.getUrl();
-		this.name = resource.getName();
-		this.link = resource.getLink();
-		this.owner = resource.getOwner();
-		this.priority = resource.getPriority();
-		this.created = resource.getCreated();
-	}
 	
 	public int getType() {
 		return type;

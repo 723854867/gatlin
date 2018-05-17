@@ -20,11 +20,6 @@
 			<artifactId>gatlin-soa-account-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.gatlin</groupId>
-			<artifactId>gatlin-sdk-alipay</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework</groupId>

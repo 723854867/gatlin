@@ -2,8 +2,8 @@ package org.gatlin.web.bean.model;
 
 import java.io.Serializable;
 
+import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.config.bean.entity.CfgBank;
-import org.gatlin.soa.resource.bean.model.ResourceInfo;
 
 public class BankInfo implements Serializable {
 

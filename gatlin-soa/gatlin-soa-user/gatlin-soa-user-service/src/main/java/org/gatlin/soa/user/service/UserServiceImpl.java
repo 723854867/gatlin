@@ -12,7 +12,6 @@ import org.gatlin.soa.courier.api.SmsService;
 import org.gatlin.soa.user.ThreadsafeInvoker;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.UserCode;
-import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
@@ -174,15 +173,5 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserSecurity security(long uid) {
 		return userManager.security(uid);
-	}
-	
-	@Override
-	public void bankCardBind(BankCard card) {
-		userManager.bankCardBind(card);
-	}
-	
-	@Override
-	public void bankCardUnbind(String cardId) {
-		userManager.bankCardUnbind(cardId);
 	}
 }

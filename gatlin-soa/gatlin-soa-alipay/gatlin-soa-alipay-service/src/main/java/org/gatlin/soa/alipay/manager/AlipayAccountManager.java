@@ -1,20 +1,26 @@
-package org.gatlin.soa.account.plat;
+package org.gatlin.soa.alipay.manager;
 
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.gatlin.core.util.Assert;
 import org.gatlin.sdk.alipay.SignUtil;
 import org.gatlin.sdk.alipay.request.AppPayRequest;
+import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.AccountCode;
 import org.gatlin.soa.account.bean.entity.UserRecharge;
 import org.gatlin.util.DateUtil;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Alipay {
+public class AlipayAccountManager {
 	
-	// app 支付
-	public String appPay(UserRecharge recharge) {
+	@Resource
+	private AccountService accountService;
+
+	public String recharge(UserRecharge recharge) {
+		accountService.recharge(recharge);
 		AppPayRequest.Builder builder = new AppPayRequest.Builder();
 		builder.subject("充值");
 		builder.outerTradeNo(recharge.getId());

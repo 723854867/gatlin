@@ -2,7 +2,10 @@ package org.gatlin.soa.account.bean.enums;
 
 public enum PlatType {
 
-	ALIPAY(1);
+	// 阿里支付
+	ALIPAY(1),
+	// 新浪支付
+	SINAPAY(2);
 	
 	private int mark;
 	

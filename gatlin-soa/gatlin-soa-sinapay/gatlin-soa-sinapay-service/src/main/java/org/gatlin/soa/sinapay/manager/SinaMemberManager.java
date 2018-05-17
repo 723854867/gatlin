@@ -28,6 +28,7 @@ import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
 import org.gatlin.soa.sinapay.mybatis.EntityGenerator;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaBankCardDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaUserDao;
+import org.gatlin.soa.user.api.BankCardService;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
@@ -45,9 +46,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class SinaUserManager {
+public class SinaMemberManager {
 
-	private static final Logger logger = LoggerFactory.getLogger(SinaUserManager.class);
+	private static final Logger logger = LoggerFactory.getLogger(SinaMemberManager.class);
 	
 	@Resource
 	private SinaUserDao sinaUserDao;
@@ -59,6 +60,8 @@ public class SinaUserManager {
 	private ConfigService configService;
 	@Resource
 	private SinaBankCardDao sinaBankCardDao;
+	@Resource
+	private BankCardService bankCardService;
 	
 	@Transactional
 	public String activate(String tid, MemberType type, String ip) {
@@ -141,7 +144,7 @@ public class SinaUserManager {
 		int gap = (DateUtil.current() - cardBind.getCreated()) / 60;
 		Assert.isTrue(SinaCode.BANK_CARD_BIND_TICKET_INVALID, cardBind.getUsed() < usedCount && gap < minutes);
 		BankCard card = EntityGenerator.newBankCard(cardBind);
-		userService.bankCardBind(card);
+		bankCardService.cardBind(card);
 		BankCardBindConfirmRequest.Builder builder = new BankCardBindConfirmRequest.Builder();
 		builder.ticket(cardBind.getTicket());
 		builder.clientIp(param.meta().getIp());
@@ -193,11 +196,12 @@ public class SinaUserManager {
 		builder.ticket(bankCard.getTicket());
 		builder.validCode(param.getCaptcha());
 		builder.clientIp(param.meta().getIp());
+		bankCardService.cardUnbind(bankCard.getCardId());
 		bankCard.setCardId(null);
 		bankCard.setSinaCardId(null);
+		bankCard.setUsed(bankCard.getUsed() + 1);
 		bankCard.setUpdated(DateUtil.current());
 		sinaBankCardDao.update(bankCard);
-		userService.bankCardUnbind(bankCard.getCardId());
 		BankCardUnbindConfirmRequest request = builder.build();
 		logger.info("新浪确认解绑银行卡请求：{}", SerializeUtil.GSON.toJson(request.params()));
 		SinapayResponse response = request.sync();

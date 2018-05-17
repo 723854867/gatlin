@@ -30,14 +30,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * 新浪支付网关
+ * 新浪支付会员网关
  * 
  * @author lynn
  */
 @Controller
-@RequestMapping("sinapay")
+@RequestMapping("sinapay/member")
 @Conditional(SinapayCondition.class)
-public class SinapayController {
+public class SinapayMemberController {
 	
 	@Resource
 	private UserService userService;
@@ -47,8 +47,8 @@ public class SinapayController {
 	private SinapayMemberService sinapayMemberService;
 
 	@ResponseBody
-	@RequestMapping("member/activate")
-	public Object memberActivate(@RequestBody @Valid MemberActivateParam param) {
+	@RequestMapping("activate")
+	public Object activate(@RequestBody @Valid MemberActivateParam param) {
 		if (param.getType() == MemberType.ENTERPRISE) {
 			
 		}
@@ -57,8 +57,8 @@ public class SinapayController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("member/realname")
-	public Object memberRealname(@RequestBody @Valid RealnameParam param) {
+	@RequestMapping("realname")
+	public Object realname(@RequestBody @Valid RealnameParam param) {
 		if (!StringUtil.hasText(param.getMobile())) {
 			Query query = new Query().eq("uid", param.getUser().getId()).eq("type", UsernameType.MOBILE.mark());
 			Username username = userService.username(query);
@@ -69,8 +69,8 @@ public class SinapayController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("member/bank/card/bind")
-	public Object memberBankCardBind(@RequestBody @Valid BankCardBindParam param) {
+	@RequestMapping("bank/card/bind")
+	public Object bankCardBind(@RequestBody @Valid BankCardBindParam param) {
 		CfgBank bank = configService.bank(param.getBankId());
 		Assert.isTrue(ConfigCode.BANK_UNSUPPORT, null != bank && bank.isValid());
 		Geo geo = configService.geo(param.getCity(), false);
@@ -79,14 +79,14 @@ public class SinapayController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("member/bank/card/bind/confirm")
-	public Object memberBankCardBindConfirm(@RequestBody @Valid BankCardConfirmParam param) {
+	@RequestMapping("bank/card/bind/confirm")
+	public Object bankCardBindConfirm(@RequestBody @Valid BankCardConfirmParam param) {
 		return sinapayMemberService.bankCardBindConfirm(param);
 	}
 	
 	@ResponseBody
-	@RequestMapping("member/bank/card/unbind")
-	public Object memberBankCardUnbind(@RequestBody @Valid SoaSidParam param) {
+	@RequestMapping("bank/card/unbind")
+	public Object bankCardUnbind(@RequestBody @Valid SoaSidParam param) {
 		return sinapayMemberService.bankCardUnbind(param);
 	}
 	

@@ -43,8 +43,8 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	@Override
-	public Object recharge(UserRecharge recharge) {
-		return accountManager.recharge(recharge);
+	public void recharge(UserRecharge recharge) {
+		accountManager.recharge(recharge);
 	}
 	
 	@Override

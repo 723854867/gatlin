@@ -13,7 +13,7 @@ import org.gatlin.sdk.sinapay.response.SinapayResponse;
  * @param <RESPONSE>
  * @param <REQUEST>
  */
-class MemberRequest<RESPONSE extends SinapayResponse, REQUEST extends SinapayRequest<RESPONSE, REQUEST>> extends SinapayRequest<RESPONSE, REQUEST> {
+class MemberRequest<RESPONSE extends SinapayResponse, REQUEST extends MemberRequest<RESPONSE, REQUEST>> extends SinapayRequest<RESPONSE, REQUEST> {
 
 	protected MemberRequest() {
 		super(SinapayConfig.memberHost(), SinapayConfig.memberPath());

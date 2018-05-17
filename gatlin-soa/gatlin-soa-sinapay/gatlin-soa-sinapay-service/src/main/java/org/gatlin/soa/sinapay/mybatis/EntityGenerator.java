@@ -30,7 +30,7 @@ public class EntityGenerator {
 		instance.setTicket(ticket);
 		instance.setCity(geo.getCity());
 		instance.setIp(param.meta().getIp());
-		instance.setBankId(bank.getSinaId());
+		instance.setBankId(bank.getId());
 		instance.setBankNo(param.getBankNo());
 		instance.setBranch(param.getBranch());
 		instance.setMobile(param.getMobile());
@@ -47,6 +47,7 @@ public class EntityGenerator {
 		BankCard instance = new BankCard();
 		instance.setId(IDWorker.INSTANCE.nextSid());
 		instance.setOwner(cardBind.getUid());
+		instance.setBankId(cardBind.getBankId());
 		instance.setOwnerType(CardOwnerType.USER.mark());
 		instance.setNo(cardBind.getBankNo());
 		instance.setMobile(cardBind.getMobile());
