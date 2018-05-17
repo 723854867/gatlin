@@ -10,6 +10,7 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.soa.user.bean.UserUtil;
+import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
@@ -25,6 +26,7 @@ import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.bean.param.UserListParam;
 import org.gatlin.soa.user.bean.param.UsernameResetParam;
 import org.gatlin.soa.user.mybatis.EntityGenerator;
+import org.gatlin.soa.user.mybatis.dao.BankCardDao;
 import org.gatlin.soa.user.mybatis.dao.UserDeviceDao;
 import org.gatlin.soa.user.mybatis.dao.UserInfoDao;
 import org.gatlin.soa.user.mybatis.dao.UserInvitationDao;
@@ -43,6 +45,8 @@ public class UserManager {
 	private UserInfoDao userInfoDao;
 	@Resource
 	private UsernameDao usernameDao;
+	@Resource
+	private BankCardDao bankCardDao;
 	@Resource
 	private UserDeviceDao userDeviceDao;
 	@Resource
@@ -95,6 +99,10 @@ public class UserManager {
 		} catch (DuplicateKeyException e) {
 			throw new CodeException(UserCode.USERNAME_EXIST, e);
 		}
+	}
+	
+	public void bankCardBind(BankCard card) { 
+		bankCardDao.insert(card);
 	}
 	
 	public void update(User user) {

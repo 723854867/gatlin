@@ -7,6 +7,7 @@ import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
+import org.gatlin.soa.sinapay.bean.param.MemberBankCardBindConfirmParam;
 import org.gatlin.soa.sinapay.manager.SinaUserManager;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
@@ -32,6 +33,11 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	@Override
 	public String bankCardBind(BankCardBindParam param, String bankId, Geo geo) {
 		return sinaUserManager.bankCardBind(param, bankId, geo);
+	}
+	
+	@Override
+	public long bankCardBindConfirm(MemberBankCardBindConfirmParam param) {
+		return 0;
 	}
 	
 	@Override

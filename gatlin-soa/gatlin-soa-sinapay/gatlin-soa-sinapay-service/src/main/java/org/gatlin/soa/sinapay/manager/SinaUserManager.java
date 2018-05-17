@@ -7,19 +7,25 @@ import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.request.member.ActivateRequest;
+import org.gatlin.sdk.sinapay.request.member.BankCardBindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
+import org.gatlin.sdk.sinapay.response.BankCardBindConfirmResponse;
 import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
 import org.gatlin.sdk.sinapay.response.SinapayResponse;
 import org.gatlin.soa.bean.model.Geo;
+import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.sinapay.bean.SinaCode;
-import org.gatlin.soa.sinapay.bean.entity.LogBankCardBind;
+import org.gatlin.soa.sinapay.bean.SinaConsts;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
+import org.gatlin.soa.sinapay.bean.entity.SinaCardBind;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
+import org.gatlin.soa.sinapay.bean.param.MemberBankCardBindConfirmParam;
 import org.gatlin.soa.sinapay.mybatis.EntityGenerator;
-import org.gatlin.soa.sinapay.mybatis.dao.LogBanCardBindDao;
+import org.gatlin.soa.sinapay.mybatis.dao.SinaCardBindDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaUserDao;
 import org.gatlin.soa.user.api.UserService;
+import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
@@ -45,7 +51,9 @@ public class SinaUserManager {
 	@Resource
 	private SinaManager sinaManager;
 	@Resource
-	private LogBanCardBindDao logBanCardBindDao;
+	private ConfigService configService;
+	@Resource
+	private SinaCardBindDao sinaCardBindDao;
 	
 	@Transactional
 	public String activate(String tid, MemberType type, String ip) {
@@ -97,10 +105,9 @@ public class SinaUserManager {
 		Assert.isTrue(SinaCode.MEMBER_ALREADY_REALNAME, !user.isRealname());
 		SinaBank bank = sinaManager.bank(bankId);
 		Assert.isTrue(SinaCode.BANK_UNSUPPORT, null != bank && bank.isValid());
-		LogBankCardBind log = new LogBankCardBind();
-		log.setId(IDWorker.INSTANCE.nextSid());
 		BankCardBindRequest.Builder builder = new BankCardBindRequest.Builder();
-		builder.requestNo(log.getId());
+		String requestNo = IDWorker.INSTANCE.nextSid();
+		builder.requestNo(requestNo);
 		builder.identityId(user.getSinaId());
 		builder.clientIp(param.meta().getIp());
 		builder.bankCode(bank.getSinaId());
@@ -110,13 +117,39 @@ public class SinaUserManager {
 		builder.phoneNo(param.getMobile());
 		if (StringUtil.hasText(param.getBranch()))
 			builder.brankBranch(param.getBranch());
-		log.setParams(SerializeUtil.GSON.toJson(builder));
-		logBanCardBindDao.insert(log);
 		BankCardBindRequest request = builder.build();
 		logger.info("新浪绑卡请求：{}", SerializeUtil.GSON.toJson(request.params()));
 		BankCardBindResponse response = request.sync();
 		logger.info("新浪绑卡响应：{}", SerializeUtil.GSON.toJson(response));
+		String ticket = response.getTicket();
+		sinaCardBindDao.insert(EntityGenerator.newSinaCardBind(user, requestNo, param, geo, bank, ticket));
 		return response.getTicket();
+	}
+	
+	@Transactional
+	public String bankCardBindConfirm(MemberBankCardBindConfirmParam param) {
+		int minutes = configService.config(SinaConsts.BANK_CARD_BIND_TICKET_EXPIRY);
+		int usedCount = configService.config(SinaConsts.BANK_CARD_BIND_TICKET_MAXIMUM_USED);
+		SinaCardBind cardBind = sinaCardBindDao.getByKey(param.getId());
+		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, cardBind);
+		int gap = (DateUtil.current() - cardBind.getCreated()) / 60;
+		Assert.isTrue(SinaCode.BANK_CARD_BIND_TICKET_INVALID, cardBind.getUsed() < usedCount && gap < minutes);
+		BankCardBindConfirmRequest.Builder builder = new BankCardBindConfirmRequest.Builder();
+		builder.ticket(cardBind.getTicket());
+		builder.clientIp(param.meta().getIp());
+		builder.validCode(param.getCaptcha());
+		BankCardBindConfirmRequest request = builder.build();
+		logger.info("新浪绑卡确认请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		BankCardBindConfirmResponse response = request.sync();
+		logger.info("新浪绑卡确认响应：{}", SerializeUtil.GSON.toJson(response));
+		BankCard card = EntityGenerator.newBankCard(cardBind);
+		userService.bankCardBind(card);
+		cardBind.setCardId(card.getId());
+		cardBind.setSinaCardId(response.getCardId());
+		cardBind.setUpdated(DateUtil.current());
+		cardBind.setUsed(cardBind.getUsed() + 1);
+		sinaCardBindDao.update(cardBind);
+		return card.getId();
 	}
 	
 	public SinaUser user(Query query) {

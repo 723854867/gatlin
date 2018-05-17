@@ -14,6 +14,7 @@ import org.gatlin.soa.config.bean.ConfigCode;
 import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.param.MemberActivateParam;
+import org.gatlin.soa.sinapay.bean.param.MemberBankCardBindConfirmParam;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
@@ -78,11 +79,7 @@ public class SinapayController {
 	
 	@ResponseBody
 	@RequestMapping("member/bank/card/bind/confirm")
-	public Object memberBankCardBindConfirm(@RequestBody @Valid BankCardBindParam param) {
-		CfgBank bank = configService.bank(param.getBankId());
-		Assert.isTrue(ConfigCode.BANK_UNSUPPORT, null != bank && bank.isValid());
-		Geo geo = configService.geo(param.getCity(), false);
-		Assert.hasText(CoreCode.PARAM_ERR, geo.getCity());
-		return sinapayMemberService.bankCardBind(param, bank.getId(), geo);
+	public Object memberBankCardBindConfirm(@RequestBody @Valid MemberBankCardBindConfirmParam param) {
+		return sinapayMemberService.bankCardBindConfirm(param);
 	}
 }
