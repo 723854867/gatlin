@@ -180,4 +180,9 @@ public class UserServiceImpl implements UserService {
 	public void bankCardBind(BankCard card) {
 		userManager.bankCardBind(card);
 	}
+	
+	@Override
+	public void bankCardUnbind(String cardId) {
+		userManager.bankCardUnbind(cardId);
+	}
 }

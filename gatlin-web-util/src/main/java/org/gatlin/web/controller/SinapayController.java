@@ -9,12 +9,13 @@ import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.bean.model.Geo;
+import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.ConfigCode;
 import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.param.MemberActivateParam;
-import org.gatlin.soa.sinapay.bean.param.MemberBankCardBindConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
@@ -79,7 +80,20 @@ public class SinapayController {
 	
 	@ResponseBody
 	@RequestMapping("member/bank/card/bind/confirm")
-	public Object memberBankCardBindConfirm(@RequestBody @Valid MemberBankCardBindConfirmParam param) {
+	public Object memberBankCardBindConfirm(@RequestBody @Valid BankCardConfirmParam param) {
 		return sinapayMemberService.bankCardBindConfirm(param);
+	}
+	
+	@ResponseBody
+	@RequestMapping("member/bank/card/unbind")
+	public Object memberBankCardUnbind(@RequestBody @Valid SoaSidParam param) {
+		return sinapayMemberService.bankCardUnbind(param);
+	}
+	
+	@ResponseBody
+	@RequestMapping("member/bank/card/unbind/confirm")
+	public Object memberBankCardUnbindConfirm(@RequestBody @Valid BankCardConfirmParam param) {
+		sinapayMemberService.bankCardUnbindConfirm(param);
+		return Response.ok();
 	}
 }

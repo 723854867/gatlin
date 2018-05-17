@@ -3,9 +3,12 @@ package org.gatlin.sdk.sinapay;
 import org.gatlin.sdk.sinapay.request.member.ActivateRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
+import org.gatlin.sdk.sinapay.request.member.BankCardUnbindConfirmRequest;
+import org.gatlin.sdk.sinapay.request.member.BankCardUnbindRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
 import org.gatlin.sdk.sinapay.response.BankCardBindConfirmResponse;
 import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
+import org.gatlin.sdk.sinapay.response.BankCardUnbindResponse;
 import org.gatlin.sdk.sinapay.response.SinapayResponse;
 import org.gatlin.util.IDWorker;
 import org.gatlin.util.serial.SerializeUtil;
@@ -71,6 +74,32 @@ public class SinaMemberTest extends SinaTest {
 		BankCardBindConfirmRequest request = builder.build();
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		BankCardBindConfirmResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testBankCardUnbind() { 
+		BankCardUnbindRequest.Builder builder = new BankCardUnbindRequest.Builder();
+		builder.identityId("446626586486112256");
+		builder.clientIp("127.0.0.1");
+		builder.cardId("235145");
+		BankCardUnbindRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		BankCardUnbindResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+		System.out.println(response.getTicket());
+	}
+	
+	@Test
+	public void testBankCardUnbindConfirm() { 
+		BankCardUnbindConfirmRequest.Builder builder = new BankCardUnbindConfirmRequest.Builder();
+		builder.identityId("446626586486112256");
+		builder.ticket("6e5055b1657e4cc98f0c1721cb17cb3c");
+		builder.validCode("428637");
+		builder.clientIp("127.0.0.1");
+		BankCardUnbindConfirmRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		SinapayResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));
 	}
 }

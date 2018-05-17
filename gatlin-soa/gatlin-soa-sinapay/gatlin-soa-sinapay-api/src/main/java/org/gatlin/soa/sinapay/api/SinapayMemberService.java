@@ -2,8 +2,9 @@ package org.gatlin.soa.sinapay.api;
 
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.bean.model.Geo;
+import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
-import org.gatlin.soa.sinapay.bean.param.MemberBankCardBindConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
@@ -37,7 +38,13 @@ public interface SinapayMemberService {
 	String bankCardBind(BankCardBindParam param, String bankId, Geo geo);
 	
 	// 确认绑卡
-	long bankCardBindConfirm(MemberBankCardBindConfirmParam param);
+	String bankCardBindConfirm(BankCardConfirmParam param);
+	
+	// 解绑银行卡
+	String bankCardUnbind(SoaSidParam param);
+	
+	// 确认解绑绑卡
+	void bankCardUnbindConfirm(BankCardConfirmParam param);
 	
 	SinaUser user(String tid, MemberType type);
 }

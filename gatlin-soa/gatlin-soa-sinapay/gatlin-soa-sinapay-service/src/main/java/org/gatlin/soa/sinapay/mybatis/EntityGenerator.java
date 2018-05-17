@@ -3,7 +3,7 @@ package org.gatlin.soa.sinapay.mybatis;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
-import org.gatlin.soa.sinapay.bean.entity.SinaCardBind;
+import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.enums.CardOwnerType;
@@ -24,8 +24,8 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final SinaCardBind newSinaCardBind(SinaUser user, String requestNo, BankCardBindParam param, Geo geo, SinaBank bank, String ticket) {
-		SinaCardBind instance = new SinaCardBind();
+	public static final SinaBankCard newSinaBankCard(SinaUser user, String requestNo, BankCardBindParam param, Geo geo, SinaBank bank, String ticket) {
+		SinaBankCard instance = new SinaBankCard();
 		instance.setId(requestNo);
 		instance.setTicket(ticket);
 		instance.setCity(geo.getCity());
@@ -43,7 +43,7 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final BankCard newBankCard(SinaCardBind cardBind) {
+	public static final BankCard newBankCard(SinaBankCard cardBind) {
 		BankCard instance = new BankCard();
 		instance.setId(IDWorker.INSTANCE.nextSid());
 		instance.setOwner(cardBind.getUid());

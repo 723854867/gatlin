@@ -59,4 +59,6 @@ public interface UserService {
 	UserSecurity security(long uid);
 	
 	void bankCardBind(BankCard card);
+	
+	void bankCardUnbind(String cardId);
 }

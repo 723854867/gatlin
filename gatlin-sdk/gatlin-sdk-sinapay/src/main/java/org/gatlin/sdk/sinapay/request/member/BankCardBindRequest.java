@@ -107,8 +107,8 @@ public class BankCardBindRequest extends MemberRequest<BankCardBindResponse, Ban
 		}
 		
 		// 支行名称
-		public Builder brankBranch(String brankBranch) {
-			this.params.put("brank_branch", brankBranch);
+		public Builder bankBranch(String bankBranch) {
+			this.params.put("bank_branch", bankBranch);
 			return this;
 		}
 		

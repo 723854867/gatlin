@@ -68,9 +68,9 @@ public class ConfigController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("bank/modify")
-	public Object bankModify(@RequestBody @Valid BankParam param) {
-		configService.bankModify(param);
+	@RequestMapping("bank/edit")
+	public Object bankEdit(@RequestBody @Valid BankParam param) {
+		configService.bankEdit(param);
 		return Response.ok();
 	}
 	

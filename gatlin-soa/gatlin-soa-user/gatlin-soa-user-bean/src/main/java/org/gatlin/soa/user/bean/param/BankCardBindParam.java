@@ -3,6 +3,7 @@ package org.gatlin.soa.user.bean.param;
 import javax.validation.constraints.NotEmpty;
 
 import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.util.PhoneUtil;
 import org.gatlin.util.validate.Mobile;
 
 public class BankCardBindParam extends SoaParam {
@@ -58,5 +59,11 @@ public class BankCardBindParam extends SoaParam {
 
 	public void setBranch(String branch) {
 		this.branch = branch;
+	}
+	
+	@Override
+	public void verify() {
+		super.verify();
+		this.mobile = PhoneUtil.parseMobile(this.mobile);
 	}
 }

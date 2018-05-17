@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
@@ -102,7 +103,15 @@ public class UserManager {
 	}
 	
 	public void bankCardBind(BankCard card) { 
-		bankCardDao.insert(card);
+		try {
+			bankCardDao.insert(card);
+		} catch (DuplicateKeyException e) {
+			throw new CodeException(UserCode.BANK_CARD_ALREADY_BIND);
+		}
+	}
+	
+	public void bankCardUnbind(String cardId) { 
+		bankCardDao.deleteByKey(cardId);
 	}
 	
 	public void update(User user) {
@@ -117,9 +126,13 @@ public class UserManager {
 	}
 	
 	public UserSecurity realname(RealnameParam param) { 
-		UserSecurity instance = EntityGenerator.newUserSecurity(param);
-		userSecurityDao.insert(instance);
-		return instance;
+		try {
+			UserSecurity instance = EntityGenerator.newUserSecurity(param);
+			userSecurityDao.insert(instance);
+			return instance;
+		} catch (DuplicateKeyException e) {
+			throw new CodeException(CoreCode.IDENTITY_OR_MOBILE_DUPLICATED, e);
+		}
 	}
 	
 	public UserInfo user(long uid) {

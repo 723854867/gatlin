@@ -4,7 +4,7 @@ import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
 
-public class SinaCardBind implements Identifiable<String> {
+public class SinaBankCard implements Identifiable<String> {
 
 	private static final long serialVersionUID = 4659851172140139451L;
 

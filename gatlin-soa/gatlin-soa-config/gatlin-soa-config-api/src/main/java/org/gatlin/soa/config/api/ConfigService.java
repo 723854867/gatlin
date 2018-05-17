@@ -22,7 +22,7 @@ public interface ConfigService {
 	
 	CfgBank bank(String id);
 	
-	void bankModify(BankParam param);
+	void bankEdit(BankParam param);
 	
 	Pager<CfgBank> banks(Query query);
 	

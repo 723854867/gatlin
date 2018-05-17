@@ -52,7 +52,7 @@ public class ConfigServiceImpl implements ConfigService {
 	}
 	
 	@Override
-	public void bankModify(BankParam param) {
+	public void bankEdit(BankParam param) {
 		CfgBank bank = cfgBankDao.getByKey(param.getId());
 		if (null == bank) 
 			cfgBankDao.insert(EntityGenerator.newCfgBank(param));
