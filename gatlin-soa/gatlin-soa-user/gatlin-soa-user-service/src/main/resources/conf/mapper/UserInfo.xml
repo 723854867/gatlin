@@ -52,13 +52,6 @@
 			<if test="null != username">
 				AND `username` LIKE concat(concat('%',#{username}),'%')
 			</if>
-			<if test="null != ids and !ids.isEmpty">
-				AND `uid` not in (
-				<foreach item="item" collection="ids" separator=",">
-					 ${item}
-				</foreach>
-				)
-			</if>
 		</where>
 	</select>
 </mapper>
