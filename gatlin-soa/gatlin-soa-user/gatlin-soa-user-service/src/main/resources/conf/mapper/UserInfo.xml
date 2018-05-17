@@ -47,10 +47,17 @@
 				<![CDATA[ AND `register_time`>=#{registerTimeBegin} ]]>     
 			</if>
 			<if test="null != nickname">
-				AND `nickname` LIKE %#{nickname}%
+				AND `nickname` LIKE concat(concat('%',#{nickname}),'%')
 			</if>
 			<if test="null != username">
-				AND `username` LIKE %#{username}%
+				AND `username` LIKE concat(concat('%',#{username}),'%')
+			</if>
+			<if test="null != ids and !ids.isEmpty">
+				AND `uid` not in (
+				<foreach item="item" collection="ids" separator=",">
+					 ${item}
+				</foreach>
+				)
 			</if>
 		</where>
 	</select>

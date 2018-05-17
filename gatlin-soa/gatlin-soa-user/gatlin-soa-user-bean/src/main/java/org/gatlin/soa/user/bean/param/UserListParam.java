@@ -1,5 +1,7 @@
 package org.gatlin.soa.user.bean.param;
 
+import java.util.Set;
+
 import org.gatlin.soa.bean.param.SoaParam;
 
 public class UserListParam extends SoaParam {
@@ -15,6 +17,7 @@ public class UserListParam extends SoaParam {
 	private Integer usernameType;
 	private Integer registerTimeEnd;
 	private Integer registerTimeBegin;
+	private Set<Integer> ids;
 
 	public Integer getOs() {
 		return os;
@@ -87,4 +90,13 @@ public class UserListParam extends SoaParam {
 	public void setRegisterTimeBegin(Integer registerTimeBegin) {
 		this.registerTimeBegin = registerTimeBegin;
 	}
+
+	public Set<Integer> getIds() {
+		return ids;
+	}
+
+	public void setIds(Set<Integer> ids) {
+		this.ids = ids;
+	}
+	
 }
