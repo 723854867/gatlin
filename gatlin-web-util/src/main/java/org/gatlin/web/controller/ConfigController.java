@@ -12,7 +12,6 @@ import javax.validation.Valid;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.dao.bean.model.Query;
-import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.config.bean.param.BankParam;
@@ -22,6 +21,7 @@ import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.bean.param.CfgResourceEditParam;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.web.bean.model.BankInfo;
+import org.gatlin.web.bean.param.CfgResourceListParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,7 +83,7 @@ public class ConfigController {
 	
 	@ResponseBody
 	@RequestMapping("resources")
-	public Object resources(@RequestBody @Valid SoaParam param) { 
+	public Object resources(@RequestBody @Valid CfgResourceListParam param) { 
 		return resourceService.configs(param.query());
 	}
 }
