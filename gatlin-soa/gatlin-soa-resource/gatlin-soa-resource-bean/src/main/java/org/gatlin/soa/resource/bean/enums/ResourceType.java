@@ -2,7 +2,10 @@ package org.gatlin.soa.resource.bean.enums;
 
 public enum ResourceType {
 
-	AVATAR(50);
+	// 用户头像
+	AVATAR(50),
+	// 银行icon
+	BANK_ICON(60);
 	
 	private int mark;
 	

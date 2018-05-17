@@ -14,6 +14,7 @@ import org.gatlin.soa.resource.bean.ResourceCode;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
+import org.gatlin.soa.resource.bean.param.CfgResourceEditParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 import org.gatlin.soa.resource.manager.ResourceManager;
 import org.gatlin.util.bean.enums.CacheUnit;
@@ -29,8 +30,15 @@ public class ResourceServiceImpl implements ResourceService {
 	private ResourceManager resourceManager;
 	
 	@Override
-	public List<CfgResource> configs(Query query) {
-		return resourceManager.configs(query);
+	public Pager<CfgResource> configs(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<CfgResource>(resourceManager.configs(query));
+	}
+	
+	@Override
+	public void cfgResourceEdit(CfgResourceEditParam param) {
+		resourceManager.cfgResourceEdit(param);
 	}
 	
 	@Override

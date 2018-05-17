@@ -95,14 +95,19 @@ public class DistrictManager {
 		CfgDistrict country = m.get(DistrictLevel.COUNTRY);
 		CfgDistrict province = m.get(DistrictLevel.PROVINCE);
 		Geo geo = new Geo();
-		if (null != city && ((validCheck && city.isValid()) || !validCheck))
+		if (null != city && ((validCheck && city.isValid()) || !validCheck)) {
 			geo.setCity(city.getName());
-		if (null != county && ((validCheck && county.isValid()) || !validCheck))
+			geo.setCityCode(city.getCode());
+		} if (null != county && ((validCheck && county.isValid()) || !validCheck)) {
 			geo.setCounty(county.getName());
-		if (null != country && ((validCheck && country.isValid()) || !validCheck))
+			geo.setCounty(county.getCode());
+		} if (null != country && ((validCheck && country.isValid()) || !validCheck)) {
 			geo.setCountry(country.getName());
-		if (null != province && ((validCheck && province.isValid()) || !validCheck))
+			geo.setCountry(country.getCode());
+		} if (null != province && ((validCheck && province.isValid()) || !validCheck)) {
 			geo.setProvince(province.getName());
+			geo.setProvinceCode(province.getCode());
+		}
 		return geo;
 	}
 	

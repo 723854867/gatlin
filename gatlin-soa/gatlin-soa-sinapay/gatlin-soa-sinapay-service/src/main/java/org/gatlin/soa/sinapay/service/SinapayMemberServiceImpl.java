@@ -4,9 +4,13 @@ import javax.annotation.Resource;
 
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
+import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.manager.SinaUserManager;
+import org.gatlin.soa.user.bean.entity.UserSecurity;
+import org.gatlin.soa.user.bean.param.BankCardBindParam;
+import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.springframework.stereotype.Service;
 
 @Service("sinapayMemberService")
@@ -21,8 +25,13 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	}
 	
 	@Override
-	public void realname(String tid, String realname, String identity, String ip) {
-		sinaUserManager.realname(tid, realname, identity, ip);
+	public UserSecurity realname(RealnameParam param) {
+		return sinaUserManager.realname(param);
+	}
+	
+	@Override
+	public void bankCardBind(BankCardBindParam param, String bankId, Geo geo) {
+		sinaUserManager.bankCardBind(param, bankId, geo);
 	}
 	
 	@Override

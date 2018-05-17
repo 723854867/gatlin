@@ -4,6 +4,7 @@ import org.gatlin.sdk.sinapay.request.member.ActivateRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
+import org.gatlin.sdk.sinapay.response.BankCardBindConfirmResponse;
 import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
 import org.gatlin.sdk.sinapay.response.SinapayResponse;
 import org.gatlin.util.IDWorker;
@@ -64,6 +65,12 @@ public class SinaMemberTest extends SinaTest {
 	@Test
 	public void testBankCardBindConfirm() {
 		BankCardBindConfirmRequest.Builder builder = new BankCardBindConfirmRequest.Builder();
-		
+		builder.ticket("329d1f99c50c4c969b761679ae4277db");
+		builder.validCode("867649");
+		builder.clientIp("127.0.0.1");
+		BankCardBindConfirmRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		BankCardBindConfirmResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
 	}
 }

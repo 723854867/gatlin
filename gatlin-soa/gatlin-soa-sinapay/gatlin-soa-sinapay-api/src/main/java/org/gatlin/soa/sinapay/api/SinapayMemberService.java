@@ -1,7 +1,11 @@
 package org.gatlin.soa.sinapay.api;
 
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
+import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
+import org.gatlin.soa.user.bean.entity.UserSecurity;
+import org.gatlin.soa.user.bean.param.BankCardBindParam;
+import org.gatlin.soa.user.bean.param.RealnameParam;
 
 /**
  * 新浪支付会员服务
@@ -23,12 +27,13 @@ public interface SinapayMemberService {
 	
 	/**
 	 * 用户实名认证
-	 * 
-	 * @param realname 真实姓名
-	 * @param identity 身份证号
-	 * @param ip 认证客户端ip
 	 */
-	void realname(String tid, String realname, String identity, String ip);
+	UserSecurity realname(RealnameParam param);
+	
+	/**
+	 * 绑定银行卡
+	 */
+	void bankCardBind(BankCardBindParam param, String bankId, Geo geo);
 	
 	SinaUser user(String tid, MemberType type);
 }

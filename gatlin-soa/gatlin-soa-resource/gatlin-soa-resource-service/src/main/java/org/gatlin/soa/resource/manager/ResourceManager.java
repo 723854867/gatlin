@@ -10,7 +10,9 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.resource.bean.ResourceCode;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
+import org.gatlin.soa.resource.bean.param.CfgResourceEditParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
+import org.gatlin.soa.resource.mybatis.EntityGenerator;
 import org.gatlin.soa.resource.mybatis.dao.CfgResourceDao;
 import org.gatlin.soa.resource.mybatis.dao.ResourceDao;
 import org.gatlin.util.DateUtil;
@@ -25,6 +27,23 @@ public class ResourceManager {
 	private ResourceDao resourceDao;
 	@javax.annotation.Resource
 	private CfgResourceDao cfgResourceDao;
+	
+	public void cfgResourceEdit(CfgResourceEditParam param) {
+		CfgResource resource = cfgResourceDao.getByKey(param.getId());
+		if (null == resource)
+			cfgResourceDao.insert(EntityGenerator.newCfgResource(param));
+		else {
+			resource.setType(param.getType());
+			resource.setName(param.getName());
+			resource.setMinimum(param.getMinimum());
+			resource.setMaximum(param.getMaximum());
+			resource.setDirectory(param.getDirectory());
+			resource.setCacheSize(param.getCacheSize());
+			resource.setCacheUnit(param.getCacheUnit().name());
+			resource.setUpdated(DateUtil.current());
+			cfgResourceDao.update(resource);
+		}
+	}
 	
 	@Transactional
 	public Resource upload(Resource resource) {

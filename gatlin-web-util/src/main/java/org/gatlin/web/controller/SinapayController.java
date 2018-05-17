@@ -8,11 +8,16 @@ import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
+import org.gatlin.soa.bean.model.Geo;
+import org.gatlin.soa.config.api.ConfigService;
+import org.gatlin.soa.config.bean.ConfigCode;
+import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.param.MemberActivateParam;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
+import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.web.SinapayCondition;
@@ -35,6 +40,8 @@ public class SinapayController {
 	@Resource
 	private UserService userService;
 	@Resource
+	private ConfigService configService;
+	@Resource
 	private SinapayMemberService sinapayMemberService;
 
 	@ResponseBody
@@ -56,8 +63,17 @@ public class SinapayController {
 			Assert.notNull(CoreCode.PARAM_ERR, username);
 			param.setMobile(username.getUsername());
 		}
-		String tid = String.valueOf(param.getUser().getId());
-		sinapayMemberService.realname(tid, param.getRealname(), param.getIdentity(), param.meta().getIp());
-		return null;
+		return sinapayMemberService.realname(param);
+	}
+	
+	@ResponseBody
+	@RequestMapping("member/bank/card/bind")
+	public Object memberBankCardBind(@RequestBody @Valid BankCardBindParam param) {
+		CfgBank bank = configService.bank(param.getBankId());
+		Assert.isTrue(ConfigCode.BANK_UNSUPPORT, null != bank && bank.isValid());
+		Geo geo = configService.geo(param.getCity(), false);
+		Assert.hasText(CoreCode.PARAM_ERR, geo.getCity());
+		sinapayMemberService.bankCardBind(param, bank.getId(), geo);
+		return Response.ok();
 	}
 }
