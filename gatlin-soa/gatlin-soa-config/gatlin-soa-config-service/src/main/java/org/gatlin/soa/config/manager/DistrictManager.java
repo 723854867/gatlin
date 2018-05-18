@@ -100,10 +100,10 @@ public class DistrictManager {
 			geo.setCityCode(city.getCode());
 		} if (null != county && ((validCheck && county.isValid()) || !validCheck)) {
 			geo.setCounty(county.getName());
-			geo.setCounty(county.getCode());
+			geo.setCountryCode(county.getCode());
 		} if (null != country && ((validCheck && country.isValid()) || !validCheck)) {
 			geo.setCountry(country.getName());
-			geo.setCountry(country.getCode());
+			geo.setCountryCode(country.getCode());
 		} if (null != province && ((validCheck && province.isValid()) || !validCheck)) {
 			geo.setProvince(province.getName());
 			geo.setProvinceCode(province.getCode());
