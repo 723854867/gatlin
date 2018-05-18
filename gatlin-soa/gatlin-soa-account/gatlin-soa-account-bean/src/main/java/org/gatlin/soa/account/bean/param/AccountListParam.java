@@ -1,6 +1,6 @@
 package org.gatlin.soa.account.bean.param;
 
-import org.gatlin.soa.account.bean.enums.UserAccountType;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.bean.param.SoaParam;
 
 public class AccountListParam extends SoaParam {
@@ -8,7 +8,7 @@ public class AccountListParam extends SoaParam {
 	private static final long serialVersionUID = 8657510351605476264L;
 
 	private Long uid;
-	private UserAccountType type;
+	private AccountType type;
 	
 	public Long getUid() {
 		return uid;
@@ -18,11 +18,11 @@ public class AccountListParam extends SoaParam {
 		this.uid = uid;
 	}
 	
-	public UserAccountType getType() {
+	public AccountType getType() {
 		return type;
 	}
 	
-	public void setType(UserAccountType type) {
+	public void setType(AccountType type) {
 		this.type = type;
 	}
 	

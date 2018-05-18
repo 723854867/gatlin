@@ -2,21 +2,22 @@ package org.gatlin.soa.account.istate;
 
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.soa.account.bean.AccountCode;
-import org.gatlin.soa.account.bean.AccountUtil;
-import org.gatlin.soa.account.bean.entity.LogUserAccount;
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
-import org.gatlin.soa.account.bean.enums.UserAccountType;
+import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.bean.enums.BizType;
 
 public abstract class RechargeWaitPayStateMachine extends RechargeStateMachine {
 	
 	@Override
-	protected void process(UserRecharge recharge, RechargeState state) {
+	protected void process(Recharge recharge, RechargeState state) {
 		switch (state) {
 		case CLOSE:
 			switch (recharge.getGoodsType()) {
-			case 1:				// 充值货币失败，什么都不处理
+			case 1:				// 个人账户充值失败
+			case 2:				// 平台账户充值失败
+			case 3:				// 企业账户充值失败
 				break;
 			default:
 				rechargeFailure(recharge);
@@ -26,10 +27,23 @@ public abstract class RechargeWaitPayStateMachine extends RechargeStateMachine {
 		case FINISH:
 		case SUCCESS:
 			switch (recharge.getGoodsType()) {
-			case 1:				// 充值货币成功，什么都不处理
-				UserAccountType accountType = UserAccountType.match(Integer.valueOf(recharge.getGoodsId()));
-				LogUserAccount log = AccountUtil.log(accountType, recharge.getRechargee(), recharge.getAmount().subtract(recharge.getFee()), BizType.RECHARGE_SUCCESS.mark(), recharge.getId());
-				accountManager.process(log);
+			case 1:				// 个人账户充值成功
+				AccountType accountType = AccountType.match(Integer.valueOf(recharge.getGoodsId()));
+				AccountDetail detail = AccountDetail.userUsable(recharge.getRechargee()).incr(recharge.getAmount())
+						.bizId(recharge.getId()).bizType(BizType.RECHARGE_SUCCESS.mark()).accountType(accountType);
+				accountManager.process(detail);
+				break;
+			case 2:				// 平台账户充值成功
+				accountType = AccountType.match(Integer.valueOf(recharge.getGoodsId()));
+				detail = AccountDetail.platUsable().incr(recharge.getAmount()).bizId(recharge.getId())
+						.bizType(BizType.RECHARGE_SUCCESS.mark()).accountType(accountType);
+				accountManager.process(detail);
+				break;
+			case 3:				// 企业账户充值成功
+				accountType = AccountType.match(Integer.valueOf(recharge.getGoodsId()));
+				detail = AccountDetail.companyUsable(recharge.getRechargee()).incr(recharge.getAmount())
+						.bizId(recharge.getId()).bizType(BizType.RECHARGE_SUCCESS.mark()).accountType(accountType);
+				accountManager.process(detail);
 				break;
 			default:
 				rechargeSuccess(recharge);
@@ -41,7 +55,7 @@ public abstract class RechargeWaitPayStateMachine extends RechargeStateMachine {
 		}
 	}
 	
-	protected abstract void rechargeFailure(UserRecharge recharge);
+	protected abstract void rechargeFailure(Recharge recharge);
 	
-	protected abstract void rechargeSuccess(UserRecharge recharge);
+	protected abstract void rechargeSuccess(Recharge recharge);
 }

@@ -2,7 +2,7 @@ package org.gatlin.soa.alipay.service;
 
 import javax.annotation.Resource;
 
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.alipay.api.AlipayAccountService;
 import org.gatlin.soa.alipay.manager.AlipayAccountManager;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class AlipayAccountServiceImpl implements AlipayAccountService {
 	private AlipayAccountManager alipayAccountManager;
 
 	@Override
-	public String recharge(UserRecharge recharge) {
+	public String recharge(Recharge recharge) {
 		return alipayAccountManager.recharge(recharge);
 	}
 }

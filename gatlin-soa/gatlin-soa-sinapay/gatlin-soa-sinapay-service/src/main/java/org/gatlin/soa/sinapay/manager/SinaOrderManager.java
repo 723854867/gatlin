@@ -3,7 +3,7 @@ package org.gatlin.soa.sinapay.manager;
 import javax.annotation.Resource;
 
 import org.gatlin.soa.account.api.AccountService;
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,8 +14,10 @@ public class SinaOrderManager {
 	private AccountService accountService;
 
 	@Transactional
-	public String depositRecharge(UserRecharge recharge) {
+	public String depositRecharge(Recharge recharge) {
 		accountService.recharge(recharge);
+		
+		
 		return null;
 	}
 }

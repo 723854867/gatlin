@@ -1,14 +1,17 @@
 package org.gatlin.soa.account.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.api.AccountService;
-import org.gatlin.soa.account.bean.entity.LogUserAccount;
-import org.gatlin.soa.account.bean.entity.UserAccount;
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Account;
+import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
+import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.account.manager.AccountManager;
 import org.springframework.stereotype.Service;
 
@@ -21,29 +24,49 @@ public class AccountServiceImpl implements AccountService {
 	private AccountManager accountManager;
 
 	@Override
-	public void init(long uid, int mod) {
-		accountManager.init(uid, mod);
+	public void userCreate(long uid, int mod) {
+		accountManager.userCreate(uid, mod);
 	}
 	
 	@Override
-	public void process(LogUserAccount log) {
-		accountManager.process(log);
+	public void process(AccountDetail detail) {
+		accountManager.process(detail);
 	}
 	
 	@Override
-	public UserAccount account(Query query) {
+	public void process(List<AccountDetail> details) {
+		accountManager.process(details);
+	}
+	
+	@Override
+	public Account account(Query query) {
 		return accountManager.account(query);
 	}
 	
 	@Override
-	public Pager<UserAccount> accounts(Query query) {
-		if (null != query.getPage())
-			PageHelper.startPage(query.getPage(), query.getPageSize());
-		return new Pager<UserAccount>(accountManager.accounts(query));
+	public Account platAccount(AccountType type) {
+		return accountManager.platAccount(type);
 	}
 	
 	@Override
-	public void recharge(UserRecharge recharge) {
+	public Account userAccount(long uid, AccountType type) {
+		return accountManager.userAccount(uid, type);
+	}
+	
+	@Override
+	public Account companyAccount(int companyId, AccountType type) {
+		return accountManager.companyAccount(companyId, type);
+	}
+	
+	@Override
+	public Pager<Account> accounts(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<Account>(accountManager.accounts(query));
+	}
+	
+	@Override
+	public void recharge(Recharge recharge) {
 		accountManager.recharge(recharge);
 	}
 	

@@ -9,7 +9,7 @@ import org.gatlin.sdk.alipay.SignUtil;
 import org.gatlin.sdk.alipay.request.AppPayRequest;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.AccountCode;
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.util.DateUtil;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ public class AlipayAccountManager {
 	@Resource
 	private AccountService accountService;
 
-	public String recharge(UserRecharge recharge) {
+	public String recharge(Recharge recharge) {
 		accountService.recharge(recharge);
 		AppPayRequest.Builder builder = new AppPayRequest.Builder();
 		builder.subject("充值");

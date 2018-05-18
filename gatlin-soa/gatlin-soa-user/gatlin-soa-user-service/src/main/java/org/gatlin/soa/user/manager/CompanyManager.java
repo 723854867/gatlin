@@ -19,4 +19,8 @@ public class CompanyManager {
 		companyDao.insert(company);
 		return company.getId();
 	}
+	
+	public Company company(int companyId) {
+		return companyDao.getByKey(companyId);
+	}
 }

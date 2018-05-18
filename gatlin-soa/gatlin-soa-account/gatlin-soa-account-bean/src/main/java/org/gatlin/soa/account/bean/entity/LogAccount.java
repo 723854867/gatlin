@@ -6,15 +6,16 @@ import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
 
-public class LogUserAccount implements Identifiable<String> {
+public class LogAccount implements Identifiable<String> {
 
 	private static final long serialVersionUID = 8848537024255209715L;
 
 	@Id
 	private String id;
-	private long uid;
+	private long owner;
 	private int bizType;
 	private String bizId;
+	private int onwerType;
 	private int fieldType;
 	private int accountType;
 	private BigDecimal amount;
@@ -30,12 +31,12 @@ public class LogUserAccount implements Identifiable<String> {
 		this.id = id;
 	}
 
-	public long getUid() {
-		return uid;
+	public long getOwner() {
+		return owner;
 	}
 
-	public void setUid(long uid) {
-		this.uid = uid;
+	public void setOwner(long owner) {
+		this.owner = owner;
 	}
 
 	public int getBizType() {
@@ -52,6 +53,14 @@ public class LogUserAccount implements Identifiable<String> {
 
 	public void setBizId(String bizId) {
 		this.bizId = bizId;
+	}
+
+	public int getOnwerType() {
+		return onwerType;
+	}
+
+	public void setOnwerType(int onwerType) {
+		this.onwerType = onwerType;
 	}
 
 	public int getFieldType() {

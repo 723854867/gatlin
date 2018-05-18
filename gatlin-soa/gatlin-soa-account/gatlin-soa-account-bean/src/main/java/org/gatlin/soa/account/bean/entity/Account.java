@@ -7,15 +7,16 @@ import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
 
-public class UserAccount implements Identifiable<Long> {
+public class Account implements Identifiable<Long> {
 
 	private static final long serialVersionUID = 7283759456351585371L;
 
 	@Id
 	@GeneratedValue
 	private long id;
-	private long uid;
 	private int type;
+	private long owner;
+	private int ownerType;
 	private BigDecimal usable;
 	private BigDecimal frozen;
 	private int created;
@@ -29,20 +30,28 @@ public class UserAccount implements Identifiable<Long> {
 		this.id = id;
 	}
 
-	public long getUid() {
-		return uid;
-	}
-
-	public void setUid(long uid) {
-		this.uid = uid;
-	}
-
 	public int getType() {
 		return type;
 	}
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public long getOwner() {
+		return owner;
+	}
+
+	public void setOwner(long owner) {
+		this.owner = owner;
+	}
+
+	public int getOwnerType() {
+		return ownerType;
+	}
+
+	public void setOwnerType(int ownerType) {
+		this.ownerType = ownerType;
 	}
 
 	public BigDecimal getUsable() {

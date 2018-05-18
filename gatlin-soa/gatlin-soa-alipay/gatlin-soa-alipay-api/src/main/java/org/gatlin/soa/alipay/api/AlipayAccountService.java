@@ -1,8 +1,8 @@
 package org.gatlin.soa.alipay.api;
 
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
 
 public interface AlipayAccountService {
 
-	String recharge(UserRecharge recharge);
+	String recharge(Recharge recharge);
 }

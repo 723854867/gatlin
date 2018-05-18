@@ -6,7 +6,7 @@ import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
 
-public class UserRecharge implements Identifiable<String> {
+public class Recharge implements Identifiable<String> {
 
 	private static final long serialVersionUID = -1986403952622140997L;
 

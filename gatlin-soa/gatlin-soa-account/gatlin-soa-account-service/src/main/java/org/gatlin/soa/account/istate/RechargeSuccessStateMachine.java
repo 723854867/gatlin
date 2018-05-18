@@ -2,13 +2,13 @@ package org.gatlin.soa.account.istate;
 
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.soa.account.bean.AccountCode;
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 
 public abstract class RechargeSuccessStateMachine extends RechargeStateMachine {
 
 	@Override
-	protected void process(UserRecharge recharge, RechargeState state) {
+	protected void process(Recharge recharge, RechargeState state) {
 		switch (state) {
 		case CLOSE:						// 用户退款
 			rechargeReback(recharge);
@@ -20,5 +20,5 @@ public abstract class RechargeSuccessStateMachine extends RechargeStateMachine {
 		}
 	}
 	
-	protected abstract void rechargeReback(UserRecharge recharge);
+	protected abstract void rechargeReback(Recharge recharge);
 }

@@ -2,7 +2,7 @@ package org.gatlin.soa.sinapay.service;
 
 import javax.annotation.Resource;
 
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.sinapay.api.SinapayOrderService;
 import org.gatlin.soa.sinapay.manager.SinaOrderManager;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 	private SinaOrderManager sinaOrderManager;
 
 	@Override
-	public String depositRecharge(UserRecharge recharge) {
+	public String depositRecharge(Recharge recharge) {
 		return sinaOrderManager.depositRecharge(recharge);
 	}
 }

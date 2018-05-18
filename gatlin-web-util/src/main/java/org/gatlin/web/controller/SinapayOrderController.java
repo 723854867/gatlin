@@ -3,7 +3,7 @@ package org.gatlin.web.controller;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.param.RechargeParam;
 import org.gatlin.soa.sinapay.api.SinapayOrderService;
@@ -30,10 +30,11 @@ public class SinapayOrderController {
 	@Resource
 	private SinapayOrderService sinapayOrderService;
 
+	// 托管充值
 	@ResponseBody
 	@RequestMapping("recharge/deposit")
 	public Object depositRecharge(@RequestBody @Valid RechargeParam param) {
-		UserRecharge recharge = rechargeHook.rechargeVerify(param, PlatType.ALIPAY);
+		Recharge recharge = rechargeHook.rechargeVerify(param, PlatType.ALIPAY);
 		return sinapayOrderService.depositRecharge(recharge);
 	}
 }

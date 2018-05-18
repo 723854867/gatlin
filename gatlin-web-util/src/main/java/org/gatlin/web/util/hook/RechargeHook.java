@@ -9,13 +9,14 @@ import org.gatlin.core.CoreCode;
 import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
-import org.gatlin.soa.account.bean.enums.UserAccountType;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.param.RechargeParam;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.config.api.ConfigService;
+import org.gatlin.soa.user.api.CompanyService;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.util.DateUtil;
@@ -27,20 +28,40 @@ public abstract class RechargeHook {
 	@Resource
 	private UserService userService;
 	@Resource
+	private CompanyService companyService;
+	@Resource
 	protected ConfigService configService;
 
-	public UserRecharge rechargeVerify(RechargeParam param, PlatType plat) {
+	public Recharge rechargeVerify(RechargeParam param, PlatType plat) {
 		try {
 			switch (param.getGoodsType()) {
 			case 1:
-				rechargeeVerify(param);
+				userRechargeeVerify(param);
 				Assert.isTrue(CoreCode.PARAM_ERR, null != param.getAmount() && param.getAmount().compareTo(BigDecimal.ZERO) > 0);
 				param.setAmount(param.getAmount().setScale(2, RoundingMode.UP));
-				UserAccountType accountType = UserAccountType.match(Integer.valueOf(param.getGoodsId()));
+				AccountType accountType = AccountType.match(Integer.valueOf(param.getGoodsId()));
 				Assert.notNull(CoreCode.PARAM_ERR, accountType);
-				int mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD);
+				int mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD_USER);
 				Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) != accountType.mark());
-				return _userRecharge(param, plat);
+				return _recharge(param, plat);
+			case 2:
+				param.setRechargee(0l);
+				Assert.isTrue(CoreCode.PARAM_ERR, null != param.getAmount() && param.getAmount().compareTo(BigDecimal.ZERO) > 0);
+				param.setAmount(param.getAmount().setScale(2, RoundingMode.UP));
+				accountType = AccountType.match(Integer.valueOf(param.getGoodsId()));
+				Assert.notNull(CoreCode.PARAM_ERR, accountType);
+				mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD_PLAT);
+				Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) != accountType.mark());
+				return _recharge(param, plat);
+			case 3:
+				companyRechargeeVerify(param);
+				Assert.isTrue(CoreCode.PARAM_ERR, null != param.getAmount() && param.getAmount().compareTo(BigDecimal.ZERO) > 0);
+				param.setAmount(param.getAmount().setScale(2, RoundingMode.UP));
+				accountType = AccountType.match(Integer.valueOf(param.getGoodsId()));
+				Assert.notNull(CoreCode.PARAM_ERR, accountType);
+				mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD_COMPANY);
+				Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) != accountType.mark());
+				return _recharge(param, plat);
 			default:
 				return verify(param, plat);
 			}
@@ -51,7 +72,7 @@ public abstract class RechargeHook {
 		}
 	}
 	
-	protected void rechargeeVerify(RechargeParam param) {
+	protected void userRechargeeVerify(RechargeParam param) {
 		if (null == param.getRechargee()) 
 			param.setRechargee(param.getUser().getId());
 		else {
@@ -60,14 +81,19 @@ public abstract class RechargeHook {
 		}
 	}
 	
-	protected abstract UserRecharge verify(RechargeParam param, PlatType plat);
-	
-	protected UserRecharge _userRecharge(RechargeParam param, PlatType plat) {
-		return _userRecharge(param, plat, BigDecimal.ZERO);
+	protected void companyRechargeeVerify(RechargeParam param) {
+		Assert.notNull(CoreCode.PARAM_ERR, param.getRechargee());
+		Assert.notNull(UserCode.COMPANY_NOT_EIXST, companyService.company(param.getRechargee().intValue()));
 	}
 	
-	protected UserRecharge _userRecharge(RechargeParam param, PlatType plat, BigDecimal fee) {
-		UserRecharge instance = new UserRecharge();
+	protected abstract Recharge verify(RechargeParam param, PlatType plat);
+	
+	protected Recharge _recharge(RechargeParam param, PlatType plat) {
+		return _recharge(param, plat, BigDecimal.ZERO);
+	}
+	
+	protected Recharge _recharge(RechargeParam param, PlatType plat, BigDecimal fee) {
+		Recharge instance = new Recharge();
 		instance.setId(IDWorker.INSTANCE.nextSid());
 		User user = param.getUser();
 		instance.setOs(user.getOs().mark());

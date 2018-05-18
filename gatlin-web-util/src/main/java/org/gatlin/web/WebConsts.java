@@ -15,8 +15,10 @@ public interface WebConsts {
 		final IntegerOption RAPID_MAX_UPLOAD_SIZE_PER_FILE			= new IntegerOption("upload.maxUploadSizePerFile", 1048576);
 		final StrOption RESOURCE_PATH								= new StrOption("resource_path");
 		final StrOption RESOURCE_PREFIX								= new StrOption("resource_prefix");
-		final IntegerOption ACCOUNT_MOD								= new IntegerOption("account.mod", 0);
-		final IntegerOption ACCOUNT_RECHARGE_MOD					= new IntegerOption("account.recharge.mod", 0);
+		final IntegerOption ACCOUNT_MOD_USER						= new IntegerOption("account.mod.user", 0);
+		final IntegerOption ACCOUNT_RECHARGE_MOD_USER				= new IntegerOption("account.recharge.mod.user", 0);
+		final IntegerOption ACCOUNT_RECHARGE_MOD_PLAT				= new IntegerOption("account.recharge.mod.plat", 0);
+		final IntegerOption ACCOUNT_RECHARGE_MOD_COMPANY				= new IntegerOption("account.recharge.mod.company", 0);
 		final IntegerOption RECHARGE_TIMEOUT						= new IntegerOption("recharge.timeout", 30);
 		final BoolOption SINAPAY_ENABLE								= new BoolOption("sinapay.enable", false);
 		final BoolOption ALIPAY_ENABLE								= new BoolOption("alipay.enable", false);

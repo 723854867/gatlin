@@ -2,6 +2,7 @@ package org.gatlin.soa.account.manager;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,19 +13,17 @@ import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.EntityGenerator;
 import org.gatlin.soa.account.bean.AccountCode;
-import org.gatlin.soa.account.bean.entity.LogUserAccount;
-import org.gatlin.soa.account.bean.entity.UserAccount;
-import org.gatlin.soa.account.bean.entity.UserFrozen;
-import org.gatlin.soa.account.bean.entity.UserRecharge;
-import org.gatlin.soa.account.bean.enums.AccountField;
-import org.gatlin.soa.account.bean.enums.FrozenState;
+import org.gatlin.soa.account.bean.entity.Account;
+import org.gatlin.soa.account.bean.entity.LogAccount;
+import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.account.bean.enums.AccountOwnerType;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
-import org.gatlin.soa.account.bean.enums.UserAccountType;
+import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.account.istate.RechargeStateMachine;
-import org.gatlin.soa.account.mybatis.dao.LogUserAccountDao;
-import org.gatlin.soa.account.mybatis.dao.UserAccountDao;
-import org.gatlin.soa.account.mybatis.dao.UserFrozenDao;
-import org.gatlin.soa.account.mybatis.dao.UserRechargeDao;
+import org.gatlin.soa.account.mybatis.dao.AccountDao;
+import org.gatlin.soa.account.mybatis.dao.LogAccountDao;
+import org.gatlin.soa.account.mybatis.dao.RechargeDao;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,49 +34,76 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountManager {
 
 	@Resource
-	private UserFrozenDao userFrozenDao;
+	private AccountDao accountDao;
 	@Resource
-	private UserAccountDao userAccountDao;
+	private RechargeDao rechargeDao;
 	@Resource
-	private UserRechargeDao userRechargeDao;
-	@Resource
-	private LogUserAccountDao logUserAccountDao; 
+	private LogAccountDao logAccountDao; 
 	@Autowired
 	private Map<String, RechargeStateMachine> rechargeStateMachines;
 	
-	public void init(Long uid, int mod) {
-		List<UserAccount> accounts = new ArrayList<UserAccount>();
-		for (UserAccountType type : UserAccountType.values()) {
+	public void userCreate(Long uid, int mod) {
+		List<Account> accounts = new ArrayList<Account>();
+		for (AccountType type : AccountType.values()) {
 			if ((type.mark() & mod) == type.mark()) 
 				accounts.add(EntityGenerator.newUserAccount(uid, type.mark()));
 		}
 		if (!CollectionUtil.isEmpty(accounts))
-			userAccountDao.batchInsert(accounts);
+			accountDao.batchInsert(accounts);
 	}
 	
-	public void recharge(UserRecharge recharge) {
-		userRechargeDao.insert(recharge);
+	public void recharge(Recharge recharge) {
+		rechargeDao.insert(recharge);
 	}
 	
 	@Transactional
 	public void rechargeNotice(String id, RechargeState update) {
 		Query query = new Query().eq("id", id).forUpdate();
-		UserRecharge recharge = userRechargeDao.queryUnique(query);
+		Recharge recharge = rechargeDao.queryUnique(query);
 		Assert.notNull(AccountCode.RECHARGE_NOT_EXIST, recharge);
 		RechargeState state = RechargeState.match(recharge.getState());
 		RechargeStateMachine stateMachine = rechargeStateMachines.get(state.machineName());
 		stateMachine.update(recharge, update);
-		userRechargeDao.update(recharge);
+		rechargeDao.update(recharge);
 	}
 	
 	@Transactional
-	public void process(LogUserAccount log) {
-		if (log.getAmount().compareTo(BigDecimal.ZERO) == 0)
+	public void process(AccountDetail detail) {
+		if (detail.amount().compareTo(BigDecimal.ZERO) == 0)
 			return;
-		Query query = new Query().eq("type", log.getAccountType()).eq("uid", log.getUid()).forUpdate();
-		UserAccount account = account(query);
-		AccountField field = AccountField.match(log.getFieldType());
-		switch (field) {
+		Query query = new Query().eq("type", detail.accountType().mark()).eq("owner_type", detail.ownerType().mark()).eq("owner", detail.owner()).forUpdate();
+		Account account = account(query);
+		LogAccount log = _process(account, detail);
+		logAccountDao.insert(log);
+		accountDao.update(account);
+	}
+	
+	@Transactional
+	public void process(List<AccountDetail> details) { 
+		List<LogAccount> logs = new ArrayList<LogAccount>();
+		Map<String, Account> accounts = new HashMap<String, Account>();
+		for (AccountDetail detail : details) {
+			if (detail.amount().compareTo(BigDecimal.ZERO) == 0)
+				continue;
+			String key = detail.ownerType().mark() + "_" + detail.owner() + "_" + detail.accountType().mark();
+			Account account = accounts.get(key);
+			if (null == account) {
+				Query query = new Query().eq("type", detail.accountType().mark()).eq("owner_type", detail.ownerType().mark()).eq("owner", detail.owner()).forUpdate();
+				account = account(query);
+				accounts.put(key, account);
+			}
+			LogAccount log = _process(account, detail);
+			logs.add(log);
+		}
+		if (!CollectionUtil.isEmpty(logs))
+			logAccountDao.batchInsert(logs);
+		if (CollectionUtil.isEmpty(accounts))
+			accountDao.updateCollection(accounts.values());
+	}
+	
+	private LogAccount _process(Account account, AccountDetail detail) { 
+		LogAccount log = detail.log();
+		switch (detail.field()) {
 		case USABLE:
 			log.setPreAmount(account.getUsable());
 			account.setUsable(account.getUsable().add(log.getAmount()));
@@ -87,17 +113,6 @@ public class AccountManager {
 			log.setPreAmount(account.getFrozen());
 			account.setFrozen(account.getFrozen().add(log.getAmount()));
 			log.setPostAmount(account.getFrozen());
-			if (log.getAmount().compareTo(BigDecimal.ZERO) > 0) {			// 冻结
-				UserFrozen frozen = EntityGenerator.newUserFrozen(log);
-				userFrozenDao.insert(frozen);
-			} else {														// 解冻
-				query = new Query().eq("biz_type", log.getBizType()).eq("biz_id", log.getBizId());
-				UserFrozen frozen = userFrozenDao.queryUnique(query);
-				Assert.isTrue(AccountCode.FROZEN_AMOUNT_ERR, frozen.getAmount().compareTo(log.getAmount().negate()) == 0);
-				frozen.setState(FrozenState.THAW.mark());
-				frozen.setUpdated(DateUtil.current());
-				userFrozenDao.update(frozen);
-			}
 			break;
 		default:
 			throw new CodeException();
@@ -105,15 +120,29 @@ public class AccountManager {
 		account.setUpdated(DateUtil.current());
 		Assert.isTrue(AccountCode.USABLE_LACK, account.getUsable().compareTo(BigDecimal.ZERO) >= 0);
 		Assert.isTrue(AccountCode.FROZEN_LACK, account.getFrozen().compareTo(BigDecimal.ZERO) >= 0);
-		userAccountDao.update(account);
-		logUserAccountDao.insert(log);
+		return log;
 	}
 	
-	public UserAccount account(Query query) {
-		return userAccountDao.queryUnique(query);
+	public Account platAccount(AccountType type) {
+		Query query = new Query().eq("type", type.mark()).eq("owner_type", AccountOwnerType.PLAT.mark());
+		return account(query);
 	}
 	
-	public List<UserAccount> accounts(Query query) {
-		return userAccountDao.queryList(query);
+	public Account userAccount(long uid, AccountType type) {
+		Query query = new Query().eq("type", type.mark()).eq("owner_type", AccountOwnerType.USER.mark()).eq("owner", uid);
+		return account(query);
+	}
+	
+	public Account companyAccount(int companyId, AccountType type) {
+		Query query = new Query().eq("type", type.mark()).eq("owner_type", AccountOwnerType.COMPANY.mark()).eq("owner", companyId);
+		return account(query);
+	}
+	
+	public Account account(Query query) {
+		return accountDao.queryUnique(query);
+	}
+	
+	public List<Account> accounts(Query query) {
+		return accountDao.queryList(query);
 	}
 }
