@@ -79,7 +79,7 @@ public class SinapayRequest<RESPONSE extends SinapayResponse, REQUEST extends Si
 		}
 		
 		public BUILDER notifyUrl(String notifyUrl) {
-			this.params.put("notifyUrl", notifyUrl);
+			this.params.put("notify_url", notifyUrl);
 			return (BUILDER) this;
 		}
 		

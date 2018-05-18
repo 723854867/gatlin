@@ -13,8 +13,8 @@ import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.enums.AccountType;
-import org.gatlin.soa.account.bean.param.RechargeParam;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.bean.param.RechargeParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.user.api.CompanyService;
 import org.gatlin.soa.user.api.UserService;
@@ -23,7 +23,7 @@ import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
 import org.gatlin.web.WebConsts;
 
-public abstract class RechargeHook {
+public abstract class RechargeHook<PARAM extends RechargeParam> {
 	
 	@Resource
 	private UserService userService;
@@ -32,7 +32,7 @@ public abstract class RechargeHook {
 	@Resource
 	protected ConfigService configService;
 
-	public Recharge rechargeVerify(RechargeParam param, PlatType plat) {
+	public Recharge rechargeVerify(PARAM param, PlatType plat) {
 		try {
 			switch (param.getGoodsType()) {
 			case 1:

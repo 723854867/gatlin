@@ -1,7 +1,5 @@
 package org.gatlin.soa.sinapay.bean.entity;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
@@ -12,18 +10,44 @@ public class SinaRecharge implements Identifiable<String> {
 	
 	@Id
 	private String id;
-	private int goodsType;
-	private String goodsId;
-	private long rechargee;
-	private long recharger;
-	private BigDecimal fee;
-	private BigDecimal amount;
-	private int expiry;
+	private String state;
 	private int created;
 	private int updated;
-
+	
+	public String getId() {
+		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public String getState() {
+		return state;
+	}
+	
+	public void setState(String state) {
+		this.state = state;
+	}
+	
+	public int getCreated() {
+		return created;
+	}
+	
+	public void setCreated(int created) {
+		this.created = created;
+	}
+	
+	public int getUpdated() {
+		return updated;
+	}
+	
+	public void setUpdated(int updated) {
+		this.updated = updated;
+	}
+	
 	@Override
 	public String key() {
-		return null;
+		return id;
 	}
 }

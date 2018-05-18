@@ -11,8 +11,8 @@ import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
-import org.gatlin.soa.account.bean.param.RechargeParam;
 import org.gatlin.soa.alipay.api.AlipayAccountService;
+import org.gatlin.soa.bean.param.RechargeParam;
 import org.gatlin.web.AlipayCondition;
 import org.gatlin.web.util.hook.RechargeHook;
 import org.springframework.context.annotation.Conditional;
@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AlipayController {
 	
 	@Resource
-	private RechargeHook rechargeHook;
-	@Resource
 	private AccountService accountService;
+	@Resource
+	private RechargeHook<RechargeParam> rechargeHook;
 	@Resource
 	private AlipayAccountService alipayAccountService;
 	

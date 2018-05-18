@@ -9,6 +9,7 @@ import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.bean.model.Geo;
+import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.ConfigCode;
@@ -91,9 +92,15 @@ public class SinapayMemberController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("member/bank/card/unbind/confirm")
-	public Object memberBankCardUnbindConfirm(@RequestBody @Valid BankCardConfirmParam param) {
+	@RequestMapping("bank/card/unbind/confirm")
+	public Object bankCardUnbindConfirm(@RequestBody @Valid BankCardConfirmParam param) {
 		sinapayMemberService.bankCardUnbindConfirm(param);
 		return Response.ok();
+	}
+	
+	@ResponseBody
+	@RequestMapping("withhold")
+	public Object withhold(@RequestBody @Valid SoaParam param) {
+		return sinapayMemberService.withhold(param);
 	}
 }

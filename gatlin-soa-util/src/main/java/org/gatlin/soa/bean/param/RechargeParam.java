@@ -1,11 +1,9 @@
-package org.gatlin.soa.account.bean.param;
+package org.gatlin.soa.bean.param;
 
 import java.math.BigDecimal;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-
-import org.gatlin.soa.bean.param.SoaParam;
 
 public class RechargeParam extends SoaParam {
 

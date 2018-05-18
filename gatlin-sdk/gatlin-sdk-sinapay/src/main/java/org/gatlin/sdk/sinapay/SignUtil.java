@@ -70,7 +70,7 @@ public class SignUtil {
 	 * 签名
 	 */
 	public static final String sign(Map<String, String> params) {
-		byte[] sinData = Encrypt.RSASign(_signStr(params).getBytes(), SinapayConfig.priKey(), SignatureAlgorithm.SHA1withRSA);
+		byte[] sinData = Encrypt.RSASign(_signStr(params).getBytes(), SinapayConfig.merchantPriKey(), SignatureAlgorithm.SHA1withRSA);
 		return Base64.encodeBase64String(sinData);
 	}
 
@@ -108,7 +108,7 @@ public class SignUtil {
 			if (!ENCRYPT_FIELDS.contains(entry.getKey()))
 				continue;
 			byte[] data = entry.getValue().getBytes();
-			byte[] encryptData = Encrypt.RSAEncodeByPublicKey(data, SinapayConfig.pubKey(), Transformation.RSA);
+			byte[] encryptData = Encrypt.RSAEncodeByPublicKey(data, SinapayConfig.merchantPubKey(), Transformation.RSA);
 			entry.setValue(Base64.encodeBase64String(encryptData));
 		}
 	}

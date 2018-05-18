@@ -1,14 +1,21 @@
 package org.gatlin.sdk.sinapay;
 
+import org.gatlin.sdk.sinapay.bean.enums.AccountType;
 import org.gatlin.sdk.sinapay.request.member.ActivateRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindRequest;
+import org.gatlin.sdk.sinapay.request.member.QueryBalanceRequest;
+import org.gatlin.sdk.sinapay.request.member.QueryWithholdRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
+import org.gatlin.sdk.sinapay.request.member.WithholdRequest;
 import org.gatlin.sdk.sinapay.response.BankCardBindConfirmResponse;
 import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
 import org.gatlin.sdk.sinapay.response.BankCardUnbindResponse;
+import org.gatlin.sdk.sinapay.response.QueryBalanceResponse;
+import org.gatlin.sdk.sinapay.response.QueryWithholdResponse;
+import org.gatlin.sdk.sinapay.response.RedirectResponse;
 import org.gatlin.sdk.sinapay.response.SinapayResponse;
 import org.gatlin.util.IDWorker;
 import org.gatlin.util.serial.SerializeUtil;
@@ -100,6 +107,37 @@ public class SinaMemberTest extends SinaTest {
 		BankCardUnbindConfirmRequest request = builder.build();
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		SinapayResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testQueryWithhold() {
+		QueryWithholdRequest.Builder builder = new QueryWithholdRequest.Builder();
+		builder.identityId("446626586486112256");
+		QueryWithholdRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		QueryWithholdResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testWithhold() {
+		WithholdRequest.Builder builder = new WithholdRequest.Builder();
+		builder.identityId("446626586486112256");
+		WithholdRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		RedirectResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testQueryBalance() {
+		QueryBalanceRequest.Builder builder = new QueryBalanceRequest.Builder();
+		builder.identityId("447061371406778368");
+		builder.accountType(AccountType.SAVING_POT);
+		QueryBalanceRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		QueryBalanceResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));
 	}
 }

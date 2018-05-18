@@ -11,5 +11,6 @@ public interface CoreCode {
 	final Code RESOURCE_LOCKED						= new Code("code.resource.locked", "资源正在被使用");
 	final Code SDK_INVOKE_FAIL						= new Code("code.sdk.invoke.fail", "第三方调用失败");
 	final Code DATA_STATE_CHANGED					= new Code("code.data.state.changed", "数据状态已改变");
+	final Code NOTICE_SIGN_VERIFY_FAILURE			= new Code("code.notice.sign.verify.failure", "通知验签失败");
 	final Code IDENTITY_OR_MOBILE_DUPLICATED		= new Code("code.identity.or.mobile.duplicated", "身份证或者手机号已被使用");
 }

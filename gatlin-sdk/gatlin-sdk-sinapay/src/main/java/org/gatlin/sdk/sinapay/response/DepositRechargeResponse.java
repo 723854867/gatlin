@@ -4,7 +4,7 @@ import org.gatlin.sdk.sinapay.bean.enums.DepositRechargeState;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DepositRechargeResponse extends SinapayResponse {
+public class DepositRechargeResponse extends RedirectResponse {
 
 	private static final long serialVersionUID = 5209352467247173606L;
 
@@ -26,10 +26,6 @@ public class DepositRechargeResponse extends SinapayResponse {
 	// 线下支付收款备注
 	@SerializedName("trans_trade_no")
 	private String transTradeNo;
-	// 收银台重定向地址.当请求参数中的"version"的值是"1.1"时，且支付方式扩展是网银并选择"SINAPAY"跳转新浪收银台时，此参数不为空。
-	// 商户系统需要将用户按此参数的值重定向到新浪收银台。其他情况不返回此值，"version"的值是"1.0"时也不返回此值。
-	@SerializedName("redirect_url")
-	private String redirectUrl;
 
 	public String getOutTradeNo() {
 		return outTradeNo;
@@ -85,13 +81,5 @@ public class DepositRechargeResponse extends SinapayResponse {
 
 	public void setTransTradeNo(String transTradeNo) {
 		this.transTradeNo = transTradeNo;
-	}
-
-	public String getRedirectUrl() {
-		return redirectUrl;
-	}
-
-	public void setRedirectUrl(String redirectUrl) {
-		this.redirectUrl = redirectUrl;
 	}
 }

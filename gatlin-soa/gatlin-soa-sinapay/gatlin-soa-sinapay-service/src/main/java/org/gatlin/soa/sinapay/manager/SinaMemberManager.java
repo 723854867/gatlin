@@ -11,12 +11,17 @@ import org.gatlin.sdk.sinapay.request.member.BankCardBindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindRequest;
+import org.gatlin.sdk.sinapay.request.member.QueryWithholdRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
+import org.gatlin.sdk.sinapay.request.member.WithholdRequest;
 import org.gatlin.sdk.sinapay.response.BankCardBindConfirmResponse;
 import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
 import org.gatlin.sdk.sinapay.response.BankCardUnbindResponse;
+import org.gatlin.sdk.sinapay.response.QueryWithholdResponse;
+import org.gatlin.sdk.sinapay.response.RedirectResponse;
 import org.gatlin.sdk.sinapay.response.SinapayResponse;
 import org.gatlin.soa.bean.model.Geo;
+import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.sinapay.bean.SinaCode;
@@ -208,7 +213,31 @@ public class SinaMemberManager {
 		logger.info("新浪确认解绑银行卡响应：{}", SerializeUtil.GSON.toJson(response));
 	}
 	
+	public boolean isWithhold(MemberType type, String tid) {
+		SinaUser user = user(type, tid);
+		QueryWithholdRequest.Builder builder = new QueryWithholdRequest.Builder();
+		builder.identityId(user.getSinaId());
+		QueryWithholdRequest request = builder.build();
+		QueryWithholdResponse response = request.sync();
+		return response.isWithholdAuthority();
+	}
+	
+	public String withhold(SoaParam param) {
+		SinaUser user = user(MemberType.PERSONAL, param.getUser().getId());
+		Assert.isTrue(SinaCode.MEMBER_UNREALNAME, null != user && user.isRealname());
+		WithholdRequest.Builder builder = new WithholdRequest.Builder();
+		builder.identityId(user.getSinaId());
+		WithholdRequest request = builder.build();
+		RedirectResponse response = request.sync();
+		return response.getRedirectUrl();
+	}
+	
 	public SinaUser user(Query query) {
 		return sinaUserDao.queryUnique(query);
+	}
+	
+	public SinaUser user(MemberType type, Object tid) {
+		Query query = new Query().eq("type", type.mark()).eq("tid", tid.toString());
+		return user(query);
 	}
 }

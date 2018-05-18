@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.bean.model.Geo;
+import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
@@ -54,5 +55,15 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	@Override
 	public SinaUser user(String tid, MemberType type) {
 		return sinaMemberManager.user(new Query().eq("tid", tid).eq("type", type.mark()));
+	}
+	
+	@Override
+	public boolean isWithhold(MemberType type, String tid) {
+		return sinaMemberManager.isWithhold(type, tid);
+	}
+	
+	@Override
+	public String withhold(SoaParam param) {
+		return sinaMemberManager.withhold(param);
 	}
 }

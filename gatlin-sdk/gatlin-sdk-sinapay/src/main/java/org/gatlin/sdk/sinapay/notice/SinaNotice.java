@@ -1,6 +1,13 @@
 package org.gatlin.sdk.sinapay.notice;
 
+import javax.validation.constraints.NotEmpty;
+
+import org.gatlin.core.CoreCode;
+import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.model.message.Notice;
+import org.gatlin.core.util.Assert;
+import org.gatlin.sdk.sinapay.SignUtil;
+import org.gatlin.sdk.sinapay.SinapayConfig;
 
 public class SinaNotice extends Notice {
 
@@ -13,10 +20,12 @@ public class SinaNotice extends Notice {
 	// 通知编号
 	private String notify_id;
 	// 参数编码字符集:注意真实字符串为 input_charset
+	@NotEmpty
 	private String _input_charset;
 	// 通知时间
 	private String notify_time;
 	// 签名
+	@NotEmpty
 	private String sign;
 	// 签名方式
 	private String sign_type;
@@ -109,12 +118,13 @@ public class SinaNotice extends Notice {
 		this.error_message = error_message;
 	}
 
-	public boolean success() {
-		return this.error_code.equalsIgnoreCase("success");
-	}
-
 	@Override
 	public void verify() {
 		super.verify();
+		try {
+			Assert.isTrue(CoreCode.NOTICE_SIGN_VERIFY_FAILURE, SignUtil.verify(this, SinapayConfig.pubKey()));
+		} catch (Exception e) {
+			throw new CodeException(CoreCode.NOTICE_SIGN_VERIFY_FAILURE);
+		}
 	}
 }

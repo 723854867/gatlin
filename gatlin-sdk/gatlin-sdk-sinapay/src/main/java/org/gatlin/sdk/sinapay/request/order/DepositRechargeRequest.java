@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
+import org.gatlin.sdk.sinapay.bean.enums.CashdeskAddrCategory;
 import org.gatlin.sdk.sinapay.bean.model.PayMethod;
 import org.gatlin.sdk.sinapay.response.DepositRechargeResponse;
 
@@ -53,8 +54,8 @@ public class DepositRechargeRequest extends OrderRequest<DepositRechargeResponse
 		}
 		
 		// 用户承担手续费
-		public Builder userFee(String userFee) {
-			this.params.put("user_fee", userFee);
+		public Builder userFee(BigDecimal userFee) {
+			this.params.put("user_fee", userFee.toString());
 			return this;
 		}
 		
@@ -78,8 +79,8 @@ public class DepositRechargeRequest extends OrderRequest<DepositRechargeResponse
 		}
 		
 		// 收银台地址类别：收银台地址类型，目前只包含MOBILE。为空时默认返回PC版页面，当传值为"MOBILE"时返回移动版页面。
-		public Builder cashdeskAddrCategory(String cashdeskAddrCategory) {
-			this.params.put("cashdesk_addr_category", cashdeskAddrCategory);
+		public Builder cashdeskAddrCategory(CashdeskAddrCategory cashdeskAddrCategory) {
+			this.params.put("cashdesk_addr_category", cashdeskAddrCategory.name());
 			return this;
 		}
 	}

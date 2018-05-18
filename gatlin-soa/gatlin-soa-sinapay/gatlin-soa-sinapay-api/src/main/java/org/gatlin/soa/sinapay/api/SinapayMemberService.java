@@ -2,6 +2,7 @@ package org.gatlin.soa.sinapay.api;
 
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.bean.model.Geo;
+import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
@@ -47,4 +48,8 @@ public interface SinapayMemberService {
 	void bankCardUnbindConfirm(BankCardConfirmParam param);
 	
 	SinaUser user(String tid, MemberType type);
+	
+	boolean isWithhold(MemberType type, String tid);
+	
+	String withhold(SoaParam param);
 }

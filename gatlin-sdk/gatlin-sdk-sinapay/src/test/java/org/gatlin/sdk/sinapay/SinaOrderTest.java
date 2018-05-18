@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
 import org.gatlin.sdk.sinapay.bean.model.OnlineBankPay;
+import org.gatlin.sdk.sinapay.request.order.DepositCollectRequest;
 import org.gatlin.sdk.sinapay.request.order.DepositRechargeRequest;
+import org.gatlin.sdk.sinapay.response.DepositCollectResponse;
 import org.gatlin.sdk.sinapay.response.DepositRechargeResponse;
 import org.gatlin.util.IDWorker;
 import org.gatlin.util.serial.SerializeUtil;
@@ -23,6 +25,16 @@ public class SinaOrderTest extends SinaTest {
 		DepositRechargeRequest request = builder.build();
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		DepositRechargeResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testDepositCollect() {
+		DepositCollectRequest.Builder builder = new DepositCollectRequest.Builder();
+		builder.identityId("447061371406778368");
+		DepositCollectRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		DepositCollectResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));
 	}
 }
