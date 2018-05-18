@@ -1,6 +1,8 @@
 package org.gatlin.soa.config.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -91,6 +93,11 @@ public class ConfigServiceImpl implements ConfigService {
 	@Override
 	public Geo geo(String code, boolean validCheck) {
 		return districtManager.geo(code, validCheck);
+	}
+	
+	@Override
+	public Map<String, Geo> geos(Set<String> codes, boolean validCheck) {
+		return districtManager.geos(codes, validCheck);
 	}
 	
 	@Override

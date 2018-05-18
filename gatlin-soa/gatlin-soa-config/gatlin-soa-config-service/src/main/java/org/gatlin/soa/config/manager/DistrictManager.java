@@ -1,9 +1,9 @@
 package org.gatlin.soa.config.manager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -100,7 +100,7 @@ public class DistrictManager {
 			geo.setCityCode(city.getCode());
 		} if (null != county && ((validCheck && county.isValid()) || !validCheck)) {
 			geo.setCounty(county.getName());
-			geo.setCountryCode(county.getCode());
+			geo.setCountyCode(county.getCode());
 		} if (null != country && ((validCheck && country.isValid()) || !validCheck)) {
 			geo.setCountry(country.getName());
 			geo.setCountryCode(country.getCode());
@@ -111,6 +111,42 @@ public class DistrictManager {
 		return geo;
 	}
 	
+	public Map<String, Geo> geos(Set<String> codes, boolean validCheck) {
+		Map<String, CfgDistrict> districts = cfgDistrictDao.getAll();
+		Map<String, Geo> geos = new HashMap<String, Geo>(); 
+		codes.forEach(code -> {
+			CfgDistrict district = districts.get(code);
+			Assert.notNull(ConfigCode.DISTRICT_NOT_EXIST, district);
+			Map<DistrictLevel, CfgDistrict> m = new HashMap<DistrictLevel, CfgDistrict>();
+			while (true) {
+				m.put(DistrictLevel.match(district.getLevel()), district);
+				if (!StringUtil.hasText(district.getParent()))
+					break;
+				district = districts.get(district.getParent());
+			}
+			CfgDistrict city = m.get(DistrictLevel.CITY);
+			CfgDistrict county = m.get(DistrictLevel.COUNTY);
+			CfgDistrict country = m.get(DistrictLevel.COUNTRY);
+			CfgDistrict province = m.get(DistrictLevel.PROVINCE);
+			Geo geo = new Geo();
+			if (null != city && ((validCheck && city.isValid()) || !validCheck)) {
+				geo.setCity(city.getName());
+				geo.setCityCode(city.getCode());
+			} if (null != county && ((validCheck && county.isValid()) || !validCheck)) {
+				geo.setCounty(county.getName());
+				geo.setCountyCode(county.getCode());
+			} if (null != country && ((validCheck && country.isValid()) || !validCheck)) {
+				geo.setCountry(country.getName());
+				geo.setCountryCode(country.getCode());
+			} if (null != province && ((validCheck && province.isValid()) || !validCheck)) {
+				geo.setProvince(province.getName());
+				geo.setProvinceCode(province.getCode());
+			}
+			geos.put(code, geo);
+		});
+		return geos;
+	}
+	
 	public Map<DistrictLevel, CfgDistrict> parents(CfgDistrict district) {
 		Map<DistrictLevel, CfgDistrict> map = new HashMap<DistrictLevel, CfgDistrict>();
 		while(StringUtil.hasText(district.getParent())) {
@@ -118,20 +154,6 @@ public class DistrictManager {
 			map.put(DistrictLevel.match(district.getLevel()), district);
 		}
 		return map;
-	}
-	
-	public List<CfgDistrict> childrens(CfgDistrict district) { 
-		List<CfgDistrict> list = new ArrayList<CfgDistrict>();
-		_childrens(district, list);
-		return list;
-	}
-	
-	private void _childrens(CfgDistrict district, List<CfgDistrict> list) {
-		List<CfgDistrict> districts = cfgDistrictDao.queryList(new Query().eq("parent", district.getCode()));
-		if (CollectionUtil.isEmpty(districts))
-			return;
-		list.addAll(districts);
-		districts.forEach(item -> _childrens(item, list));
 	}
 	
 	public CfgDistrict district(String code) {

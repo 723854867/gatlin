@@ -66,9 +66,7 @@ public class EntityGenerator {
 	public static final UserAddress newUserAddress(AddressAddparam param, Geo geo) {
 		UserAddress instance = new UserAddress();
 		instance.setUid(param.getUser().getId());
-		instance.setCity(geo.getCity());
-		instance.setCounty(geo.getCounty());
-		instance.setProvince(geo.getProvince());
+		instance.setCounty(geo.getCountyCode());
 		instance.setUsed(param.isUsed());
 		instance.setMemo(param.getMemo());
 		instance.setDetail(param.getDetail());

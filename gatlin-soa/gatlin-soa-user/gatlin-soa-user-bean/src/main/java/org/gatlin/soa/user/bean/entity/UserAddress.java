@@ -14,8 +14,6 @@ public class UserAddress implements Identifiable<Long> {
 	private long id;
 	private long uid;
 	private String memo;
-	private String province;
-	private String city;
 	private String county;
 	private String detail;
 	private String contacts;
@@ -48,23 +46,7 @@ public class UserAddress implements Identifiable<Long> {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-
-	public String getProvince() {
-		return province;
-	}
-
-	public void setProvince(String province) {
-		this.province = province;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
+	
 	public String getCounty() {
 		return county;
 	}

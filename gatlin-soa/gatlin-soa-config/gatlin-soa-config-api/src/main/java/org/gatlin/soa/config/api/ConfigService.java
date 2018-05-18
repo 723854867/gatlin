@@ -1,6 +1,8 @@
 package org.gatlin.soa.config.api;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.bean.model.option.Option;
@@ -27,6 +29,8 @@ public interface ConfigService {
 	Pager<CfgBank> banks(Query query);
 	
 	Geo geo(String code, boolean validCheck);
+	
+	Map<String, Geo> geos(Set<String> codes, boolean validCheck);
 	
 	List<CfgDistrict> districts(Query query);
 	

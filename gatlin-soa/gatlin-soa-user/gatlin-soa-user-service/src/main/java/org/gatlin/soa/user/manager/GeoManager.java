@@ -47,11 +47,8 @@ public class GeoManager {
 		Assert.isTrue(CoreCode.FORBID, address.getUid() == param.getUser().getId() && !address.isDeleted());
 		if (null != param.getUsed() && param.getUsed()) 
 			_addressCount(param.getUser().getId(), true);
-		if (null != geo) {
-			address.setCity(geo.getCity());
-			address.setCounty(geo.getCounty());
-			address.setProvince(geo.getProvince());
-		}
+		if (null != geo) 
+			address.setCounty(geo.getCountryCode());
 		if (null != param.getUsed())
 			address.setUsed(param.getUsed());
 		if (StringUtil.hasText(param.getMemo()))
