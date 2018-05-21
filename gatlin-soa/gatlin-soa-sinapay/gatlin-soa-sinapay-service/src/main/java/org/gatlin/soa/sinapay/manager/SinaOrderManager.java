@@ -53,12 +53,12 @@ public class SinaOrderManager {
 
 	@Transactional
 	public String depositRecharge(Recharge recharge, SinaRechargeParam param) {
-		accountService.recharge(recharge);
-		sinaRechargeDao.insert(EntityGenerator.newSinaRecharge(recharge));
-		SinaUser user = param.isPersonal() 
+		SinaUser recharger = param.isPersonal() 
 				? sinaMemberManager.user(MemberType.PERSONAL, String.valueOf(recharge.getRecharger()))
 				: sinaMemberManager.user(MemberType.ENTERPRISE, String.valueOf(recharge.getRechargee()));
-		Assert.isTrue(SinaCode.MEMBER_UNREALNAME, null != user && user.isRealname());
+		Assert.isTrue(SinaCode.MEMBER_UNREALNAME, null != recharger && recharger.isRealname());
+		accountService.recharge(recharge);
+		sinaRechargeDao.insert(EntityGenerator.newSinaRecharge(recharge, param, null, null));
 		DepositRechargeRequest.Builder builder = new DepositRechargeRequest.Builder();
 		builder.outTradeNo(recharge.getId());
 		builder.accountType(param.getAccountType());
@@ -67,7 +67,7 @@ public class SinaOrderManager {
 			pay.setCardAttribute(CardAttribute.B);
 		builder.payMethod(pay, param.getAmount());
 		builder.payerIp(recharge.getIp());
-		builder.identityId(user.getSinaId());
+		builder.identityId(recharger.getSinaId());
 		if (recharge.getFee().compareTo(BigDecimal.ZERO) > 0)
 			builder.userFee(recharge.getFee());
 		builder.returnUrl(_returnUrl(param.getUser()));
@@ -84,18 +84,19 @@ public class SinaOrderManager {
 	
 	// 充值成功之后执行代收到中间户
 	@Transactional
-	public void noticeDepositRecharge(DepositRechargeNotice notice) {
+	public SinaRecharge noticeDepositRecharge(DepositRechargeNotice notice) {
 		SinaRecharge recharge = sinaRechargeDao.queryUnique(new Query().eq("id", notice.getOuter_trade_no()).forUpdate());
 		Assert.notNull(SinaCode.RECHARGE_NOT_EXIST, recharge);
 		RechargeState state = RechargeState.valueOf(recharge.getState());
 		DepositRechargeState cstate = DepositRechargeState.valueOf(notice.getDeposit_status());
 		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == RechargeState.PROCESSING);
 		Assert.isTrue(SinaCode.UNRECOGNIZE_DATA, cstate == DepositRechargeState.FAILED || cstate == DepositRechargeState.SUCCESS);
-		recharge.setState(RechargeState.FAILED.name());
+		recharge.setState(_rechargeState(cstate).name());
 		recharge.setUpdated(DateUtil.current());
-		if (cstate == DepositRechargeState.FAILED) 
+		if (cstate == DepositRechargeState.FAILED) 		// 充值失败同步通知应用充值失败
 			accountService.rechargeNotice(recharge.getId(), org.gatlin.soa.account.bean.enums.RechargeState.CLOSE);
 		sinaRechargeDao.update(recharge);
+		return recharge;
 	}
 	
 	private String _returnUrl(User user) {
@@ -111,6 +112,17 @@ public class SinaOrderManager {
 			}
 		case ORIGINAL:			// 原生客户端范围appurl
 			return configService.config(SinaConsts.URL_RETURN_ORIGINAL);
+		default:
+			throw new CodeException();
+		}
+	}
+	
+	private RechargeState _rechargeState(DepositRechargeState state) {
+		switch (state) {
+		case SUCCESS:
+			return RechargeState.SUCCESS;
+		case FAILED:
+			return RechargeState.FAILED;
 		default:
 			throw new CodeException();
 		}

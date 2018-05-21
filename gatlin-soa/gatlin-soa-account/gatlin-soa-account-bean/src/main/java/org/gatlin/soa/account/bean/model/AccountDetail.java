@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 import org.gatlin.soa.account.bean.entity.LogAccount;
 import org.gatlin.soa.account.bean.enums.AccountField;
-import org.gatlin.soa.account.bean.enums.AccountOwnerType;
 import org.gatlin.soa.account.bean.enums.AccountType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
 import org.gatlin.util.lang.StringUtil;
@@ -17,10 +17,10 @@ public class AccountDetail {
 	private String bizId;
 	private BigDecimal amount;
 	private AccountField field;
+	private TargetType ownerType;
 	private AccountType accountType;
-	private AccountOwnerType ownerType;
 
-	private AccountDetail(AccountOwnerType ownerType, AccountField field, long owner) {
+	private AccountDetail(TargetType ownerType, AccountField field, long owner) {
 		this.field = field;
 		this.owner = owner;
 		this.ownerType = ownerType;
@@ -78,7 +78,7 @@ public class AccountDetail {
 		return accountType;
 	}
 
-	public AccountOwnerType ownerType() {
+	public TargetType ownerType() {
 		return ownerType;
 	}
 	
@@ -97,26 +97,26 @@ public class AccountDetail {
 	}
 
 	public static final AccountDetail platUsable() {
-		return new AccountDetail(AccountOwnerType.PLAT, AccountField.USABLE, 0);
+		return new AccountDetail(TargetType.PLATFORM, AccountField.USABLE, 0);
 	}
 
 	public static final AccountDetail platFrozen() {
-		return new AccountDetail(AccountOwnerType.PLAT, AccountField.FROZEN, 0);
+		return new AccountDetail(TargetType.PLATFORM, AccountField.FROZEN, 0);
 	}
 
 	public static final AccountDetail userUsable(long uid) {
-		return new AccountDetail(AccountOwnerType.USER, AccountField.USABLE, uid);
+		return new AccountDetail(TargetType.USER, AccountField.USABLE, uid);
 	}
 
 	public static final AccountDetail userFrozen(long uid) {
-		return new AccountDetail(AccountOwnerType.USER, AccountField.FROZEN, uid);
+		return new AccountDetail(TargetType.USER, AccountField.FROZEN, uid);
 	}
 	
 	public static final AccountDetail companyUsable(long companyId) {
-		return new AccountDetail(AccountOwnerType.COMPANY, AccountField.USABLE, companyId);
+		return new AccountDetail(TargetType.COMPANY, AccountField.USABLE, companyId);
 	}
 
 	public static final AccountDetail companyFrozen(long companyId) {
-		return new AccountDetail(AccountOwnerType.COMPANY, AccountField.FROZEN, companyId);
+		return new AccountDetail(TargetType.COMPANY, AccountField.FROZEN, companyId);
 	}
 }

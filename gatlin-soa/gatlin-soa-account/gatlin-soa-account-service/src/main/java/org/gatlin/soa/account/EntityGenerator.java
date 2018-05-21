@@ -3,7 +3,7 @@ package org.gatlin.soa.account;
 import java.math.BigDecimal;
 
 import org.gatlin.soa.account.bean.entity.Account;
-import org.gatlin.soa.account.bean.enums.AccountOwnerType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.DateUtil;
 
 public class EntityGenerator {
@@ -12,7 +12,7 @@ public class EntityGenerator {
 		Account instance = new Account();
 		instance.setType(type);
 		instance.setOwner(uid);
-		instance.setOwnerType(AccountOwnerType.USER.mark());
+		instance.setOwnerType(TargetType.USER.mark());
 		instance.setUsable(BigDecimal.ZERO);
 		instance.setFrozen(BigDecimal.ZERO);
 		int time = DateUtil.current();

@@ -16,7 +16,6 @@ import org.gatlin.soa.account.bean.AccountCode;
 import org.gatlin.soa.account.bean.entity.Account;
 import org.gatlin.soa.account.bean.entity.LogAccount;
 import org.gatlin.soa.account.bean.entity.Recharge;
-import org.gatlin.soa.account.bean.enums.AccountOwnerType;
 import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
@@ -24,6 +23,7 @@ import org.gatlin.soa.account.istate.RechargeStateMachine;
 import org.gatlin.soa.account.mybatis.dao.AccountDao;
 import org.gatlin.soa.account.mybatis.dao.LogAccountDao;
 import org.gatlin.soa.account.mybatis.dao.RechargeDao;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,17 +124,17 @@ public class AccountManager {
 	}
 	
 	public Account platAccount(AccountType type) {
-		Query query = new Query().eq("type", type.mark()).eq("owner_type", AccountOwnerType.PLAT.mark());
+		Query query = new Query().eq("type", type.mark()).eq("owner_type", TargetType.PLATFORM.mark());
 		return account(query);
 	}
 	
 	public Account userAccount(long uid, AccountType type) {
-		Query query = new Query().eq("type", type.mark()).eq("owner_type", AccountOwnerType.USER.mark()).eq("owner", uid);
+		Query query = new Query().eq("type", type.mark()).eq("owner_type", TargetType.USER.mark()).eq("owner", uid);
 		return account(query);
 	}
 	
 	public Account companyAccount(int companyId, AccountType type) {
-		Query query = new Query().eq("type", type.mark()).eq("owner_type", AccountOwnerType.COMPANY.mark()).eq("owner", companyId);
+		Query query = new Query().eq("type", type.mark()).eq("owner_type", TargetType.COMPANY.mark()).eq("owner", companyId);
 		return account(query);
 	}
 	

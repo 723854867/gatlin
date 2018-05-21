@@ -11,6 +11,9 @@ public class SinaRecharge implements Identifiable<String> {
 	@Id
 	private String id;
 	private String state;
+	private String rechargee;
+	private String recharger;
+	private String accountType;
 	private int created;
 	private int updated;
 	
@@ -28,6 +31,30 @@ public class SinaRecharge implements Identifiable<String> {
 	
 	public void setState(String state) {
 		this.state = state;
+	}
+	
+	public String getRechargee() {
+		return rechargee;
+	}
+	
+	public void setRechargee(String rechargee) {
+		this.rechargee = rechargee;
+	}
+	
+	public String getRecharger() {
+		return recharger;
+	}
+	
+	public void setRecharger(String recharger) {
+		this.recharger = recharger;
+	}
+	
+	public String getAccountType() {
+		return accountType;
+	}
+	
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
 	}
 	
 	public int getCreated() {

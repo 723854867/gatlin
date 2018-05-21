@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AlipayController {
 	
 	@Resource
-	private AccountService accountService;
+	private RechargeHook rechargeHook;
 	@Resource
-	private RechargeHook<RechargeParam> rechargeHook;
+	private AccountService accountService;
 	@Resource
 	private AlipayAccountService alipayAccountService;
 	

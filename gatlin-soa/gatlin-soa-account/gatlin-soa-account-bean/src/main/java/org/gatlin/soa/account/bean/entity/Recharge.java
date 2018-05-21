@@ -17,9 +17,12 @@ public class Recharge implements Identifiable<String> {
 	private int state;
 	private String ip;
 	private int goodsType;
+	private long operator;
 	private String goodsId;
 	private long rechargee;
+	private int rechargeeType;
 	private long recharger;
+	private int rechargerType;
 	private BigDecimal fee;
 	private BigDecimal amount;
 	private int expiry;
@@ -73,6 +76,14 @@ public class Recharge implements Identifiable<String> {
 	public void setGoodsType(int goodsType) {
 		this.goodsType = goodsType;
 	}
+	
+	public long getOperator() {
+		return operator;
+	}
+	
+	public void setOperator(long operator) {
+		this.operator = operator;
+	}
 
 	public String getGoodsId() {
 		return goodsId;
@@ -89,6 +100,14 @@ public class Recharge implements Identifiable<String> {
 	public void setRechargee(long rechargee) {
 		this.rechargee = rechargee;
 	}
+	
+	public int getRechargeeType() {
+		return rechargeeType;
+	}
+	
+	public void setRechargeeType(int rechargeeType) {
+		this.rechargeeType = rechargeeType;
+	}
 
 	public long getRecharger() {
 		return recharger;
@@ -96,6 +115,14 @@ public class Recharge implements Identifiable<String> {
 
 	public void setRecharger(long recharger) {
 		this.recharger = recharger;
+	}
+	
+	public int getRechargerType() {
+		return rechargerType;
+	}
+	
+	public void setRechargerType(int rechargerType) {
+		this.rechargerType = rechargerType;
 	}
 
 	public BigDecimal getFee() {

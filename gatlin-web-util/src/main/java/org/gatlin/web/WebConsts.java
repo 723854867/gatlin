@@ -12,13 +12,13 @@ public interface WebConsts {
 		final BoolOption UPLOAD_ENABLE								= new BoolOption("upload.enable", false);
 		final LongOption RAPID_MAX_UPLOAD_SIZE						= new LongOption("upload.maxUploadSize", 5242880l);
 		final IntegerOption RAPID_MAX_IN_MEMORY_SIZE				= new IntegerOption("upload.maxInMemorySize", 51200);
-		final IntegerOption RAPID_MAX_UPLOAD_SIZE_PER_FILE			= new IntegerOption("upload.maxUploadSizePerFile", 1048576);
+		final IntegerOption RAPID_MAX_UPLOAD_SIZE_PER_FILE			= new IntegerOption("upload.maxUploadSizePerFile", 10485760);
 		final StrOption RESOURCE_PATH								= new StrOption("resource_path");
 		final StrOption RESOURCE_PREFIX								= new StrOption("resource_prefix");
 		final IntegerOption ACCOUNT_MOD_USER						= new IntegerOption("account.mod.user", 0);
 		final IntegerOption ACCOUNT_RECHARGE_MOD_USER				= new IntegerOption("account.recharge.mod.user", 0);
 		final IntegerOption ACCOUNT_RECHARGE_MOD_PLAT				= new IntegerOption("account.recharge.mod.plat", 0);
-		final IntegerOption ACCOUNT_RECHARGE_MOD_COMPANY				= new IntegerOption("account.recharge.mod.company", 0);
+		final IntegerOption ACCOUNT_RECHARGE_MOD_COMPANY			= new IntegerOption("account.recharge.mod.company", 0);
 		final IntegerOption RECHARGE_TIMEOUT						= new IntegerOption("recharge.timeout", 30);
 		final BoolOption SINAPAY_ENABLE								= new BoolOption("sinapay.enable", false);
 		final BoolOption ALIPAY_ENABLE								= new BoolOption("alipay.enable", false);

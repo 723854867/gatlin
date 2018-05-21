@@ -1,7 +1,5 @@
 package org.gatlin.soa.sinapay.bean.param;
 
-import javax.validation.constraints.Null;
-
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
 import org.gatlin.soa.bean.param.RechargeParam;
 
@@ -11,7 +9,6 @@ public class SinaRechargeParam extends RechargeParam {
 
 	// 是否对私充值
 	private boolean personal;
-	@Null
 	private AccountType accountType;
 	
 	public boolean isPersonal() {

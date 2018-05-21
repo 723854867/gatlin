@@ -14,6 +14,6 @@ public interface SinaCode {
 	final Code USER_UNWITHHOLD							= new Code("code.sina.user.unwithhold", "用户未开启委托扣款");
 	final Code COMPANY_UNWITHHOLD						= new Code("code.sina.company.unwithhold", "企业未开启委托扣款");
 	final Code RECHARGE_NOT_EXIST						= new Code("code.sina.recharge.not.exist", "新浪充值订单不存在");
-	final Code BANK_CARD_BIND_NOT_EXIST					= new Code("code.sina.bank.card.bind.not.exist", "新浪绑卡记录不存在");
 	final Code BANK_CARD_BIND_TICKET_INVALID			= new Code("code.sina.bank.card.bind.ticket.invalid", "新浪绑卡ticket已失效");
+	final Code BANK_CARD_BIND_NOT_EXIST					= new Code("code.sina.bank.card.bind.not.exist", "新浪绑卡记录不存在");
 }

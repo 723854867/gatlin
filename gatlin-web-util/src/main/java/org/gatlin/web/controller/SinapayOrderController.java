@@ -26,9 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SinapayOrderController {
 	
 	@Resource
-	private SinapayOrderService sinapayOrderService;
+	private RechargeHook rechargeHook;
 	@Resource
-	private RechargeHook<SinaRechargeParam> rechargeHook;
+	private SinapayOrderService sinapayOrderService;
 
 	// 托管充值
 	@ResponseBody

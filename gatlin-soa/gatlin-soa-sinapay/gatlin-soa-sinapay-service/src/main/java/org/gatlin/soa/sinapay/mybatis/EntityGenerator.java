@@ -2,14 +2,15 @@ package org.gatlin.soa.sinapay.mybatis;
 
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
 import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.enums.RechargeState;
+import org.gatlin.soa.sinapay.bean.param.SinaRechargeParam;
 import org.gatlin.soa.user.bean.entity.BankCard;
-import org.gatlin.soa.user.bean.enums.CardOwnerType;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
@@ -51,7 +52,7 @@ public class EntityGenerator {
 		instance.setId(IDWorker.INSTANCE.nextSid());
 		instance.setOwner(cardBind.getUid());
 		instance.setBankId(cardBind.getBankId());
-		instance.setOwnerType(CardOwnerType.USER.mark());
+		instance.setOwnerType(TargetType.USER.mark());
 		instance.setNo(cardBind.getBankNo());
 		instance.setMobile(cardBind.getMobile());
 		instance.setProvince(cardBind.getProvince());
@@ -63,10 +64,13 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final SinaRecharge newSinaRecharge(Recharge recharge) {
+	public static final SinaRecharge newSinaRecharge(Recharge recharge, SinaRechargeParam param, SinaUser rechargee, SinaUser recharger) {
 		SinaRecharge instance = new SinaRecharge();
 		instance.setId(recharge.getId());
+		instance.setRechargee(rechargee.getSinaId());
+		instance.setRecharger(recharger.getSinaId());
 		instance.setState(RechargeState.PROCESSING.name());
+		instance.setAccountType(param.getAccountType().name());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

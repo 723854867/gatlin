@@ -11,12 +11,12 @@ import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
 import org.gatlin.soa.user.api.BankCardService;
 import org.gatlin.soa.user.api.UserService;
-import org.gatlin.soa.user.bean.enums.CardOwnerType;
 import org.gatlin.soa.user.bean.model.BankCardInfo;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.BankCardsParam;
@@ -91,7 +91,7 @@ public class UserController {
 	@RequestMapping("bank/cards")
 	public Object bankCards(@RequestBody @Valid BankCardsParam param) {
 		param.setOwner(param.getUser().getId());
-		param.setOwnerType(CardOwnerType.USER.mark());
+		param.setOwnerType(TargetType.USER.mark());
 		Pager<BankCardInfo> pager = bankCardService.cards(param);
 		if (CollectionUtil.isEmpty(pager.getList()))
 			return pager;

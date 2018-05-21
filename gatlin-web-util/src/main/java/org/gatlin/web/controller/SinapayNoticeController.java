@@ -5,6 +5,8 @@ import javax.validation.Valid;
 
 import org.gatlin.sdk.sinapay.notice.DepositRechargeNotice;
 import org.gatlin.soa.sinapay.api.SinapayOrderService;
+import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
+import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.util.serial.SerializeUtil;
 import org.gatlin.web.SinapayCondition;
 import org.springframework.context.annotation.Conditional;
@@ -35,7 +37,11 @@ public class SinapayNoticeController {
 	@ResponseBody
 	@RequestMapping("recharge/deposit")
 	public Object rechargeDeposit(@Valid DepositRechargeNotice notice) {
-		System.out.println(SerializeUtil.GSON.toJson(notice));
+		SinaRecharge recharge = sinapayOrderService.noticeDepositRecharge(notice);
+		RechargeState state = RechargeState.valueOf(recharge.getState());
+		if (state == RechargeState.SUCCESS) {				// 发起待收
+			
+		}
 		return null;
 	}
 }

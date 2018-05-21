@@ -20,4 +20,5 @@ public interface UserCode {
 	final Code USER_ADDRESS_NOT_EXIST	 	= new Code("code.user.address.not.exist", "用户地址不存在");
 	final Code USER_ADDRESS_COUNT_LIMIT		= new Code("code.user.address.count.maximum", "用户地址数目已达上限");
 	final Code BANK_CARD_ALREADY_BIND		= new Code("code.user.bank.card.alread.bind", "银行卡已绑定");
+	final Code BANK_CARD_BIND_NOT_EXIST		= new Code("code.user.bank.card.bind.not.exist", "绑卡记录不存在");
 }
