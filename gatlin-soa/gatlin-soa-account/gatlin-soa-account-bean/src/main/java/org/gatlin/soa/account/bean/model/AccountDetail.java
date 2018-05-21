@@ -90,7 +90,7 @@ public class AccountDetail {
 		log.setAmount(amount);
 		log.setBizType(bizType);
 		log.setFieldType(field.mark());
-		log.setOnwerType(ownerType.mark());
+		log.setOwnerType(ownerType.mark());
 		log.setAccountType(accountType.mark());
 		log.setCreated(DateUtil.current());
 		return log;

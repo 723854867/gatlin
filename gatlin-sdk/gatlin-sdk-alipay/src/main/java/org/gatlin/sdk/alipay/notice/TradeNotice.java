@@ -12,6 +12,8 @@ public class TradeNotice extends AlipayNotice {
 	private String notify_type;
 	// 通知校验ID
 	private String notify_id;
+	// 授权商户的AppId
+	private String auth_app_id;
 	// 支付宝分配给开发者的应用Id
 	private String app_id;
 	// 编码格式，如utf-8、gbk、gb2312等
@@ -68,6 +70,14 @@ public class TradeNotice extends AlipayNotice {
 
 	public void setNotify_time(String notify_time) {
 		this.notify_time = notify_time;
+	}
+	
+	public String getAuth_app_id() {
+		return auth_app_id;
+	}
+	
+	public void setAuth_app_id(String auth_app_id) {
+		this.auth_app_id = auth_app_id;
 	}
 
 	public String getNotify_type() {

@@ -74,4 +74,11 @@ public class AccountServiceImpl implements AccountService {
 	public void rechargeNotice(String id, RechargeState update) {
 		accountManager.rechargeNotice(id, update);
 	}
+	
+	@Override
+	public Pager<Recharge> recharges(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<Recharge>(accountManager.recharges(query));
+	}
 }

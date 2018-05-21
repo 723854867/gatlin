@@ -13,7 +13,7 @@ public abstract class RechargeStateMachine {
 	protected AccountManager accountManager;
 
 	public void update(Recharge recharge, RechargeState state) {
-		recharge.setUpdated(state.mark());
+		recharge.setState(state.mark());
 		recharge.setUpdated(DateUtil.current());
 		process(recharge, state);
 	}

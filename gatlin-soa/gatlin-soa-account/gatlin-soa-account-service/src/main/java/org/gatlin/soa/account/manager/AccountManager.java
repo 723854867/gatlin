@@ -145,4 +145,8 @@ public class AccountManager {
 	public List<Account> accounts(Query query) {
 		return accountDao.queryList(query);
 	}
+	
+	public List<Recharge> recharges(Query query) {
+		return rechargeDao.queryList(query);
+	}
 }

@@ -42,7 +42,7 @@ public abstract class RechargeHook<PARAM extends RechargeParam> {
 				AccountType accountType = AccountType.match(Integer.valueOf(param.getGoodsId()));
 				Assert.notNull(CoreCode.PARAM_ERR, accountType);
 				int mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD_USER);
-				Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) != accountType.mark());
+				Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) == accountType.mark());
 				return _recharge(param, plat);
 			case 2:
 				param.setRechargee(0l);
@@ -51,7 +51,7 @@ public abstract class RechargeHook<PARAM extends RechargeParam> {
 				accountType = AccountType.match(Integer.valueOf(param.getGoodsId()));
 				Assert.notNull(CoreCode.PARAM_ERR, accountType);
 				mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD_PLAT);
-				Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) != accountType.mark());
+				Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) == accountType.mark());
 				return _recharge(param, plat);
 			case 3:
 				companyRechargeeVerify(param);
@@ -60,7 +60,7 @@ public abstract class RechargeHook<PARAM extends RechargeParam> {
 				accountType = AccountType.match(Integer.valueOf(param.getGoodsId()));
 				Assert.notNull(CoreCode.PARAM_ERR, accountType);
 				mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD_COMPANY);
-				Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) != accountType.mark());
+				Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) == accountType.mark());
 				return _recharge(param, plat);
 			default:
 				return verify(param, plat);

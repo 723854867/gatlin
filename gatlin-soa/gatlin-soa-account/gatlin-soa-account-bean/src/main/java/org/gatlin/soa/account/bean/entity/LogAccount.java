@@ -15,7 +15,7 @@ public class LogAccount implements Identifiable<String> {
 	private long owner;
 	private int bizType;
 	private String bizId;
-	private int onwerType;
+	private int ownerType;
 	private int fieldType;
 	private int accountType;
 	private BigDecimal amount;
@@ -55,12 +55,12 @@ public class LogAccount implements Identifiable<String> {
 		this.bizId = bizId;
 	}
 
-	public int getOnwerType() {
-		return onwerType;
+	public int getOwnerType() {
+		return ownerType;
 	}
-
-	public void setOnwerType(int onwerType) {
-		this.onwerType = onwerType;
+	
+	public void setOwnerType(int ownerType) {
+		this.ownerType = ownerType;
 	}
 
 	public int getFieldType() {

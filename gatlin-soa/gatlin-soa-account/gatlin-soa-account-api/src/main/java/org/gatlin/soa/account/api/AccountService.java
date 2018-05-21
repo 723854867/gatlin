@@ -32,4 +32,6 @@ public interface AccountService {
 	void recharge(Recharge recharge);
 	
 	void rechargeNotice(String id, RechargeState update);
+	
+	Pager<Recharge> recharges(Query query);
 }

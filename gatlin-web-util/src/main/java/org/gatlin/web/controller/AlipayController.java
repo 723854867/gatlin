@@ -42,7 +42,7 @@ public class AlipayController {
 	
 	@ResponseBody
 	@RequestMapping("notice/recharge")
-	public Object noticeRecharge(@RequestBody @Valid TradeNotice param) {
+	public Object noticeRecharge(@Valid TradeNotice param) {
 		RechargeState state = _rechargeState(TradeState.valueOf(param.getTrade_status()));
 		accountService.rechargeNotice(param.getOut_trade_no(), state);
 		return "success";

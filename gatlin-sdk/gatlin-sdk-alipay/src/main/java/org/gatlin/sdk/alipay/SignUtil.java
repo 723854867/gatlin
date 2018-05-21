@@ -1,17 +1,22 @@
 package org.gatlin.sdk.alipay;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.apache.commons.codec.binary.Base64;
+import org.gatlin.sdk.alipay.notice.AlipayNotice;
 import org.gatlin.util.codec.CryptConsts.SignatureAlgorithm;
+import org.gatlin.util.codec.Decrypt;
 import org.gatlin.util.codec.Encrypt;
 import org.gatlin.util.lang.StringUtil;
+import org.gatlin.util.reflect.BeanUtil;
 
 public class SignUtil {
 
@@ -50,5 +55,24 @@ public class SignUtil {
 			}
 		}
 		return query.deleteCharAt(query.length() - 1).toString();
+	}
+	
+	public static final boolean signVerify(AlipayNotice notice) { 
+		Map<String, Object> params = BeanUtil.beanToMap(notice, false);
+		String sign = params.remove("sign").toString();
+		String signType = params.remove("sign_type").toString();
+		Map<String, String> map = new TreeMap<String, String>();
+		params.entrySet().forEach(entry -> {
+			try {
+				map.put(entry.getKey(), URLDecoder.decode(entry.getValue().toString(), "utf-8"));
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		StringBuilder builder = new StringBuilder();
+		map.entrySet().forEach(entry -> builder.append(entry.getKey()).append("=").append(entry.getValue()).append("&"));
+		builder.deleteCharAt(builder.length() - 1);
+		SignatureAlgorithm algorithm = signType.equals("RSA") ? SignatureAlgorithm.SHA1withRSA : SignatureAlgorithm.SHA256WithRSA;
+		return Decrypt.RSASignVerify(builder.toString(), Base64.decodeBase64(sign), AlipayConfig.pubKey(), algorithm);
 	}
 }

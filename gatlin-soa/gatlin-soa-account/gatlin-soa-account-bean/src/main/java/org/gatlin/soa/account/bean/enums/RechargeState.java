@@ -20,7 +20,7 @@ public enum RechargeState {
 		}
 	},
 	// 支付成功
-	SUCCESS(2) {
+	SUCCESS(3) {
 		@Override
 		public String machineName() {
 			return "rechargeSuccessStateMachine";

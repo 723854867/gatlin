@@ -22,8 +22,12 @@ public class AlipayConfig {
 		return GatlinConfigration.get(PATH);
 	} 
 	
-	public static final String priKey() {
-		return GatlinConfigration.get(PRI_KEY);
+	public static final String pubKey() {
+		return GatlinConfigration.get(PUB_KEY);
+	} 
+	
+	public static final String merchantPriKey() {
+		return GatlinConfigration.get(MERCHANT_PRI_KEY);
 	} 
 	
 	public static final String notifyUrlRecharge() {
@@ -33,7 +37,8 @@ public class AlipayConfig {
 	private static final StrOption APP_ID							= new StrOption("alipay.appid");
 	private static final StrOption HOST								= new StrOption("alipay.host");
 	private static final StrOption PATH								= new StrOption("alipay.path");
-	private static final StrOption PRI_KEY							= new StrOption("alipay.priKey");
+	private static final StrOption PUB_KEY							= new StrOption("alipay.pubKey");
+	private static final StrOption MERCHANT_PRI_KEY					= new StrOption("alipay.merchant.priKey");
 	private static final IntegerOption PORT							= new IntegerOption("alipay.port");
 	private static final StrOption RECHARGE_NOTIFY_URL				= new StrOption("alipay.notify.url.recharge");
 }

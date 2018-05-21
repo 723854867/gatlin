@@ -129,7 +129,7 @@ public class AppPayRequest extends AlipayRequest<AppPayResponse, AppPayRequest> 
 		public AppPayRequest build() {
 			this.bizContent = SerializeUtil.GSON.toJson(params);
 			Map<String, String> map = SerializeUtil.JSON.beanToMap(SerializeUtil.GSON_ANNO, this);
-			String sign = SignUtil.sign(AlipayConfig.priKey(), map);
+			String sign = SignUtil.sign(AlipayConfig.merchantPriKey(), map);
 			map = SerializeUtil.JSON.beanToMap(SerializeUtil.GSON_ANNO, this);
 			map.put("sign", sign);
 			return new AppPayRequest(new TreeMap<String, String>(map));
