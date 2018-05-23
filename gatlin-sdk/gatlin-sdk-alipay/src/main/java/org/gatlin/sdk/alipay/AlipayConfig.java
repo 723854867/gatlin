@@ -1,10 +1,13 @@
 package org.gatlin.sdk.alipay;
 
 import org.gatlin.core.GatlinConfigration;
+import org.gatlin.core.bean.model.message.WrapResponse;
 import org.gatlin.core.bean.model.option.IntegerOption;
 import org.gatlin.core.bean.model.option.StrOption;
 
 public class AlipayConfig {
+	
+	public static final WrapResponse SUCCESS = new WrapResponse("success");
 
 	public static final String appId() {
 		return GatlinConfigration.get(APP_ID);

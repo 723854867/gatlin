@@ -6,6 +6,12 @@ import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
 
+/**
+ * amount包括fee
+ * 比如amount=10，fee=2则最终到账只有8，2进入公司账户
+ * 
+ * @author lynn
+ */
 public class Recharge implements Identifiable<String> {
 
 	private static final long serialVersionUID = -1986403952622140997L;

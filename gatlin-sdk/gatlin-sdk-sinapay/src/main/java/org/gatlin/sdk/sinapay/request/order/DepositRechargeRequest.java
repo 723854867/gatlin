@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
 import org.gatlin.sdk.sinapay.bean.enums.CashdeskAddrCategory;
+import org.gatlin.sdk.sinapay.bean.enums.MemberIdentityType;
 import org.gatlin.sdk.sinapay.bean.model.PayMethod;
 import org.gatlin.sdk.sinapay.response.DepositRechargeResponse;
 
@@ -27,6 +28,22 @@ public class DepositRechargeRequest extends OrderRequest<DepositRechargeResponse
 
 		public Builder() {
 			super("create_hosting_deposit");
+			identityType(MemberIdentityType.UID);
+		}
+		
+		public Builder identityId(String identityId) {
+			this.params.put("identity_id", identityId);
+			return this;
+		}
+		
+		public Builder identityType(MemberIdentityType identityType) {
+			this.params.put("identity_type", identityType.name());
+			return this;
+		}
+		
+		public Builder extendParam(String extendParam) {
+			this.params.put("extend_param", extendParam);
+			return this;
 		}
 		
 		// 交易订单号：必须

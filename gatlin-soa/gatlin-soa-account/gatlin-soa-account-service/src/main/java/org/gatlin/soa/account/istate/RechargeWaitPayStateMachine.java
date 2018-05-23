@@ -1,12 +1,15 @@
 package org.gatlin.soa.account.istate;
 
+import java.math.BigDecimal;
+
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.soa.account.bean.AccountCode;
 import org.gatlin.soa.account.bean.entity.Recharge;
-import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
+import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.BizType;
+import org.gatlin.soa.bean.enums.TargetType;
 
 public abstract class RechargeWaitPayStateMachine extends RechargeStateMachine {
 	
@@ -28,21 +31,11 @@ public abstract class RechargeWaitPayStateMachine extends RechargeStateMachine {
 		case SUCCESS:
 			switch (recharge.getGoodsType()) {
 			case 1:				// 个人账户充值成功
+				TargetType rechargeeType = TargetType.match(recharge.getRechargeeType());
 				AccountType accountType = AccountType.match(Integer.valueOf(recharge.getGoodsId()));
-				AccountDetail detail = AccountDetail.userUsable(recharge.getRechargee()).incr(recharge.getAmount())
-						.bizId(recharge.getId()).bizType(BizType.RECHARGE_SUCCESS.mark()).accountType(accountType);
-				accountManager.process(detail);
-				break;
-			case 2:				// 平台账户充值成功
-				accountType = AccountType.match(Integer.valueOf(recharge.getGoodsId()));
-				detail = AccountDetail.platUsable().incr(recharge.getAmount()).bizId(recharge.getId())
-						.bizType(BizType.RECHARGE_SUCCESS.mark()).accountType(accountType);
-				accountManager.process(detail);
-				break;
-			case 3:				// 企业账户充值成功
-				accountType = AccountType.match(Integer.valueOf(recharge.getGoodsId()));
-				detail = AccountDetail.companyUsable(recharge.getRechargee()).incr(recharge.getAmount())
-						.bizId(recharge.getId()).bizType(BizType.RECHARGE_SUCCESS.mark()).accountType(accountType);
+				AccountDetail detail = new AccountDetail(recharge.getId(), BizType.RECHARGE_SUCCESS);
+				BigDecimal amount = recharge.getAmount().subtract(recharge.getFee());
+				detail.usableIncre(rechargeeType, recharge.getRechargee(), accountType, amount);
 				accountManager.process(detail);
 				break;
 			default:

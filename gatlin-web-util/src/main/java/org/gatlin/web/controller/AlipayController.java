@@ -3,15 +3,16 @@ package org.gatlin.web.controller;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.gatlin.sdk.alipay.AlipayConfig;
 import org.gatlin.sdk.alipay.bean.AlipayException;
 import org.gatlin.sdk.alipay.bean.enums.Code;
 import org.gatlin.sdk.alipay.bean.enums.TradeState;
 import org.gatlin.sdk.alipay.notice.TradeNotice;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.Recharge;
-import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.alipay.api.AlipayAccountService;
+import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.bean.param.RechargeParam;
 import org.gatlin.web.AlipayCondition;
 import org.gatlin.web.util.hook.RechargeHook;
@@ -45,7 +46,7 @@ public class AlipayController {
 	public Object noticeRecharge(@Valid TradeNotice param) {
 		RechargeState state = _rechargeState(TradeState.valueOf(param.getTrade_status()));
 		accountService.rechargeNotice(param.getOut_trade_no(), state);
-		return "success";
+		return AlipayConfig.SUCCESS;
 	}
 	
 	private RechargeState _rechargeState(TradeState state) {

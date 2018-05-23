@@ -1,122 +1,269 @@
 package org.gatlin.soa.account.bean.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.soa.account.bean.entity.LogAccount;
 import org.gatlin.soa.account.bean.enums.AccountField;
-import org.gatlin.soa.account.bean.enums.AccountType;
+import org.gatlin.soa.bean.enums.AccountType;
+import org.gatlin.soa.bean.enums.BizType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
 import org.gatlin.util.lang.StringUtil;
 
-public class AccountDetail {
+public class AccountDetail implements Serializable {
 
-	private long owner;
+	private static final long serialVersionUID = -1674074777362407679L;
+
 	private int bizType;
 	private String bizId;
-	private BigDecimal amount;
-	private AccountField field;
-	private TargetType ownerType;
-	private AccountType accountType;
-
-	private AccountDetail(TargetType ownerType, AccountField field, long owner) {
-		this.field = field;
-		this.owner = owner;
-		this.ownerType = ownerType;
-		bizId(StringUtil.EMPTY);
-		accountType(AccountType.BASIC);
-	}
-
-	public AccountDetail bizId(Object bizId) {
-		this.bizId = bizId.toString();
-		return this;
-	}
-
-	public AccountDetail bizType(int bizType) {
+	private List<AccountTips> platformTips = new ArrayList<AccountTips>();
+	private Map<Long, List<AccountTips>> userTips = new HashMap<Long, List<AccountTips>>();
+	private Map<Long, List<AccountTips>> companyTips = new HashMap<Long, List<AccountTips>>();
+	
+	public AccountDetail() {}
+	
+	public AccountDetail(int bizType) {
 		this.bizType = bizType;
-		return this;
-	}
-
-	public AccountDetail incr(BigDecimal amount) {
-		this.amount = amount.abs();
-		return this;
-	}
-
-	public AccountDetail decr(BigDecimal amount) {
-		this.amount = amount.abs().negate();
-		return this;
-	}
-
-	// 默认为基本账户
-	public AccountDetail accountType(AccountType accountType) {
-		this.accountType = accountType;
-		return this;
-	}
-
-	public long owner() {
-		return owner;
-	}
-
-	public int bizType() {
-		return bizType;
-	}
-
-	public String bizId() {
-		return bizId;
-	}
-
-	public BigDecimal amount() {
-		return amount;
-	}
-
-	public AccountField field() {
-		return field;
-	}
-
-	public AccountType accountType() {
-		return accountType;
-	}
-
-	public TargetType ownerType() {
-		return ownerType;
 	}
 	
-	public LogAccount log() {
-		LogAccount log = new LogAccount();
-		log.setId(IDWorker.INSTANCE.nextSid());
-		log.setOwner(owner);
-		log.setBizId(bizId);
-		log.setAmount(amount);
-		log.setBizType(bizType);
-		log.setFieldType(field.mark());
-		log.setOwnerType(ownerType.mark());
-		log.setAccountType(accountType.mark());
-		log.setCreated(DateUtil.current());
-		return log;
-	}
-
-	public static final AccountDetail platUsable() {
-		return new AccountDetail(TargetType.PLATFORM, AccountField.USABLE, 0);
-	}
-
-	public static final AccountDetail platFrozen() {
-		return new AccountDetail(TargetType.PLATFORM, AccountField.FROZEN, 0);
-	}
-
-	public static final AccountDetail userUsable(long uid) {
-		return new AccountDetail(TargetType.USER, AccountField.USABLE, uid);
-	}
-
-	public static final AccountDetail userFrozen(long uid) {
-		return new AccountDetail(TargetType.USER, AccountField.FROZEN, uid);
+	public AccountDetail(Object bizId, int bizType) {
+		this.bizType = bizType;
+		this.bizId = bizId.toString();
 	}
 	
-	public static final AccountDetail companyUsable(long companyId) {
-		return new AccountDetail(TargetType.COMPANY, AccountField.USABLE, companyId);
+	public AccountDetail(Object bizId, BizType bizType) {
+		this.bizId = bizId.toString();
+		this.bizType = bizType.mark();
+	}
+	
+	public AccountTips usableIncre(TargetType targetType, long owner, AccountType type, BigDecimal amount) {
+		switch (targetType) {
+		case USER:
+			return userUsableIncre(owner, type, amount);
+		case COMPANY:
+			return companyUsableIncre(owner, type, amount);
+		case PLATFORM:
+			return platformUsableIncre(type, amount);
+		default:
+			throw new CodeException();
+		}
+	}
+	
+	public AccountTips usableDecr(TargetType targetType, long owner, AccountType type, BigDecimal amount) {
+		switch (targetType) {
+		case USER:
+			return userUsableDecr(owner, type, amount);
+		case COMPANY:
+			return companyUsableDecr(owner, type, amount);
+		case PLATFORM:
+			return platformUsableDecr(type, amount);
+		default:
+			throw new CodeException();
+		}
+	}
+	
+	public AccountTips frozenIncr(TargetType targetType, long owner, AccountType type, BigDecimal amount) {
+		switch (targetType) {
+		case USER:
+			return userFrozenIncre(owner, type, amount);
+		case COMPANY:
+			return companyFrozenIncre(owner, type, amount);
+		case PLATFORM:
+			return platformFrozenIncre(type, amount);
+		default:
+			throw new CodeException();
+		}
+	}
+	
+	public AccountTips frozenDecr(TargetType targetType, long owner, AccountType type, BigDecimal amount) {
+		switch (targetType) {
+		case USER:
+			return userFrozenDecr(owner, type, amount);
+		case COMPANY:
+			return companyFrozenDecr(owner, type, amount);
+		case PLATFORM:
+			return platformFrozenDecr(type, amount);
+		default:
+			throw new CodeException();
+		}
+	}
+	
+	public AccountTips userUsableIncre(long uid, AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.USABLE).incr(amount);
+		_wrap(uid, TargetType.USER, tips);
+		return tips;
+	}
+	
+	public AccountTips userFrozenIncre(long uid, AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.FROZEN).incr(amount);
+		_wrap(uid, TargetType.USER, tips);
+		return tips;
 	}
 
-	public static final AccountDetail companyFrozen(long companyId) {
-		return new AccountDetail(TargetType.COMPANY, AccountField.FROZEN, companyId);
+	public AccountTips userUsableDecr(long uid, AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.USABLE).decr(amount);
+		_wrap(uid, TargetType.USER, tips);
+		return tips;
+	}
+	
+	public AccountTips userFrozenDecr(long uid, AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.FROZEN).decr(amount);
+		_wrap(uid, TargetType.USER, tips);
+		return tips;
+	}
+	
+	public AccountTips companyUsableIncre(long uid, AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.USABLE).incr(amount);
+		_wrap(uid, TargetType.COMPANY, tips);
+		return tips;
+	}
+	
+	public AccountTips companyFrozenIncre(long uid, AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.FROZEN).incr(amount);
+		_wrap(uid, TargetType.COMPANY, tips);
+		return tips;
+	}
+
+	public AccountTips companyUsableDecr(long uid, AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.USABLE).decr(amount);
+		_wrap(uid, TargetType.COMPANY, tips);
+		return tips;
+	}
+	
+	public AccountTips companyFrozenDecr(long uid, AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.FROZEN).decr(amount);
+		_wrap(uid, TargetType.COMPANY, tips);
+		return tips;
+	}
+	
+	public AccountTips platformUsableIncre(AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.USABLE).incr(amount);
+		platformTips.add(tips);
+		return tips;
+	}
+	
+	public AccountTips platformFrozenIncre(AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.FROZEN).incr(amount);
+		platformTips.add(tips);
+		return tips;
+	}
+
+	public AccountTips platformUsableDecr(AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.USABLE).decr(amount);
+		platformTips.add(tips);
+		return tips;
+	}
+	
+	public AccountTips platformFrozenDecr(AccountType type, BigDecimal amount) {
+		AccountTips tips = new AccountTips(type, AccountField.FROZEN).decr(amount);
+		platformTips.add(tips);
+		return tips;
+	}
+	
+	private void _wrap(long owner, TargetType type, AccountTips tips) {
+		Map<Long, List<AccountTips>> temp = type == TargetType.USER ? userTips : companyTips;
+		List<AccountTips> list = type == TargetType.USER ? temp.get(owner) : temp.get(owner);
+		if (null == list) {
+			list = new ArrayList<AccountTips>();
+			temp.put(owner, list);
+		}
+		list.add(tips);
+	}
+	
+	public List<LogAccount> platformLogs() {
+		List<LogAccount> logs = new ArrayList<LogAccount>();
+		platformTips.forEach(tips -> {
+			LogAccount log = new LogAccount();
+			log.setOwner(0);
+			log.setBizType(bizType);
+			log.setAmount(tips.amount);
+			log.setCreated(DateUtil.current());
+			log.setFieldType(tips.field.mark());
+			log.setAccountType(tips.type.mark());
+			log.setId(IDWorker.INSTANCE.nextSid());
+			log.setOwnerType(TargetType.PLATFORM.mark());
+			log.setBizId(StringUtil.hasText(tips.bizId) ? tips.bizId : bizId);
+			logs.add(log);
+		});
+		return logs;
+	}
+	
+	public List<LogAccount> userLogs() {
+		List<LogAccount> logs = new ArrayList<LogAccount>();
+		userTips.entrySet().forEach(entry -> {
+			entry.getValue().forEach(tips -> {
+				LogAccount log = new LogAccount();
+				log.setBizType(bizType);
+				log.setAmount(tips.amount);
+				log.setOwner(entry.getKey());
+				log.setCreated(DateUtil.current());
+				log.setFieldType(tips.field.mark());
+				log.setAccountType(tips.type.mark());
+				log.setId(IDWorker.INSTANCE.nextSid());
+				log.setOwnerType(TargetType.USER.mark());
+				log.setBizId(StringUtil.hasText(tips.bizId) ? tips.bizId : bizId);
+				logs.add(log);
+			});
+		});
+		return logs;
+	}
+	
+	public List<LogAccount> companyLogs() {
+		List<LogAccount> logs = new ArrayList<LogAccount>();
+		companyTips.entrySet().forEach(entry -> {
+			entry.getValue().forEach(tips -> {
+				LogAccount log = new LogAccount();
+				log.setBizType(bizType);
+				log.setAmount(tips.amount);
+				log.setOwner(entry.getKey());
+				log.setCreated(DateUtil.current());
+				log.setFieldType(tips.field.mark());
+				log.setAccountType(tips.type.mark());
+				log.setId(IDWorker.INSTANCE.nextSid());
+				log.setOwnerType(TargetType.COMPANY.mark());
+				log.setBizId(StringUtil.hasText(tips.bizId) ? tips.bizId : bizId);
+				logs.add(log);
+			});
+		});
+		return logs;
+	}
+	
+	public static final class AccountTips implements Serializable {
+
+		private static final long serialVersionUID = -1552564343449028081L;
+		
+		private String bizId;
+		private AccountType type;
+		private BigDecimal amount;
+		private AccountField field;
+		
+		public AccountTips() {}
+		
+		public AccountTips(AccountType type, AccountField field) {
+			this.type = type;
+			this.field = field;
+		}
+		
+		public AccountTips bizId(String bizId) {
+			this.bizId = bizId;
+			return this;
+		}
+		
+		public AccountTips incr(BigDecimal amount) {
+			this.amount = amount.abs();
+			return this;
+		}
+
+		public AccountTips decr(BigDecimal amount) {
+			this.amount = amount.abs().negate();
+			return this;
+		}
 	}
 }

@@ -10,10 +10,10 @@ import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.soa.account.bean.entity.Recharge;
-import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
-import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.bean.enums.AccountType;
+import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.RechargeParam;
 import org.gatlin.soa.config.api.ConfigService;
@@ -38,15 +38,16 @@ public abstract class RechargeHook {
 			int mod = 0;
 			switch (param.getRechargeeType()) {
 			case USER:
-				if (null == param.getRechargee()) 
-					param.setRechargee(param.getUser().getId());
-				else if (param.getRechargee() != param.getUser().getId()) 
+				if (param.getRechargee() != param.getUser().getId()) 
 					Assert.notNull(UserCode.USER_NOT_EIXST, userService.user(param.getRechargee()));
+				if (null != param.getCompanyId())			// 对公账户充值到个人账户
+					Assert.notNull(UserCode.COMPANY_NOT_EIXST, companyService.company(param.getCompanyId()));
 				mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD_USER);
 				break;
-			case COMPANY:
-				Assert.notNull(CoreCode.PARAM_ERR, param.getRechargee());
+			case COMPANY:				// 对公账户充值
 				Assert.notNull(UserCode.COMPANY_NOT_EIXST, companyService.company(param.getRechargee().intValue()));
+				if (null != param.getCompanyId() && param.getCompanyId() != param.getRechargee().intValue())	// 对公账户充值转账到另外的对公账户
+					Assert.notNull(UserCode.COMPANY_NOT_EIXST, companyService.company(param.getCompanyId()));
 				mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD_COMPANY);
 				break;
 			case PLATFORM:
@@ -55,8 +56,6 @@ public abstract class RechargeHook {
 			default:
 				throw new CodeException(CoreCode.PARAM_ERR);
 			}
-			if (null != param.getCompanyId())			// 对公账户充值
-				Assert.notNull(UserCode.COMPANY_NOT_EIXST, companyService.company(param.getCompanyId()));
 			check(param);
 			switch (param.getGoodsType()) {
 			case 1:
@@ -101,7 +100,7 @@ public abstract class RechargeHook {
 		}
 		instance.setOperator(param.getUser().getId());
 		instance.setFee(param.getFee());
-		instance.setAmount(param.getAmount().add(param.getFee()));
+		instance.setAmount(param.getAmount());
 		int timeout = configService.config(WebConsts.Options.RECHARGE_TIMEOUT);
 		timeout = Math.max(0, timeout);
 		int time = DateUtil.current();

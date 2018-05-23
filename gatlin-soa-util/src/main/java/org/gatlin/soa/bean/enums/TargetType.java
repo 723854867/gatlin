@@ -15,4 +15,12 @@ public enum TargetType {
 	public int mark() {
 		return mark;
 	}
+	
+	public static final TargetType match(int type) { 
+		for (TargetType temp : TargetType.values()) {
+			if (temp.mark == type)
+				return temp;
+		}
+		return null;
+	}
 }

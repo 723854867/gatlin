@@ -1,7 +1,7 @@
 package org.gatlin.soa.account.bean.param;
 
-import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
+import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.util.bean.enums.OS;
 import org.gatlin.util.lang.StringUtil;

@@ -20,6 +20,5 @@ public class SoaSidParam extends SoaParam {
 	@Override
 	public void verify() {
 		super.verify();
-		this.query.orderByDesc("created");
 	}
 }

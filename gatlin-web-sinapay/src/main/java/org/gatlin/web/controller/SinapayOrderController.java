@@ -4,12 +4,13 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.gatlin.soa.account.bean.entity.Recharge;
-import org.gatlin.soa.account.bean.enums.PlatType;
+import org.gatlin.soa.bean.enums.PlatType;
+import org.gatlin.soa.bean.param.RechargeParam;
+import org.gatlin.soa.bean.param.SoaSidParam;
+import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.soa.sinapay.api.SinapayOrderService;
-import org.gatlin.soa.sinapay.bean.param.SinaRechargeParam;
-import org.gatlin.web.SinapayCondition;
 import org.gatlin.web.util.hook.RechargeHook;
-import org.springframework.context.annotation.Conditional;
+import org.gatlin.web.util.hook.WithdrawHook;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,19 +23,36 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("sinapay/order")
-@Conditional(SinapayCondition.class)
 public class SinapayOrderController {
 	
 	@Resource
 	private RechargeHook rechargeHook;
+	@Resource
+	private WithdrawHook withdrawHook;
 	@Resource
 	private SinapayOrderService sinapayOrderService;
 
 	// 托管充值
 	@ResponseBody
 	@RequestMapping("recharge/deposit")
-	public Object depositRecharge(@RequestBody @Valid SinaRechargeParam param) {
+	public Object depositRecharge(@RequestBody @Valid RechargeParam param) {
 		Recharge recharge = rechargeHook.rechargeVerify(param, PlatType.ALIPAY);
 		return sinapayOrderService.depositRecharge(recharge, param);
+	}
+	
+	// 托管提现代付
+	@ResponseBody
+	@RequestMapping("withdraw/deposit/pay")
+	public Object depositWithdrawPay(@RequestBody @Valid WithdrawParam param) {
+		param.setPlat(PlatType.SINAPAY);
+		withdrawHook.verify(param);
+		return sinapayOrderService.withdrawPay(param);
+	}
+	
+	// 提现
+	@ResponseBody
+	@RequestMapping("withdraw/deposit")
+	public Object depositWithdraw(@RequestBody @Valid SoaSidParam param) {
+		return sinapayOrderService.withdraw(param);
 	}
 }

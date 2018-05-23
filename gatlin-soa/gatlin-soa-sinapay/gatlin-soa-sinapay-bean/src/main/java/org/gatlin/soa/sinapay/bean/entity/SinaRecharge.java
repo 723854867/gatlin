@@ -1,5 +1,7 @@
 package org.gatlin.soa.sinapay.bean.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
@@ -13,7 +15,10 @@ public class SinaRecharge implements Identifiable<String> {
 	private String state;
 	private String rechargee;
 	private String recharger;
-	private String accountType;
+	// 已经去掉了 user_fee 了，即这里的金额就是实际到账金额
+	private BigDecimal amount;
+	private String rechargeeType;
+	private String rechargerType;
 	private int created;
 	private int updated;
 	
@@ -49,12 +54,28 @@ public class SinaRecharge implements Identifiable<String> {
 		this.recharger = recharger;
 	}
 	
-	public String getAccountType() {
-		return accountType;
+	public BigDecimal getAmount() {
+		return amount;
 	}
 	
-	public void setAccountType(String accountType) {
-		this.accountType = accountType;
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+	
+	public String getRechargeeType() {
+		return rechargeeType;
+	}
+	
+	public void setRechargeeType(String rechargeeType) {
+		this.rechargeeType = rechargeeType;
+	}
+	
+	public String getRechargerType() {
+		return rechargerType;
+	}
+	
+	public void setRechargerType(String rechargerType) {
+		this.rechargerType = rechargerType;
 	}
 	
 	public int getCreated() {

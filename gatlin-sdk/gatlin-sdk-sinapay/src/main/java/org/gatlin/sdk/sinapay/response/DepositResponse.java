@@ -2,7 +2,7 @@ package org.gatlin.sdk.sinapay.response;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DepositCollectResponse extends RedirectResponse {
+public class DepositResponse extends RedirectResponse {
 
 	private static final long serialVersionUID = -2015800276085562123L;
 

@@ -1,23 +1,28 @@
 package org.gatlin.sdk.sinapay.request.order;
 
+import java.math.BigDecimal;
+import java.text.MessageFormat;
+
 import org.gatlin.sdk.sinapay.bean.enums.CashdeskAddrCategory;
-import org.gatlin.sdk.sinapay.bean.enums.MemberType;
+import org.gatlin.sdk.sinapay.bean.enums.MemberIdentityType;
+import org.gatlin.sdk.sinapay.bean.enums.OutTradeCode;
 import org.gatlin.sdk.sinapay.bean.model.PayMethod;
-import org.gatlin.sdk.sinapay.response.DepositCollectResponse;
+import org.gatlin.sdk.sinapay.response.DepositResponse;
 
 /**
  * 托管待收：需要用户开通委托扣款
  * 
  * @author lynn
  */
-public class DepositCollectRequest extends OrderRequest<DepositCollectResponse, DepositCollectRequest> {
+public class DepositCollectRequest extends OrderRequest<DepositResponse, DepositCollectRequest> {
 
-	public static class Builder extends OrderRequest.Builder<DepositCollectResponse, DepositCollectRequest, Builder> {
+	public static class Builder extends OrderRequest.Builder<DepositResponse, DepositCollectRequest, Builder> {
 
 		private static final long serialVersionUID = 2434393913094997225L;
 
 		public Builder() {
 			super("create_hosting_collect_trade");
+			payerIdentityType(MemberIdentityType.UID);
 		}
 		
 		// 交易订单号：必须
@@ -27,8 +32,8 @@ public class DepositCollectRequest extends OrderRequest<DepositCollectResponse, 
 		}
 		
 		// 外部业务码：必须
-		public Builder outTradeCode(String outTradeCode) {
-			this.params.put("out_trade_code", outTradeCode);
+		public Builder outTradeCode(OutTradeCode tradeCode) {
+			this.params.put("out_trade_code", tradeCode.mark());
 			return this;
 		}
 		
@@ -69,7 +74,7 @@ public class DepositCollectRequest extends OrderRequest<DepositCollectResponse, 
 		}
 		
 		// 付款用户标识类型：必须
-		public Builder payerIdentityType(MemberType payerIdentityType) {
+		public Builder payerIdentityType(MemberIdentityType payerIdentityType) {
 			this.params.put("payer_identity_type", payerIdentityType.name());
 			return this;
 		}
@@ -81,8 +86,9 @@ public class DepositCollectRequest extends OrderRequest<DepositCollectResponse, 
 		}
 		
 		// 必须
-		public Builder paymethod(PayMethod payMethod) {
-			this.params.put("pay_method", payMethod.toString());
+		public Builder paymethod(PayMethod payMethod, BigDecimal amount) {
+			this.params.put("amount", amount.toString());
+			this.params.put("pay_method", MessageFormat.format(payMethod.toString(), amount.toString()));
 			return this;
 		}
 		

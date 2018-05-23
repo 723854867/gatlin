@@ -1,11 +1,16 @@
 package org.gatlin.soa.sinapay.api;
 
+import java.util.List;
+
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
+import org.gatlin.sdk.sinapay.bean.model.AccountMiddleTips;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
+import org.gatlin.soa.sinapay.bean.model.BalanceInfo;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
@@ -52,4 +57,8 @@ public interface SinapayMemberService {
 	boolean isWithhold(MemberType type, String tid);
 	
 	String withhold(SoaParam param);
+	
+	BalanceInfo queryBalance(QueryBalanceParam param);
+	
+	List<AccountMiddleTips> queryBalanceMiddle();
 }

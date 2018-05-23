@@ -1,4 +1,4 @@
-package org.gatlin.soa.account.bean.enums;
+package org.gatlin.soa.bean.enums;
 
 /**
  * 账户类型
@@ -10,11 +10,11 @@ public enum AccountType {
 	// 基本账户
 	BASIC(1),
 	// 积分账户
-	INTEGRAL(2),
+	SCORE(2),
 	// 体验金账户
-	EXPERIENCE(4),
+	EXP(4),
 	// 融资账户(P2P专有)
-	FINANCING(8),
+	FINANCE(8),
 	// 保证金账户
 	DEPOSIT(16);
 	

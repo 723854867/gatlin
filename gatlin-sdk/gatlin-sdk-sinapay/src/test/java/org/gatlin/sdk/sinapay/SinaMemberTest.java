@@ -1,12 +1,18 @@
 package org.gatlin.sdk.sinapay;
 
+import java.util.List;
+
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
+import org.gatlin.sdk.sinapay.bean.enums.MemberIdentityType;
+import org.gatlin.sdk.sinapay.bean.model.CardTips;
 import org.gatlin.sdk.sinapay.request.member.ActivateRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryBalanceRequest;
+import org.gatlin.sdk.sinapay.request.member.QueryBankCardRequest;
+import org.gatlin.sdk.sinapay.request.member.QueryMiddleBalanceRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryWithholdRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
 import org.gatlin.sdk.sinapay.request.member.WithholdRequest;
@@ -14,6 +20,8 @@ import org.gatlin.sdk.sinapay.response.BankCardBindConfirmResponse;
 import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
 import org.gatlin.sdk.sinapay.response.BankCardUnbindResponse;
 import org.gatlin.sdk.sinapay.response.QueryBalanceResponse;
+import org.gatlin.sdk.sinapay.response.QueryBankCardResponse;
+import org.gatlin.sdk.sinapay.response.QueryMiddleBalanceResponse;
 import org.gatlin.sdk.sinapay.response.QueryWithholdResponse;
 import org.gatlin.sdk.sinapay.response.RedirectResponse;
 import org.gatlin.sdk.sinapay.response.SinapayResponse;
@@ -139,5 +147,41 @@ public class SinaMemberTest extends SinaTest {
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		QueryBalanceResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testQueryMerchantBalance() {
+		QueryBalanceRequest.Builder builder = new QueryBalanceRequest.Builder();
+		builder.identityId("200004595271");
+		builder.identityType(MemberIdentityType.MEMBER_ID);
+		builder.accountType(AccountType.BASIC);
+		QueryBalanceRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		QueryBalanceResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testQueryBankCard() { 
+		QueryBankCardRequest.Builder builder = new QueryBankCardRequest.Builder();
+		builder.identityId("442989039625175040");
+		QueryBankCardRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		QueryBankCardResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+		List<CardTips> cards = response.cardTips();
+		for (CardTips tips : cards) {
+			System.out.println(SerializeUtil.GSON.toJson(tips));
+		}
+	}
+	
+	@Test
+	public void testQueryMiddle() {
+		QueryMiddleBalanceRequest.Builder builder = new QueryMiddleBalanceRequest.Builder();
+		QueryMiddleBalanceRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		QueryMiddleBalanceResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+		System.out.println(SerializeUtil.GSON.toJson(response.getList()));
 	}
 }

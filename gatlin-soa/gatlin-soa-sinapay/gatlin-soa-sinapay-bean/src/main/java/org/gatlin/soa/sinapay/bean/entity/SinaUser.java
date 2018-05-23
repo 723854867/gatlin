@@ -13,6 +13,7 @@ public class SinaUser implements Identifiable<String> {
 	private String tid;
 	private int type;
 	private boolean realname;
+	private boolean withhold;
 	private int created;
 	private int updated;
 
@@ -46,6 +47,14 @@ public class SinaUser implements Identifiable<String> {
 	
 	public void setRealname(boolean realname) {
 		this.realname = realname;
+	}
+	
+	public boolean isWithhold() {
+		return withhold;
+	}
+	
+	public void setWithhold(boolean withhold) {
+		this.withhold = withhold;
 	}
 
 	public int getCreated() {

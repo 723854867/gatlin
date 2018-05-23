@@ -15,16 +15,15 @@ import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.ConfigCode;
 import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
-import org.gatlin.soa.sinapay.bean.param.MemberActivateParam;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.MemberActivateParam;
+import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.gatlin.util.lang.StringUtil;
-import org.gatlin.web.SinapayCondition;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +36,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("sinapay/member")
-@Conditional(SinapayCondition.class)
 public class SinapayMemberController {
 	
 	@Resource
@@ -102,5 +100,18 @@ public class SinapayMemberController {
 	@RequestMapping("withhold")
 	public Object withhold(@RequestBody @Valid SoaParam param) {
 		return sinapayMemberService.withhold(param);
+	}
+	
+	@ResponseBody
+	@RequestMapping("query/balance")
+	public Object queryBalance(@RequestBody @Valid QueryBalanceParam param) { 
+		return sinapayMemberService.queryBalance(param);
+	}
+	
+	// 查询中间账户
+	@ResponseBody
+	@RequestMapping("query/balance/middle")
+	public Object queryBalance(@RequestBody @Valid SoaParam param) { 
+		return sinapayMemberService.queryBalanceMiddle();
 	}
 }

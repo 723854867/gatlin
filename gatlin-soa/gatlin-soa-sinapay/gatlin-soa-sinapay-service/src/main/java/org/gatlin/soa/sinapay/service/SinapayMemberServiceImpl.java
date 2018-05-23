@@ -1,15 +1,22 @@
 package org.gatlin.soa.sinapay.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
+import org.gatlin.sdk.sinapay.bean.model.AccountMiddleTips;
+import org.gatlin.sdk.sinapay.request.member.QueryBalanceRequest;
+import org.gatlin.sdk.sinapay.request.member.QueryMiddleBalanceRequest;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
+import org.gatlin.soa.sinapay.bean.model.BalanceInfo;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
 import org.gatlin.soa.sinapay.manager.SinaMemberManager;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
@@ -65,5 +72,22 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	@Override
 	public String withhold(SoaParam param) {
 		return sinaMemberManager.withhold(param);
+	}
+	
+	@Override
+	public BalanceInfo queryBalance(QueryBalanceParam param) {
+		QueryBalanceRequest.Builder builder = new QueryBalanceRequest.Builder();
+		builder.identityId(param.getIdentity());
+		builder.accountType(param.getAccountType());
+		builder.identityType(param.getIdentityType());
+		QueryBalanceRequest request = builder.build();
+		return new BalanceInfo(request.sync());
+	}
+	
+	@Override
+	public List<AccountMiddleTips> queryBalanceMiddle() {
+		QueryMiddleBalanceRequest.Builder builder = new QueryMiddleBalanceRequest.Builder();
+		QueryMiddleBalanceRequest request = builder.build();
+		return request.sync().getList();
 	}
 }

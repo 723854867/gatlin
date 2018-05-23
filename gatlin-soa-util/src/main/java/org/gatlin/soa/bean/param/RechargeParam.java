@@ -82,8 +82,10 @@ public class RechargeParam extends SoaParam {
 	@Override
 	public void verify() {
 		super.verify();
-		if (null == rechargeeType)
+		if (null == rechargeeType || null == rechargee) {
+			this.rechargee = getUser().getId();
 			this.rechargeeType = TargetType.USER;
+		}
 		if (rechargeeType == TargetType.PLATFORM)
 			this.rechargee = 0l;
 		if (1 == goodsType)

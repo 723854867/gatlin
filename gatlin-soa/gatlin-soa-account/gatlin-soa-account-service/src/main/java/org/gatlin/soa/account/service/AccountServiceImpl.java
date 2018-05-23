@@ -1,7 +1,5 @@
 package org.gatlin.soa.account.service;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.gatlin.core.bean.info.Pager;
@@ -9,10 +7,12 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.Account;
 import org.gatlin.soa.account.bean.entity.Recharge;
-import org.gatlin.soa.account.bean.enums.AccountType;
+import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.account.manager.AccountManager;
+import org.gatlin.soa.bean.enums.AccountType;
+import org.gatlin.soa.bean.param.WithdrawParam;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -26,16 +26,6 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public void userCreate(long uid, int mod) {
 		accountManager.userCreate(uid, mod);
-	}
-	
-	@Override
-	public void process(AccountDetail detail) {
-		accountManager.process(detail);
-	}
-	
-	@Override
-	public void process(List<AccountDetail> details) {
-		accountManager.process(details);
 	}
 	
 	@Override
@@ -66,6 +56,11 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	@Override
+	public void process(AccountDetail detail) {
+		accountManager.process(detail);
+	}
+	
+	@Override
 	public void recharge(Recharge recharge) {
 		accountManager.recharge(recharge);
 	}
@@ -80,5 +75,15 @@ public class AccountServiceImpl implements AccountService {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
 		return new Pager<Recharge>(accountManager.recharges(query));
+	}
+	
+	@Override
+	public Withdraw withdraw(WithdrawParam param) {
+		return accountManager.withdraw(param);
+	}
+	
+	@Override
+	public void withdrawNotice(String id, boolean success) {
+		accountManager.withdrawNotice(id, success);
 	}
 }

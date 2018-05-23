@@ -1,15 +1,23 @@
 package org.gatlin.soa.sinapay.mybatis;
 
+import org.gatlin.sdk.sinapay.bean.enums.AccountType;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
+import org.gatlin.sdk.sinapay.bean.enums.TradeState;
 import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.Geo;
+import org.gatlin.soa.bean.param.RechargeParam;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
 import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
+import org.gatlin.soa.sinapay.bean.entity.SinaCollect;
+import org.gatlin.soa.sinapay.bean.entity.SinaPay;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
+import org.gatlin.soa.sinapay.bean.entity.SinaWithdraw;
+import org.gatlin.soa.sinapay.bean.enums.CollectType;
 import org.gatlin.soa.sinapay.bean.enums.RechargeState;
-import org.gatlin.soa.sinapay.bean.param.SinaRechargeParam;
+import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
 import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.util.DateUtil;
@@ -64,13 +72,52 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final SinaRecharge newSinaRecharge(Recharge recharge, SinaRechargeParam param, SinaUser rechargee, SinaUser recharger) {
+	public static final SinaRecharge newSinaRecharge(Recharge recharge, RechargeParam param, TargetType rechargerType, String recharger, 
+			TargetType rechargeeType, String rechargee) {
 		SinaRecharge instance = new SinaRecharge();
 		instance.setId(recharge.getId());
-		instance.setRechargee(rechargee.getSinaId());
-		instance.setRecharger(recharger.getSinaId());
+		instance.setRechargee(rechargee);
+		instance.setRecharger(recharger);
+		instance.setRechargerType(rechargerType.name());
+		instance.setRechargeeType(rechargeeType.name());
+		instance.setAmount(recharge.getAmount().subtract(param.getFee()));
 		instance.setState(RechargeState.PROCESSING.name());
-		instance.setAccountType(param.getAccountType().name());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final SinaCollect newSinaCollect(CollectType type, String tid) {
+		SinaCollect instance = new SinaCollect();
+		instance.setState(TradeState.WAIT_PAY.name());
+		instance.setId(IDWorker.INSTANCE.nextSid());
+		instance.setTid(tid);
+		instance.setType(type.name());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final SinaPay newSinaPay(Withdraw withdraw) {
+		SinaPay instance = new SinaPay();
+		instance.setWithdrawId(withdraw.getId());
+		instance.setId(IDWorker.INSTANCE.nextSid());
+		instance.setState(TradeState.WAIT_PAY.name());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final SinaWithdraw newSinaWithdraw(Withdraw withdraw, SinaUser user, AccountType accountType) {
+		SinaWithdraw instance = new SinaWithdraw();
+		instance.setId(withdraw.getId());
+		instance.setWithdrawee(user.getSinaId());
+		instance.setAmount(withdraw.getAmount());
+		instance.setAccountType(accountType.name());
+		instance.setState(SinaWithdrawState.WAIT_PAY.name());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

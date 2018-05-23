@@ -2,7 +2,9 @@ package org.gatlin.soa.user.service;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.util.Assert;
 import org.gatlin.soa.user.api.CompanyService;
+import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.param.CompanyAddParam;
 import org.gatlin.soa.user.manager.CompanyManager;
@@ -22,5 +24,11 @@ public class CompanyServiceImpl implements CompanyService {
 	@Override
 	public Company company(int companyId) {
 		return companyManager.company(companyId);
+	}
+	
+	@Override
+	public void withdraw2userVerify(int companyId, long uid) {
+		Company company = companyManager.company(companyId);
+		Assert.notNull(UserCode.COMPANY_NOT_EIXST, company);
 	}
 }

@@ -2,12 +2,15 @@ package org.gatlin.soa.account.manager;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
@@ -16,14 +19,20 @@ import org.gatlin.soa.account.bean.AccountCode;
 import org.gatlin.soa.account.bean.entity.Account;
 import org.gatlin.soa.account.bean.entity.LogAccount;
 import org.gatlin.soa.account.bean.entity.Recharge;
-import org.gatlin.soa.account.bean.enums.AccountType;
+import org.gatlin.soa.account.bean.entity.Withdraw;
+import org.gatlin.soa.account.bean.enums.AccountField;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.account.istate.RechargeStateMachine;
 import org.gatlin.soa.account.mybatis.dao.AccountDao;
 import org.gatlin.soa.account.mybatis.dao.LogAccountDao;
 import org.gatlin.soa.account.mybatis.dao.RechargeDao;
+import org.gatlin.soa.account.mybatis.dao.WithdrawDao;
+import org.gatlin.soa.bean.enums.AccountType;
+import org.gatlin.soa.bean.enums.BizType;
 import org.gatlin.soa.bean.enums.TargetType;
+import org.gatlin.soa.bean.enums.WithdrawState;
+import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +46,8 @@ public class AccountManager {
 	private AccountDao accountDao;
 	@Resource
 	private RechargeDao rechargeDao;
+	@Resource
+	private WithdrawDao withdrawDao;
 	@Resource
 	private LogAccountDao logAccountDao; 
 	@Autowired
@@ -68,59 +79,93 @@ public class AccountManager {
 	}
 	
 	@Transactional
-	public void process(AccountDetail detail) {
-		if (detail.amount().compareTo(BigDecimal.ZERO) == 0)
-			return;
-		Query query = new Query().eq("type", detail.accountType().mark()).eq("owner_type", detail.ownerType().mark()).eq("owner", detail.owner()).forUpdate();
-		Account account = account(query);
-		LogAccount log = _process(account, detail);
-		logAccountDao.insert(log);
-		accountDao.update(account);
+	public Withdraw withdraw(WithdrawParam param) {
+		Withdraw withdraw = EntityGenerator.newWithdraw(param);
+		withdrawDao.insert(withdraw);
+		AccountDetail detail = new AccountDetail(withdraw.getId(), BizType.WITHDRAW);
+		BigDecimal amount = param.getAmount().add(param.getFee());
+		detail.usableDecr(param.getWithdraweeType(), param.getWithdrawee(), param.getAccountType(), amount);
+		detail.frozenIncr(param.getWithdraweeType(), param.getWithdrawee(), param.getAccountType(), amount);
+		process(detail);
+		return withdraw;
 	}
 	
 	@Transactional
-	public void process(List<AccountDetail> details) { 
-		List<LogAccount> logs = new ArrayList<LogAccount>();
-		Map<String, Account> accounts = new HashMap<String, Account>();
-		for (AccountDetail detail : details) {
-			if (detail.amount().compareTo(BigDecimal.ZERO) == 0)
-				continue;
-			String key = detail.ownerType().mark() + "_" + detail.owner() + "_" + detail.accountType().mark();
-			Account account = accounts.get(key);
-			if (null == account) {
-				Query query = new Query().eq("type", detail.accountType().mark()).eq("owner_type", detail.ownerType().mark()).eq("owner", detail.owner()).forUpdate();
-				account = account(query);
-				accounts.put(key, account);
-			}
-			LogAccount log = _process(account, detail);
-			logs.add(log);
-		}
-		if (!CollectionUtil.isEmpty(logs))
-			logAccountDao.batchInsert(logs);
-		if (CollectionUtil.isEmpty(accounts))
-			accountDao.updateCollection(accounts.values());
+	public void withdrawNotice(String id, boolean success) {
+		Query query = new Query().eq("id", id).forUpdate();
+		Withdraw withdraw = withdrawDao.queryUnique(query);
+		Assert.notNull(CoreCode.WITHDRAW_NOT_EXIST, withdraw);
+		WithdrawState state = WithdrawState.match(withdraw.getState());
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == WithdrawState.INIT);
+		withdraw.setState(success ? WithdrawState.SUCCESS.mark() : WithdrawState.FAILURE.mark());
+		withdraw.setUpdated(DateUtil.current());
+		withdrawDao.update(withdraw);
+		AccountDetail detail = new AccountDetail(withdraw.getId(), success ? BizType.WITHDRAW_SUCCESS : BizType.WITHDRAW_FAILURE);
+		BigDecimal amount = withdraw.getAmount().add(withdraw.getFee());
+		TargetType withdrawerType = TargetType.match(withdraw.getWithdrawerType());
+		AccountType withdrawerAccountType = AccountType.match(withdraw.getWithdrawerAccountType());
+		detail.frozenDecr(withdrawerType, withdraw.getWithdrawer(), withdrawerAccountType, amount);
+		if (!success) 
+			detail.usableIncre(withdrawerType, withdraw.getWithdrawer(), withdrawerAccountType, amount);
+		process(detail);
 	}
 	
-	private LogAccount _process(Account account, AccountDetail detail) { 
-		LogAccount log = detail.log();
-		switch (detail.field()) {
-		case USABLE:
-			log.setPreAmount(account.getUsable());
-			account.setUsable(account.getUsable().add(log.getAmount()));
-			log.setPostAmount(account.getUsable());
-			break;
-		case FROZEN:
-			log.setPreAmount(account.getFrozen());
-			account.setFrozen(account.getFrozen().add(log.getAmount()));
-			log.setPostAmount(account.getFrozen());
-			break;
-		default:
-			throw new CodeException();
+	@Transactional
+	public void process(AccountDetail detail) {
+		List<LogAccount> logs = detail.platformLogs();
+		if (!CollectionUtil.isEmpty(logs)) {
+			Set<Integer> set = new HashSet<Integer>();
+			logs.forEach(log -> set.add(log.getAccountType()));
+			Query query = new Query().eq("owner_type", TargetType.PLATFORM.mark()).forUpdate();
+			List<Account> accounts = accountDao.queryList(query);
+			_process(accounts, logs);
 		}
-		account.setUpdated(DateUtil.current());
-		Assert.isTrue(AccountCode.USABLE_LACK, account.getUsable().compareTo(BigDecimal.ZERO) >= 0);
-		Assert.isTrue(AccountCode.FROZEN_LACK, account.getFrozen().compareTo(BigDecimal.ZERO) >= 0);
-		return log;
+		_process(detail, TargetType.USER);
+		_process(detail, TargetType.COMPANY);
+	}
+	
+	private void _process(AccountDetail detail, TargetType type) {
+		List<LogAccount> logs = type == TargetType.USER ? detail.userLogs() : detail.companyLogs();
+		if (CollectionUtil.isEmpty(logs))
+			return;
+		Set<Long> set = new HashSet<Long>();
+		logs.forEach(log -> set.add(log.getOwner()));
+		Query query = new Query().eq("owner_type", type.mark()).in("owner", set).forUpdate();
+		List<Account> accounts = accountDao.queryList(query);
+		_process(accounts, logs);
+	}
+	
+	private void _process(List<Account> accounts, List<LogAccount> logs)  {
+		logs.forEach(log -> {
+			Iterator<Account> itr = accounts.iterator();
+			while (itr.hasNext()) {
+				Account account = itr.next();
+				if (account.getOwner() == log.getOwner() && account.getType() == log.getAccountType()) {
+					AccountField field = AccountField.match(log.getFieldType());
+					switch (field) {
+					case FROZEN:
+						log.setPreAmount(account.getFrozen());
+						account.setUpdated(DateUtil.current());
+						account.setFrozen(account.getFrozen().add(log.getAmount()));
+						log.setPostAmount(account.getFrozen());
+						break;
+					case USABLE:
+						log.setPreAmount(account.getUsable());
+						account.setUpdated(DateUtil.current());
+						account.setUsable(account.getUsable().add(log.getAmount()));
+						log.setPostAmount(account.getUsable());
+						break;
+					default:
+						throw new CodeException();
+					}
+					break;
+				}
+				Assert.isTrue(CoreCode.USABLE_LACK, account.getUsable().compareTo(BigDecimal.ZERO) >= 0);
+				Assert.isTrue(CoreCode.FROZEN_LACK, account.getFrozen().compareTo(BigDecimal.ZERO) >= 0);
+			}
+		});
+		logAccountDao.batchInsert(logs);
+		accountDao.updateCollection(accounts);
 	}
 	
 	public Account platAccount(AccountType type) {

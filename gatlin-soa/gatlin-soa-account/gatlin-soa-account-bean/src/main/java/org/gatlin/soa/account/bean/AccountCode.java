@@ -10,4 +10,5 @@ public interface AccountCode {
 	final Code RECHARGE_NOT_EXIST		 					= new Code("code.account.recharge.not.exist", "充值订单不存在");
 	final Code RECHARGE_STATE_ERR 							= new Code("code.account.recharge.state.err", "充值订单状态错误");
 	final Code RECHARGE_EXPIRY_TIME_ERR 					= new Code("code.account.recharge.timeout.err", "充值过期时间配置错误");
+	final Code ACCOUNT_UNSUPPORT_WITHDRAW 					= new Code("code.account.unsupport.withdraw", "当前账户不支持提现");
 }

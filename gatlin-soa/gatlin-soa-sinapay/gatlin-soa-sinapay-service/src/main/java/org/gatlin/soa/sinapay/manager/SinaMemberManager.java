@@ -215,10 +215,17 @@ public class SinaMemberManager {
 	
 	public boolean isWithhold(MemberType type, String tid) {
 		SinaUser user = user(type, tid);
+		if (user.isWithhold())
+			return true;
 		QueryWithholdRequest.Builder builder = new QueryWithholdRequest.Builder();
 		builder.identityId(user.getSinaId());
 		QueryWithholdRequest request = builder.build();
 		QueryWithholdResponse response = request.sync();
+		if (response.isWithholdAuthority()) {
+			user.setWithhold(true);
+			user.setUpdated(DateUtil.current());
+			sinaUserDao.update(user);
+		}
 		return response.isWithholdAuthority();
 	}
 	
