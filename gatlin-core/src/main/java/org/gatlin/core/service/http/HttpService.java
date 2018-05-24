@@ -6,6 +6,7 @@ import javax.annotation.PostConstruct;
 
 import org.gatlin.core.bean.exceptions.RequestFailException;
 import org.gatlin.core.condition.HttpCondition;
+import org.gatlin.util.lang.StringUtil;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
@@ -45,8 +46,16 @@ public class HttpService {
 	public <RESPONSE extends HttpResponse> Response sync(Request request) throws RequestFailException {
 		try {
 			Response response = client.newCall(request).execute();
-			if (!response.isSuccessful()) 
-				throw new RequestFailException(response.code(), response.message());
+			if (!response.isSuccessful()) {
+				String errorContent = null;
+				try {
+					errorContent = response.body().string();
+				} catch (Exception e) {}
+				String error = response.message();
+				if (StringUtil.hasText(errorContent))
+					error += " - [" + errorContent + "]";
+				throw new RequestFailException(response.code(), error);
+			}
 			return response;
 		} catch (IOException e) {
 			throw new RequestFailException(e);

@@ -23,4 +23,6 @@ public interface SinaConsts {
 	final StrOption URL_RETURN_BROWSER_PC							= new StrOption("url_return_browser_pc");
 	// 移动端充值跳转地址
 	final StrOption URL_RETURN_BROWSER_WAP							= new StrOption("url_return_browser_wap");
+	// 企业审核回调地址
+	final StrOption URL_NOTICE_COMPANY_AUDIT						= new StrOption("url_notice_company_audit_sina");
 }

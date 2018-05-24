@@ -7,7 +7,6 @@ import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
-import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
@@ -16,7 +15,6 @@ import org.gatlin.soa.config.bean.ConfigCode;
 import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
-import org.gatlin.soa.sinapay.bean.param.MemberActivateParam;
 import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.Username;
@@ -45,16 +43,6 @@ public class SinapayMemberController {
 	@Resource
 	private SinapayMemberService sinapayMemberService;
 
-	@ResponseBody
-	@RequestMapping("activate")
-	public Object activate(@RequestBody @Valid MemberActivateParam param) {
-		if (param.getType() == MemberType.ENTERPRISE) {
-			
-		}
-		sinapayMemberService.activate(param.getTid(), param.getType(), param.meta().getIp());
-		return Response.ok();
-	}
-	
 	@ResponseBody
 	@RequestMapping("realname")
 	public Object realname(@RequestBody @Valid RealnameParam param) {

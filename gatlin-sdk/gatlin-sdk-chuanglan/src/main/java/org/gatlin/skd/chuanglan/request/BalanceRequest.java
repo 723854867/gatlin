@@ -1,6 +1,5 @@
 package org.gatlin.skd.chuanglan.request;
 
-import org.gatlin.skd.chuanglan.ChuangLanConfig;
 import org.gatlin.skd.chuanglan.response.BalanceResponse;
 
 /**
@@ -14,7 +13,7 @@ import org.gatlin.skd.chuanglan.response.BalanceResponse;
 public class BalanceRequest extends ChuangLanRequest<BalanceResponse, BalanceRequest> {
 
 	public BalanceRequest() {
-		super(ChuangLanConfig.pathBalance());
+		super("ChuangLanConfig.pathBalance()");
 		this.body = new Builder();
 	}
 }

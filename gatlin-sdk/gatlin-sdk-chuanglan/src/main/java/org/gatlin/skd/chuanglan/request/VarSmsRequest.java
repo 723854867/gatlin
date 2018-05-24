@@ -2,7 +2,6 @@ package org.gatlin.skd.chuanglan.request;
 
 import java.util.List;
 
-import org.gatlin.skd.chuanglan.ChuangLanConfig;
 import org.gatlin.skd.chuanglan.bean.VarMsg;
 import org.gatlin.skd.chuanglan.response.VarSmsResponse;
 
@@ -23,7 +22,7 @@ import org.gatlin.skd.chuanglan.response.VarSmsResponse;
 public class VarSmsRequest extends ChuangLanRequest<VarSmsResponse, VarSmsRequest> {
 
 	private VarSmsRequest(Builder builder) {
-		super(ChuangLanConfig.pathVarSms());
+		super("msg/variable/json");
 		this.body = builder;
 	}
 

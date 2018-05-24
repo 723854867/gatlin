@@ -22,6 +22,9 @@ public class Company implements Identifiable<Integer> {
 	private String telephone;
 	private String email;
 	private String summary;
+	private String legalPerson;
+	private String legalMobile;
+	private String legalIdentity;
 	private int created;
 	private int updated;
 
@@ -89,6 +92,30 @@ public class Company implements Identifiable<Integer> {
 		this.businessScope = businessScope;
 	}
 
+	public String getLegalPerson() {
+		return legalPerson;
+	}
+
+	public void setLegalPerson(String legalPerson) {
+		this.legalPerson = legalPerson;
+	}
+
+	public String getLegalMobile() {
+		return legalMobile;
+	}
+
+	public void setLegalMobile(String legalMobile) {
+		this.legalMobile = legalMobile;
+	}
+
+	public String getLegalIdentity() {
+		return legalIdentity;
+	}
+
+	public void setLegalIdentity(String legalIdentity) {
+		this.legalIdentity = legalIdentity;
+	}
+
 	public String getTelephone() {
 		return telephone;
 	}
@@ -124,7 +151,7 @@ public class Company implements Identifiable<Integer> {
 	public int getUpdated() {
 		return updated;
 	}
-	
+
 	public void setUpdated(int updated) {
 		this.updated = updated;
 	}

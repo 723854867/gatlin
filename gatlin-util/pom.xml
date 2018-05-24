@@ -39,5 +39,10 @@
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 </project>

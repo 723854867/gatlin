@@ -43,13 +43,14 @@ public class GatlinConfigration {
 				Properties properties = new Properties();
 				properties.load(new InputStreamReader(in, Consts.UTF_8));
 				for (Entry<Object, Object> entry : properties.entrySet()) {
-					String value = entry.getValue().toString();
-					if (!UNIQUE_PROPERTIES.contains(entry.getKey().toString())) {
-						String cvalue = GatlinConfigration.properties.get(entry.getKey().toString());
+					String key = entry.getKey().toString().trim();
+					String value = entry.getValue().toString().trim();
+					if (!UNIQUE_PROPERTIES.contains(key)) {
+						String cvalue = GatlinConfigration.properties.get(key);
 						if (StringUtil.hasText(cvalue))
 							value = cvalue + "," + value;
 					}
-					GatlinConfigration.properties.put(entry.getKey().toString(), value);
+					GatlinConfigration.properties.put(key, value);
 				}
 				in.close();
 			}

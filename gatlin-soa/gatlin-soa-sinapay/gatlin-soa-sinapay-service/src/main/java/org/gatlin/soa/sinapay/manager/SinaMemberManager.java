@@ -1,16 +1,20 @@
 package org.gatlin.soa.sinapay.manager;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.annotation.Resource;
 
-import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.request.member.ActivateRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindRequest;
+import org.gatlin.sdk.sinapay.request.member.CompanyApplyRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryWithholdRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
 import org.gatlin.sdk.sinapay.request.member.WithholdRequest;
@@ -28,14 +32,18 @@ import org.gatlin.soa.sinapay.bean.SinaCode;
 import org.gatlin.soa.sinapay.bean.SinaConsts;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
 import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
+import org.gatlin.soa.sinapay.bean.entity.SinaCompanyAudit;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
 import org.gatlin.soa.sinapay.mybatis.EntityGenerator;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaBankCardDao;
+import org.gatlin.soa.sinapay.mybatis.dao.SinaCompanyAuditDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaUserDao;
 import org.gatlin.soa.user.api.BankCardService;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.BankCard;
+import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
@@ -46,7 +54,6 @@ import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.serial.SerializeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,32 +74,12 @@ public class SinaMemberManager {
 	private SinaBankCardDao sinaBankCardDao;
 	@Resource
 	private BankCardService bankCardService;
-	
-	@Transactional
-	public String activate(String tid, MemberType type, String ip) {
-		SinaUser user = null;
-		try {
-			user = EntityGenerator.newSinaUser(tid, type);
-			sinaUserDao.insert(user);
-		} catch (DuplicateKeyException e) {
-			throw new CodeException(SinaCode.MEMBER_EXIST);
-		}
-		ActivateRequest.Builder builder = new ActivateRequest.Builder();
-		builder.clientIp(ip);
-		builder.identityId(user.getSinaId());
-		ActivateRequest request = builder.build();
-		logger.info("新浪会员激活请求：{}", SerializeUtil.GSON.toJson(request.params()));
-		SinapayResponse response = request.sync();
-		logger.info("新浪会员激活响应：{}", SerializeUtil.GSON.toJson(response));
-		return user.getSinaId();
-	}
+	@Resource
+	private SinaCompanyAuditDao sinaCompanyAuditDao;
 	
 	@Transactional
 	public UserSecurity realname(RealnameParam param) {
-		String tid = String.valueOf(param.getUser().getId());
-		Query query = new Query().eq("type", MemberType.PERSONAL.mark()).eq("tid", tid).forUpdate();
-		SinaUser user = user(query);
-		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, user);
+		SinaUser user = _tryActivate(param.getUser().getId(), MemberType.PERSONAL, param.meta().getIp());
 		Assert.isTrue(SinaCode.MEMBER_ALREADY_REALNAME, !user.isRealname());
 		user.setRealname(true);
 		user.setUpdated(DateUtil.current());
@@ -237,6 +224,67 @@ public class SinaMemberManager {
 		WithholdRequest request = builder.build();
 		RedirectResponse response = request.sync();
 		return response.getRedirectUrl();
+	}
+	
+	@Transactional
+	public void companyApply(CompanyApplyParam param, Company company, SinaBank bank, Geo geo) {
+		SinaUser user = _tryActivate(param.getId(), MemberType.ENTERPRISE, param.meta().getIp());
+		Assert.isTrue(SinaCode.MEMBER_ALREADY_REALNAME, !user.isRealname());
+		Set<String> set = new HashSet<String>();
+		set.add(CompanyAuditState.SUCCESS.name());
+		set.add(CompanyAuditState.PROCESSING.name());
+		Query query = new Query().eq("cid", param.getId()).in("state", set).forUpdate();
+		SinaCompanyAudit companyAudit = sinaCompanyAuditDao.queryUnique(query);
+		Assert.isNull(SinaCode.COMPANY_ALREADY_APPLY, companyAudit);
+		companyAudit = EntityGenerator.newSinaCompanyAudit(param);
+		sinaCompanyAuditDao.insert(companyAudit);
+		CompanyApplyRequest.Builder builder = new CompanyApplyRequest.Builder();
+		builder.auditOrderNo(companyAudit.getId());
+		builder.companyName(company.getName());
+		builder.identityId(user.getSinaId());
+		builder.address(company.getAddress());
+		builder.licenseNo(company.getIdentity());
+		builder.licenseAddress(company.getLicenseAddress());
+		builder.licenseExpireDate(DateUtil.getDate(DateUtil.yyyyMMdd, company.getLicenseExpiry() * 1000));
+		builder.businessScope(company.getBusinessScope());
+		builder.telephone(company.getTelephone());
+		builder.email(company.getEmail());
+		builder.organizationNo(company.getIdentity());
+		builder.summary(company.getSummary());
+		builder.legalPerson(company.getLegalPerson());
+		builder.certNo(company.getLegalIdentity());
+		builder.legalPersonPhone(String.valueOf(PhoneUtil.getNationalNumber(company.getLegalMobile())));
+		builder.bankCode(bank.getSinaId());
+		builder.bankAccountNo(param.getBankNo());
+		builder.province(geo.getProvince());
+		builder.city(geo.getCity());
+		builder.bankBranch(param.getBranch());
+		builder.clientIp(param.meta().getIp());
+		builder.fileName(param.getFilename());
+		builder.digest(param.getDigest());
+		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_COMPANY_AUDIT));
+		CompanyApplyRequest request = builder.build();
+		logger.info("新浪企业认证请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		SinapayResponse response = request.sync();
+		logger.info("新浪企业认证响应：{}", SerializeUtil.GSON.toJson(response));
+	}
+	
+	private SinaUser _tryActivate(Object tid, MemberType type, String ip) {
+		Query query = new Query().eq("type", type.mark()).eq("tid", tid.toString()).forUpdate();
+		SinaUser user = user(query);
+		if (null == user) {
+			user = EntityGenerator.newSinaUser(tid.toString(), type);
+			sinaUserDao.insert(user);
+			ActivateRequest.Builder builder = new ActivateRequest.Builder();
+			builder.clientIp(ip);
+			builder.identityId(user.getSinaId());
+			ActivateRequest request = builder.build();
+			logger.info("新浪会员激活请求：{}", SerializeUtil.GSON.toJson(request.params()));
+			SinapayResponse response = request.sync();
+			logger.info("新浪会员激活响应：{}", SerializeUtil.GSON.toJson(response));
+			return user;
+		}
+		return user;
 	}
 	
 	public SinaUser user(Query query) {

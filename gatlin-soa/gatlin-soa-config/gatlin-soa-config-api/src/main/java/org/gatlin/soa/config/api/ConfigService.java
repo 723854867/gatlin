@@ -10,6 +10,7 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.config.bean.entity.CfgDistrict;
+import org.gatlin.soa.config.bean.entity.CfgGlobal;
 import org.gatlin.soa.config.bean.model.Configs;
 import org.gatlin.soa.config.bean.param.BankParam;
 import org.gatlin.soa.config.bean.param.CfgGlobalParam;
@@ -39,4 +40,8 @@ public interface ConfigService {
 	void districtModify(DistrictModifyParam param);
 
 	void configUpdate(CfgGlobalParam cfgGlobalParam);
+	
+	CfgGlobal cfgGlobal(String key);
+	
+	void updateConfig(CfgGlobal global);
 }

@@ -23,10 +23,11 @@
 
 	<modules>
 		<module>gatlin-sdk-ucpaas</module>
-		<module>gatlin-sdk-jiguang</module>
+		<module>gatlin-sdk-jpush</module>
 		<module>gatlin-sdk-alipay</module>
 		<module>gatlin-sdk-chuanglan</module>
 		<module>gatlin-sdk-sinapay</module>
     <module>gatlin-sdk-juhe</module>
+    <module>gatlin-sdk-jisu</module>
   </modules>
 </project>

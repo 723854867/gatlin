@@ -35,7 +35,7 @@ public abstract class RechargeWaitPayStateMachine extends RechargeStateMachine {
 				AccountType accountType = AccountType.match(Integer.valueOf(recharge.getGoodsId()));
 				AccountDetail detail = new AccountDetail(recharge.getId(), BizType.RECHARGE_SUCCESS);
 				BigDecimal amount = recharge.getAmount().subtract(recharge.getFee());
-				detail.usableIncre(rechargeeType, recharge.getRechargee(), accountType, amount);
+				detail.usableIncr(rechargeeType, recharge.getRechargee(), accountType, amount);
 				accountManager.process(detail);
 				break;
 			default:

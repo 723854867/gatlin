@@ -1,5 +1,7 @@
 package org.gatlin.soa.courier.manager;
 
+import java.text.MessageFormat;
+
 import javax.annotation.Resource;
 
 import org.gatlin.core.Gatlin;
@@ -35,7 +37,7 @@ public class CourierManager {
 		int lifeTime = configs.get(CourierConsts.CAPTCHA_LIFE_TIME);
 		int countMaximum = configs.get(CourierConsts.CAPTCHA_COUNT_MAXIMUM);
 		int countLifeTime = configs.get(CourierConsts.CAPTCHA_COUNT_LIFE_TIME);
-		int interval = configs.get(CourierConsts.CAPTCHA_COUNT_LIFE_TIME);
+		int interval = configs.get(CourierConsts.CAPTCHA_INTERVAL);
 		long flag = redis.captchaObtain(key, countKey, captcha, lifeTime, countMaximum, countLifeTime, interval);
 		if (flag == 1)
 			throw new CodeException(CourierCode.CAPTCHA_OBTAIN_FREQ);
@@ -46,7 +48,8 @@ public class CourierManager {
 			return captcha;
 		switch (type) {
 		case MOBILE:
-			smsRouteManager.send("", receiver);
+			String content = configService.config(CourierConsts.SMS_CAPTCHA);
+			smsRouteManager.send(MessageFormat.format(content, captcha), receiver);
 		case EMAIL:
 			break;
 		default:

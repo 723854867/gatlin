@@ -43,14 +43,14 @@ public class AccountDetail implements Serializable {
 		this.bizType = bizType.mark();
 	}
 	
-	public AccountTips usableIncre(TargetType targetType, long owner, AccountType type, BigDecimal amount) {
+	public AccountTips usableIncr(TargetType targetType, long owner, AccountType type, BigDecimal amount) {
 		switch (targetType) {
 		case USER:
-			return userUsableIncre(owner, type, amount);
+			return userUsableIncr(owner, type, amount);
 		case COMPANY:
-			return companyUsableIncre(owner, type, amount);
+			return companyUsableIncr(owner, type, amount);
 		case PLATFORM:
-			return platformUsableIncre(type, amount);
+			return platformUsableIncr(type, amount);
 		default:
 			throw new CodeException();
 		}
@@ -72,11 +72,11 @@ public class AccountDetail implements Serializable {
 	public AccountTips frozenIncr(TargetType targetType, long owner, AccountType type, BigDecimal amount) {
 		switch (targetType) {
 		case USER:
-			return userFrozenIncre(owner, type, amount);
+			return userFrozenIncr(owner, type, amount);
 		case COMPANY:
-			return companyFrozenIncre(owner, type, amount);
+			return companyFrozenIncr(owner, type, amount);
 		case PLATFORM:
-			return platformFrozenIncre(type, amount);
+			return platformFrozenIncr(type, amount);
 		default:
 			throw new CodeException();
 		}
@@ -95,13 +95,13 @@ public class AccountDetail implements Serializable {
 		}
 	}
 	
-	public AccountTips userUsableIncre(long uid, AccountType type, BigDecimal amount) {
+	public AccountTips userUsableIncr(long uid, AccountType type, BigDecimal amount) {
 		AccountTips tips = new AccountTips(type, AccountField.USABLE).incr(amount);
 		_wrap(uid, TargetType.USER, tips);
 		return tips;
 	}
 	
-	public AccountTips userFrozenIncre(long uid, AccountType type, BigDecimal amount) {
+	public AccountTips userFrozenIncr(long uid, AccountType type, BigDecimal amount) {
 		AccountTips tips = new AccountTips(type, AccountField.FROZEN).incr(amount);
 		_wrap(uid, TargetType.USER, tips);
 		return tips;
@@ -119,13 +119,13 @@ public class AccountDetail implements Serializable {
 		return tips;
 	}
 	
-	public AccountTips companyUsableIncre(long uid, AccountType type, BigDecimal amount) {
+	public AccountTips companyUsableIncr(long uid, AccountType type, BigDecimal amount) {
 		AccountTips tips = new AccountTips(type, AccountField.USABLE).incr(amount);
 		_wrap(uid, TargetType.COMPANY, tips);
 		return tips;
 	}
 	
-	public AccountTips companyFrozenIncre(long uid, AccountType type, BigDecimal amount) {
+	public AccountTips companyFrozenIncr(long uid, AccountType type, BigDecimal amount) {
 		AccountTips tips = new AccountTips(type, AccountField.FROZEN).incr(amount);
 		_wrap(uid, TargetType.COMPANY, tips);
 		return tips;
@@ -143,13 +143,13 @@ public class AccountDetail implements Serializable {
 		return tips;
 	}
 	
-	public AccountTips platformUsableIncre(AccountType type, BigDecimal amount) {
+	public AccountTips platformUsableIncr(AccountType type, BigDecimal amount) {
 		AccountTips tips = new AccountTips(type, AccountField.USABLE).incr(amount);
 		platformTips.add(tips);
 		return tips;
 	}
 	
-	public AccountTips platformFrozenIncre(AccountType type, BigDecimal amount) {
+	public AccountTips platformFrozenIncr(AccountType type, BigDecimal amount) {
 		AccountTips tips = new AccountTips(type, AccountField.FROZEN).incr(amount);
 		platformTips.add(tips);
 		return tips;

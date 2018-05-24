@@ -4,6 +4,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
 import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.util.validate.Identity;
+import org.gatlin.util.validate.Mobile;
 
 public class CompanyAddParam extends SoaParam {
 
@@ -29,6 +31,17 @@ public class CompanyAddParam extends SoaParam {
 	private String email;
 	@NotEmpty
 	private String summary;
+	// 法人姓名
+	@NotEmpty
+	private String legalPerson;
+	// 法人手机号
+	@Mobile
+	@NotEmpty
+	private String legalMobile;
+	// 法人身份证号
+	@Identity
+	@NotEmpty
+	private String legalIdentity;
 
 	public String getName() {
 		return name;
@@ -109,4 +122,29 @@ public class CompanyAddParam extends SoaParam {
 	public void setSummary(String summary) {
 		this.summary = summary;
 	}
+
+	public String getLegalPerson() {
+		return legalPerson;
+	}
+
+	public void setLegalPerson(String legalPerson) {
+		this.legalPerson = legalPerson;
+	}
+
+	public String getLegalMobile() {
+		return legalMobile;
+	}
+
+	public void setLegalMobile(String legalMobile) {
+		this.legalMobile = legalMobile;
+	}
+
+	public String getLegalIdentity() {
+		return legalIdentity;
+	}
+
+	public void setLegalIdentity(String legalIdentity) {
+		this.legalIdentity = legalIdentity;
+	}
+
 }

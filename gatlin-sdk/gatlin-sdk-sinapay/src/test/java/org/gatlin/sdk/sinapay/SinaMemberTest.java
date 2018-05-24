@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
 import org.gatlin.sdk.sinapay.bean.enums.MemberIdentityType;
+import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.bean.model.CardTips;
 import org.gatlin.sdk.sinapay.request.member.ActivateRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindRequest;
+import org.gatlin.sdk.sinapay.request.member.CompanyApplyRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryBalanceRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryBankCardRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryMiddleBalanceRequest;
@@ -32,11 +34,13 @@ import org.junit.Test;
 public class SinaMemberTest extends SinaTest {
 	
 	String identity = "445948416376176640";
+	String companyIdentity = "449221449165570048";
 
 	@Test
 	public void testActivate() {
 		ActivateRequest.Builder builder = new ActivateRequest.Builder();
 		builder.clientIp("127.0.0.1");
+		builder.memberType(MemberType.ENTERPRISE);
 		String id = IDWorker.INSTANCE.nextSid();
 		System.out.println(id);
 		builder.identityId(id);
@@ -183,5 +187,37 @@ public class SinaMemberTest extends SinaTest {
 		QueryMiddleBalanceResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));
 		System.out.println(SerializeUtil.GSON.toJson(response.getList()));
+	}
+	
+	@Test
+	public void testCompanyApply() {
+		CompanyApplyRequest.Builder builder = new CompanyApplyRequest.Builder();
+		builder.auditOrderNo(IDWorker.INSTANCE.nextSid());
+		builder.companyName("sdsdsdsds");
+		builder.identityId("449221449165570048");
+		builder.address("sdsdsds");
+		builder.licenseNo("sdsdsds");
+		builder.licenseAddress("ssssssss");
+		builder.licenseExpireDate("20200506");
+		builder.businessScope("sdsdsdsds");
+		builder.telephone("13456785");
+		builder.email("723854867@qq.com");
+		builder.organizationNo("sd5468");
+		builder.summary("hsdsdwdwdwdwdw");
+		builder.legalPerson("sdsdsdsds");
+		builder.certNo("33012719870603341X");
+		builder.legalPersonPhone("15888837752");
+		builder.bankCode("ICBC");
+		builder.bankAccountNo("146464649");
+		builder.province("浙江省");
+		builder.city("杭州市");
+		builder.bankBranch("杭州祥符支行");
+		builder.clientIp("127.0.0.1");
+		builder.fileName("sdsds");
+		builder.digest("sdsdsdsd");
+		CompanyApplyRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		SinapayResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
 	}
 }

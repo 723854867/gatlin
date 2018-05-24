@@ -1,6 +1,5 @@
 package org.gatlin.skd.chuanglan.request;
 
-import org.gatlin.skd.chuanglan.ChuangLanConfig;
 import org.gatlin.skd.chuanglan.response.SmsResponse;
 
 /**
@@ -18,7 +17,7 @@ import org.gatlin.skd.chuanglan.response.SmsResponse;
 public class SmsRequest extends ChuangLanRequest<SmsResponse, SmsRequest> {
 
 	private SmsRequest(Builder builder) {
-		super(ChuangLanConfig.pathSms());
+		super("msg/send/json");
 		this.body = builder;
 	}
 	

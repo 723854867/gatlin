@@ -5,6 +5,12 @@ import org.gatlin.core.bean.model.code.Code;
 import org.gatlin.util.lang.StringUtil;
 
 public class Assert {
+	
+	public static final <T> T isNull(Code code, T param) {
+		if (null != param)
+			throw new CodeException(code);
+		return param;
+	}
 
 	public static final <T> T notNull(T param) {
 		return notNull("notNull assert failure!", param);

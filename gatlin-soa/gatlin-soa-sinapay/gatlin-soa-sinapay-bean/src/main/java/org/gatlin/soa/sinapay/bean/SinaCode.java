@@ -20,4 +20,5 @@ public interface SinaCode {
 	final Code WITHDRAW_UNPAYED							= new Code("code.sina.withdraw.unpayed", "新浪提现代付中");
 	final Code WITHDRAW_NOT_EXIST						= new Code("code.sina.withdraw.not.exist", "新浪提现交易不存在");
 	final Code WITHDRAW_PAY_NOT_EXIST					= new Code("code.sina.withdraw.pay.not.exist", "新浪提现代付交易不存在");
+	final Code COMPANY_ALREADY_APPLY					= new Code("code.sina.company.already.aply", "已申请新浪企业认证");
 }

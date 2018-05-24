@@ -10,7 +10,9 @@ import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.model.BalanceInfo;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
 import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
+import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
@@ -22,17 +24,6 @@ import org.gatlin.soa.user.bean.param.RealnameParam;
  */
 public interface SinapayMemberService {
 
-	/**
-	 * 使用UID激活新浪会员
-	 * 
-	 * @param tid 用户在当前应用中的唯一编号
-	 * @param type 用户类型
-	 * @param ip 激活时客户端ip
-	 * 
-	 * @return 新浪会员编号
-	 */
-	String activate(String tid, MemberType type, String ip);
-	
 	/**
 	 * 用户实名认证
 	 */
@@ -61,4 +52,6 @@ public interface SinapayMemberService {
 	BalanceInfo queryBalance(QueryBalanceParam param);
 	
 	List<AccountMiddleTips> queryBalanceMiddle();
+	
+	void companyApply(CompanyApplyParam param, Company company);
 }

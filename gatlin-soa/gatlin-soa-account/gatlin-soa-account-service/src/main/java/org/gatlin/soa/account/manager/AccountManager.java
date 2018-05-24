@@ -106,7 +106,7 @@ public class AccountManager {
 		AccountType withdrawerAccountType = AccountType.match(withdraw.getWithdrawerAccountType());
 		detail.frozenDecr(withdrawerType, withdraw.getWithdrawer(), withdrawerAccountType, amount);
 		if (!success) 
-			detail.usableIncre(withdrawerType, withdraw.getWithdrawer(), withdrawerAccountType, amount);
+			detail.usableIncr(withdrawerType, withdraw.getWithdrawer(), withdrawerAccountType, amount);
 		process(detail);
 	}
 	

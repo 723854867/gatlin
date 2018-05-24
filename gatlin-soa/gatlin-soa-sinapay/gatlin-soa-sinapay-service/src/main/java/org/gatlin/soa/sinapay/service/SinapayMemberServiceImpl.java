@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.CoreCode;
+import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.bean.model.AccountMiddleTips;
@@ -12,12 +14,18 @@ import org.gatlin.sdk.sinapay.request.member.QueryMiddleBalanceRequest;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
+import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
+import org.gatlin.soa.sinapay.bean.SinaCode;
+import org.gatlin.soa.sinapay.bean.entity.SinaBank;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.model.BalanceInfo;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
 import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
+import org.gatlin.soa.sinapay.manager.SinaManager;
 import org.gatlin.soa.sinapay.manager.SinaMemberManager;
+import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
@@ -27,13 +35,12 @@ import org.springframework.stereotype.Service;
 public class SinapayMemberServiceImpl implements SinapayMemberService {
 	
 	@Resource
+	private SinaManager sinaManager;
+	@Resource
+	private ConfigService configService;
+	@Resource
 	private SinaMemberManager sinaMemberManager;
 
-	@Override
-	public String activate(String tid, MemberType type, String ip) {
-		return sinaMemberManager.activate(tid, type, ip);
-	}
-	
 	@Override
 	public UserSecurity realname(RealnameParam param) {
 		return sinaMemberManager.realname(param);
@@ -89,5 +96,15 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 		QueryMiddleBalanceRequest.Builder builder = new QueryMiddleBalanceRequest.Builder();
 		QueryMiddleBalanceRequest request = builder.build();
 		return request.sync().getList();
+	}
+	
+	@Override
+	public void companyApply(CompanyApplyParam param, Company company) {
+		SinaBank bank = sinaManager.bank(param.getBankId());
+		Assert.isTrue(SinaCode.BANK_UNSUPPORT, null != bank && bank.isValid());
+		Geo geo = configService.geo(param.getCity(), false);
+		Assert.hasText(CoreCode.PARAM_ERR, geo.getCity());
+		Assert.hasText(CoreCode.PARAM_ERR, geo.getProvince());
+		sinaMemberManager.companyApply(param, company, bank, geo);
 	}
 }

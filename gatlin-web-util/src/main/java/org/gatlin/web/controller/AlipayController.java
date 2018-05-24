@@ -3,19 +3,25 @@ package org.gatlin.web.controller;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.gatlin.core.CoreCode;
+import org.gatlin.core.GatlinConfigration;
+import org.gatlin.core.util.Assert;
 import org.gatlin.sdk.alipay.AlipayConfig;
 import org.gatlin.sdk.alipay.bean.AlipayException;
 import org.gatlin.sdk.alipay.bean.enums.Code;
 import org.gatlin.sdk.alipay.bean.enums.TradeState;
 import org.gatlin.sdk.alipay.notice.TradeNotice;
 import org.gatlin.soa.account.api.AccountService;
+import org.gatlin.soa.account.bean.AccountUtil;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.alipay.api.AlipayAccountService;
+import org.gatlin.soa.alipay.bean.param.RechargeParam;
+import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.PlatType;
-import org.gatlin.soa.bean.param.RechargeParam;
+import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.web.AlipayCondition;
-import org.gatlin.web.util.hook.RechargeHook;
+import org.gatlin.web.WebConsts;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,16 +34,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AlipayController {
 	
 	@Resource
-	private RechargeHook rechargeHook;
-	@Resource
 	private AccountService accountService;
+	@Resource
+	protected ConfigService configService;
 	@Resource
 	private AlipayAccountService alipayAccountService;
 	
+	// 支付宝账户充值
 	@ResponseBody
-	@RequestMapping("recharge")
+	@RequestMapping("recharge/account")
 	public Object recharge(@RequestBody @Valid RechargeParam param) {
-		Recharge recharge = rechargeHook.rechargeVerify(param, PlatType.ALIPAY);
+		int mod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_RECHARGE_MOD_USER);
+		AccountType accountType = param.getAccountType();
+		Assert.isTrue(CoreCode.PARAM_ERR, (accountType.mark() & mod) == accountType.mark());
+		int timeout = configService.config(WebConsts.Options.RECHARGE_TIMEOUT);
+		Recharge recharge = AccountUtil.newRecharge(param, PlatType.ALIPAY, 1, accountType.mark(), param.getAmount(), timeout);
 		return alipayAccountService.recharge(recharge);
 	}
 	

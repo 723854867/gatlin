@@ -84,10 +84,21 @@ public class ConfigServiceImpl implements ConfigService {
 	public void configUpdate(CfgGlobalParam cfgGlobalParam) {
 		CfgGlobal cfgGlobal = cfgGlobalDao.getByKey(cfgGlobalParam.getKey());
 		Assert.notNull(ConfigCode.CONFIG_NOT_EXIST, cfgGlobal);
+		Assert.isTrue(ConfigCode.CONFIG_UNEDITABLE, cfgGlobal.isEditable());
 		if(null != cfgGlobalParam.getValue()) 
 			cfgGlobal.setValue(cfgGlobalParam.getValue());
 		cfgGlobal.setUpdated(DateUtil.current());
 		cfgGlobalDao.update(cfgGlobal);
+	}
+	
+	@Override
+	public CfgGlobal cfgGlobal(String key) {
+		return cfgGlobalDao.getByKey(key);
+	}
+	
+	@Override
+	public void updateConfig(CfgGlobal global) {
+		cfgGlobalDao.update(global);
 	}
 	
 	@Override

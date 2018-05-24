@@ -13,6 +13,7 @@ public class CfgGlobal implements Identifiable<String> {
 	private String value;
 	private String desc;
 	private boolean visible;
+	private boolean editable;
 	private int created;
 	private int updated;
 
@@ -46,6 +47,14 @@ public class CfgGlobal implements Identifiable<String> {
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+	
+	public boolean isEditable() {
+		return editable;
+	}
+	
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
 	public int getCreated() {

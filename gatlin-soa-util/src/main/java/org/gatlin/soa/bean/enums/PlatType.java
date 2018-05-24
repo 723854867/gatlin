@@ -7,7 +7,9 @@ public enum PlatType {
 	// 新浪支付
 	SINAPAY(2),
 	// 创蓝
-	CHUANGLAN(3);
+	CHUANGLAN(3),
+	// 极光推送
+	JPUSH(4);
 	
 	private int mark;
 	

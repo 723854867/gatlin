@@ -1,16 +1,17 @@
 package org.gatlin.soa.sinapay.mybatis;
 
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
+import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.bean.enums.TradeState;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.Geo;
-import org.gatlin.soa.bean.param.RechargeParam;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
 import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
 import org.gatlin.soa.sinapay.bean.entity.SinaCollect;
+import org.gatlin.soa.sinapay.bean.entity.SinaCompanyAudit;
 import org.gatlin.soa.sinapay.bean.entity.SinaPay;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
@@ -18,6 +19,8 @@ import org.gatlin.soa.sinapay.bean.entity.SinaWithdraw;
 import org.gatlin.soa.sinapay.bean.enums.CollectType;
 import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
+import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
+import org.gatlin.soa.sinapay.bean.param.RechargeParam;
 import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.util.DateUtil;
@@ -80,7 +83,7 @@ public class EntityGenerator {
 		instance.setRecharger(recharger);
 		instance.setRechargerType(rechargerType.name());
 		instance.setRechargeeType(rechargeeType.name());
-		instance.setAmount(recharge.getAmount().subtract(param.getFee()));
+		instance.setAmount(recharge.getAmount());
 		instance.setState(RechargeState.PROCESSING.name());
 		int time = DateUtil.current();
 		instance.setCreated(time);
@@ -118,6 +121,22 @@ public class EntityGenerator {
 		instance.setAmount(withdraw.getAmount());
 		instance.setAccountType(accountType.name());
 		instance.setState(SinaWithdrawState.WAIT_PAY.name());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final SinaCompanyAudit newSinaCompanyAudit(CompanyApplyParam param) {
+		SinaCompanyAudit instance = new SinaCompanyAudit();
+		instance.setId(IDWorker.INSTANCE.nextSid());
+		instance.setCid(param.getId());
+		instance.setState(CompanyAuditState.PROCESSING.name());
+		instance.setCity(param.getCity());
+		instance.setMobile(param.getMobile());
+		instance.setBranch(param.getBranch());
+		instance.setBankId(param.getBankId());
+		instance.setBankNo(param.getBankNo());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
