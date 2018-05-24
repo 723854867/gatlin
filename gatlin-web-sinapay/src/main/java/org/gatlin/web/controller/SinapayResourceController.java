@@ -7,8 +7,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.GatlinConfigration;
@@ -57,7 +55,7 @@ public class SinapayResourceController {
 	@Valid
 	@ResponseBody
 	@RequestMapping("company/apply")
-	public Object companyApply(@Valid CompanyApplyParam param,@RequestParam(required = false, name = "files") @NotNull @Size(min = 1) MultipartFile[] files) throws Exception {
+	public Object companyApply(@Valid CompanyApplyParam param,  @RequestParam(name = "files") MultipartFile[] files) throws Exception {
 		Company company = companyService.company(param.getId());
 		Assert.notNull(UserCode.COMPANY_NOT_EIXST, company);
 		ZipWriter writer = new ZipWriter();
@@ -86,11 +84,5 @@ public class SinapayResourceController {
 		param.setDigest(SignUtil.fileMD5(new ByteArrayInputStream(buffer)));
 		sinapayMemberService.companyApply(param, company);
 		return Response.ok();
-	}
-	
-	public static void main(String[] args) {
-		String value = "yyzz.jpgzzjgz.jpgswdjz.jpgjsxkz.jpgfrzjz.jpgfrzjf.jpg";
-		String cvalue = "yyzz.jpgzzjgz.jpgswdjz.jpgjsxkz.jpgfrzjz.jpgfrzjf.jpg";
-		System.out.println(cvalue.indexOf(value));
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.bean.model.AccountMiddleTips;
+import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
@@ -54,4 +55,6 @@ public interface SinapayMemberService {
 	List<AccountMiddleTips> queryBalanceMiddle();
 	
 	void companyApply(CompanyApplyParam param, Company company);
+	
+	void companyApplyNotice(CompanyAuditNotice notice);
 }

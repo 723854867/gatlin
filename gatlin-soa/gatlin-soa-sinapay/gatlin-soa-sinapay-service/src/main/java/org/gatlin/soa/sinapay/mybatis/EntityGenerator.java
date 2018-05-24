@@ -25,6 +25,7 @@ import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
+import org.gatlin.util.lang.StringUtil;
 
 public class EntityGenerator {
 
@@ -127,16 +128,35 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final SinaCompanyAudit newSinaCompanyAudit(CompanyApplyParam param) {
+	public static final SinaCompanyAudit newSinaCompanyAudit(CompanyApplyParam param, Geo geo) {
 		SinaCompanyAudit instance = new SinaCompanyAudit();
 		instance.setId(IDWorker.INSTANCE.nextSid());
 		instance.setCid(param.getId());
 		instance.setState(CompanyAuditState.PROCESSING.name());
-		instance.setCity(param.getCity());
+		instance.setCity(geo.getCity());
+		instance.setProvince(geo.getProvince());
 		instance.setMobile(param.getMobile());
 		instance.setBranch(param.getBranch());
 		instance.setBankId(param.getBankId());
 		instance.setBankNo(param.getBankNo());
+		instance.setAuditMsg(StringUtil.EMPTY);
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final BankCard newBankCard(SinaCompanyAudit companyAudit) {
+		BankCard instance = new BankCard();
+		instance.setId(IDWorker.INSTANCE.nextSid());
+		instance.setOwner(companyAudit.getCid());
+		instance.setBankId(companyAudit.getBankId());
+		instance.setOwnerType(TargetType.COMPANY.mark());
+		instance.setNo(companyAudit.getBankNo());
+		instance.setMobile(companyAudit.getMobile());
+		instance.setProvince(companyAudit.getProvince());
+		instance.setCity(companyAudit.getCity());
+		instance.setBranch(companyAudit.getBranch());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

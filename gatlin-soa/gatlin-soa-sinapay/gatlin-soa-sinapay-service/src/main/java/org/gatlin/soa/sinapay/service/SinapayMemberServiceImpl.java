@@ -9,6 +9,7 @@ import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.bean.model.AccountMiddleTips;
+import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
 import org.gatlin.sdk.sinapay.request.member.QueryBalanceRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryMiddleBalanceRequest;
 import org.gatlin.soa.bean.model.Geo;
@@ -106,5 +107,10 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 		Assert.hasText(CoreCode.PARAM_ERR, geo.getCity());
 		Assert.hasText(CoreCode.PARAM_ERR, geo.getProvince());
 		sinaMemberManager.companyApply(param, company, bank, geo);
+	}
+	
+	@Override
+	public void companyApplyNotice(CompanyAuditNotice notice) {
+		sinaMemberManager.companyApplyNotice(notice);
 	}
 }

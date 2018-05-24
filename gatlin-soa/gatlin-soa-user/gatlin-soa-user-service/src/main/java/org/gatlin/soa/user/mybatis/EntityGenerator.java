@@ -83,6 +83,7 @@ public class EntityGenerator {
 	public static final Company newCompany(CompanyAddParam param) {
 		Company instance = new Company();
 		instance.setName(param.getName());
+		instance.setWebsite(param.getWebsite());
 		instance.setAddress(param.getAddress());
 		instance.setIdentity(param.getIdentity());
 		instance.setLicenseAddress(param.getLicenseAddress());

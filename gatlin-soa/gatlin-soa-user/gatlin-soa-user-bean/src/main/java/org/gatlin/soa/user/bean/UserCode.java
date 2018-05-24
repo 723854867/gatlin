@@ -11,6 +11,7 @@ public interface UserCode {
 	final Code LOGIN_PWD_ERROR 				= new Code("code.user.pwd.error", "密码错误");
 	final Code USER_UNLOGIN 				= new Code("code.user.unlogin", "用户未登录");
 	final Code USER_NOT_EIXST 				= new Code("code.user.not.exist", "用户不存在");
+	final Code COMPANY_EIXST 				= new Code("code.user.company.exist", "企业已存在");
 	final Code COMPANY_NOT_EIXST 			= new Code("code.user.company.not.exist", "企业不存在");
 	final Code USER_ROLE_NOT_EIXST 			= new Code("code.user.role.not.exist", "用户没有该角色权限");
 	final Code USER_ROLE_MAXIMUM 			= new Code("code.user.role.maximum", "用户角色数量达到上限");

@@ -5,10 +5,12 @@ import javax.validation.Valid;
 
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.model.message.WrapResponse;
+import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
 import org.gatlin.sdk.sinapay.notice.DepositRechargeNotice;
 import org.gatlin.sdk.sinapay.notice.SinaNotice;
 import org.gatlin.sdk.sinapay.notice.TradeNotice;
 import org.gatlin.sdk.sinapay.notice.WithdrawNotice;
+import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.api.SinapayOrderService;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaWithdraw;
@@ -31,6 +33,8 @@ public class SinapayNoticeController {
 	
 	@Resource
 	private SinapayOrderService sinapayOrderService;
+	@Resource
+	private SinapayMemberService sinapayMemberService;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -82,6 +86,14 @@ public class SinapayNoticeController {
 				throw new CodeException(e);
 			}
 		}
+		return new WrapResponse(SinaNotice.RESPONSE_OK);
+	}
+	
+	// 企业认证回调
+	@ResponseBody
+	@RequestMapping("company/audit")
+	public Object companyAudit(@Valid CompanyAuditNotice notice) {
+		sinapayMemberService.companyApplyNotice(notice);
 		return new WrapResponse(SinaNotice.RESPONSE_OK);
 	}
 }

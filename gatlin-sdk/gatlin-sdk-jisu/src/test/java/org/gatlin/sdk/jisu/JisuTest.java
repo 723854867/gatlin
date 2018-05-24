@@ -1,7 +1,9 @@
 package org.gatlin.sdk.jisu;
 
 import org.gatlin.core.Bootstrap;
+import org.gatlin.sdk.jisu.request.CalendarRequest;
 import org.gatlin.sdk.jisu.request.JieQiRequest;
+import org.gatlin.sdk.jisu.result.Calendar;
 import org.gatlin.sdk.jisu.result.JieQi;
 import org.gatlin.util.serial.SerializeUtil;
 import org.junit.Test;
@@ -21,5 +23,12 @@ public class JisuTest {
 		JieQiRequest request = new JieQiRequest();
 		JisuResponse<JieQi> response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testWanNianLi() {
+		CalendarRequest request = new CalendarRequest();
+		Calendar calendar = request.sync().getResult();
+		System.out.println(SerializeUtil.GSON.toJson(calendar));
 	}
 }

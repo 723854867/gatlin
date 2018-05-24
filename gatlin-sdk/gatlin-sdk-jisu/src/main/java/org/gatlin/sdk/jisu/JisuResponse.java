@@ -25,6 +25,10 @@ public class JisuResponse<RESULT> implements HttpResponse  {
 		return result;
 	}
 	
+	public void setResult(RESULT result) {
+		this.result = result;
+	}
+	
 	@Override
 	public void verify() {
 		if (!status.equals("0"))

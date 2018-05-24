@@ -5,10 +5,12 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
+import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
 import org.gatlin.sdk.sinapay.request.member.ActivateRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
@@ -236,7 +238,7 @@ public class SinaMemberManager {
 		Query query = new Query().eq("cid", param.getId()).in("state", set).forUpdate();
 		SinaCompanyAudit companyAudit = sinaCompanyAuditDao.queryUnique(query);
 		Assert.isNull(SinaCode.COMPANY_ALREADY_APPLY, companyAudit);
-		companyAudit = EntityGenerator.newSinaCompanyAudit(param);
+		companyAudit = EntityGenerator.newSinaCompanyAudit(param, geo);
 		sinaCompanyAuditDao.insert(companyAudit);
 		CompanyApplyRequest.Builder builder = new CompanyApplyRequest.Builder();
 		builder.auditOrderNo(companyAudit.getId());
@@ -269,6 +271,22 @@ public class SinaMemberManager {
 		logger.info("新浪企业认证响应：{}", SerializeUtil.GSON.toJson(response));
 	}
 	
+	@Transactional
+	public void companyApplyNotice(CompanyAuditNotice notice) { 
+		Query query = new Query().eq("id", notice.getAudit_order_no()).forUpdate();
+		SinaCompanyAudit companyAudit = sinaCompanyAuditDao.queryUnique(query);
+		CompanyAuditState state = CompanyAuditState.valueOf(companyAudit.getState());
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == CompanyAuditState.PROCESSING);
+		CompanyAuditState cstate = CompanyAuditState.valueOf(notice.getAudit_status());
+		companyAudit.setState(cstate.name());
+		companyAudit.setAuditMsg(StringUtil.hasText(notice.getAudit_message()) ? notice.getAudit_message() : StringUtil.EMPTY);
+		if (cstate == CompanyAuditState.SUCCESS) {
+			BankCard card = EntityGenerator.newBankCard(companyAudit);
+			bankCardService.cardBind(card);
+		}
+		sinaCompanyAuditDao.update(companyAudit);
+	}
+	
 	private SinaUser _tryActivate(Object tid, MemberType type, String ip) {
 		Query query = new Query().eq("type", type.mark()).eq("tid", tid.toString()).forUpdate();
 		SinaUser user = user(query);
@@ -277,6 +295,7 @@ public class SinaMemberManager {
 			sinaUserDao.insert(user);
 			ActivateRequest.Builder builder = new ActivateRequest.Builder();
 			builder.clientIp(ip);
+			builder.memberType(type);
 			builder.identityId(user.getSinaId());
 			ActivateRequest request = builder.build();
 			logger.info("新浪会员激活请求：{}", SerializeUtil.GSON.toJson(request.params()));
