@@ -23,6 +23,7 @@ import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.model.BalanceInfo;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
+import org.gatlin.soa.sinapay.bean.param.CompanyBankCardModifyParam;
 import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
 import org.gatlin.soa.sinapay.manager.SinaManager;
 import org.gatlin.soa.sinapay.manager.SinaMemberManager;
@@ -112,5 +113,10 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	@Override
 	public void companyApplyNotice(CompanyAuditNotice notice) {
 		sinaMemberManager.companyApplyNotice(notice);
+	}
+	
+	@Override
+	public void companyBankCardModify(CompanyBankCardModifyParam param) {
+		sinaMemberManager.companyBankCardModify(param);
 	}
 }

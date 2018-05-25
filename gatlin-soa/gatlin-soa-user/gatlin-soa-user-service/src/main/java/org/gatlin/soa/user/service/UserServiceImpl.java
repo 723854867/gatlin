@@ -7,7 +7,6 @@ import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
-import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.courier.api.EmailService;
 import org.gatlin.soa.courier.api.SmsService;
 import org.gatlin.soa.user.ThreadsafeInvoker;
@@ -174,10 +173,5 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserSecurity security(long uid) {
 		return userManager.security(uid);
-	}
-	
-	@Override
-	public void bind(long uid, PlatType type, String identity) {
-		
 	}
 }

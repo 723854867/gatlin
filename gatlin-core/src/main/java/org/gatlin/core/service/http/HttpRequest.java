@@ -12,7 +12,6 @@ import org.gatlin.core.util.SpringContextUtil;
 import org.gatlin.util.bean.enums.Protocol;
 import org.gatlin.util.serial.SerializeUtil;
 
-import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -41,7 +40,8 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 		this.httpService = SpringContextUtil.getBean("httpService", HttpService.class);
 	}
 	
-	public void async(Callback callback) {
+	public void async(Callback<RESPONSE> callback) {
+		callback.request = this;
 		this.httpService.async(request(), callback);
 	}
 	

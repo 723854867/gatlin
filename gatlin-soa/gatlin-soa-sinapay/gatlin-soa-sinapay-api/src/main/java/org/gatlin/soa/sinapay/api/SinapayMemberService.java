@@ -12,6 +12,7 @@ import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.model.BalanceInfo;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
+import org.gatlin.soa.sinapay.bean.param.CompanyBankCardModifyParam;
 import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
 import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
@@ -57,4 +58,6 @@ public interface SinapayMemberService {
 	void companyApply(CompanyApplyParam param, Company company);
 	
 	void companyApplyNotice(CompanyAuditNotice notice);
+	
+	void companyBankCardModify(CompanyBankCardModifyParam param); 
 }

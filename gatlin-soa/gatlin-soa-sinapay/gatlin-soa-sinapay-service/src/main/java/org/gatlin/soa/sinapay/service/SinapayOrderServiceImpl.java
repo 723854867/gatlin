@@ -6,6 +6,7 @@ import org.gatlin.sdk.sinapay.notice.DepositRechargeNotice;
 import org.gatlin.sdk.sinapay.notice.TradeNotice;
 import org.gatlin.sdk.sinapay.notice.WithdrawNotice;
 import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.soa.sinapay.api.SinapayOrderService;
@@ -43,8 +44,8 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 	}
 
 	@Override
-	public String withdrawPay(WithdrawParam param) {
-		return sinaOrderManager.withdrawPay(param);
+	public String withdrawPay(WithdrawParam param, WithdrawContext context) {
+		return sinaOrderManager.withdrawPay(param, context);
 	}
 	
 	@Override

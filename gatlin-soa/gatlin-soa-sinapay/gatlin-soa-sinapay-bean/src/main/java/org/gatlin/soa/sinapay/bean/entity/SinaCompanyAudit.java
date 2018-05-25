@@ -10,9 +10,11 @@ public class SinaCompanyAudit implements Identifiable<String> {
 
 	@Id
 	private String id;
-	private int cid;
+	private String ip;
+	private String sinaUid;
 	private String state;
 	private String city;
+	private String cardId;
 	private String province;
 	private String mobile;
 	private String branch;
@@ -30,12 +32,12 @@ public class SinaCompanyAudit implements Identifiable<String> {
 		this.id = id;
 	}
 	
-	public int getCid() {
-		return cid;
+	public String getIp() {
+		return ip;
 	}
 	
-	public void setCid(int cid) {
-		this.cid = cid;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 	
 	public String getState() {
@@ -52,6 +54,14 @@ public class SinaCompanyAudit implements Identifiable<String> {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+	
+	public String getCardId() {
+		return cardId;
+	}
+	
+	public void setCardId(String cardId) {
+		this.cardId = cardId;
 	}
 	
 	public String getProvince() {
@@ -92,6 +102,14 @@ public class SinaCompanyAudit implements Identifiable<String> {
 
 	public void setBankNo(String bankNo) {
 		this.bankNo = bankNo;
+	}
+	
+	public String getSinaUid() {
+		return sinaUid;
+	}
+	
+	public void setSinaUid(String sinaUid) {
+		this.sinaUid = sinaUid;
 	}
 	
 	public String getAuditMsg() {

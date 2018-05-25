@@ -4,6 +4,8 @@ public enum ResourceType {
 
 	// 用户头像
 	AVATAR(50),
+	// 用户默认头像
+	AVATAR_DEFAULT(51),
 	// 银行icon
 	BANK_ICON(60);
 	

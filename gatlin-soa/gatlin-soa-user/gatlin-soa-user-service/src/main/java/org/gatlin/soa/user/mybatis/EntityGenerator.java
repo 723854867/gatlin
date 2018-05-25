@@ -1,11 +1,9 @@
 package org.gatlin.soa.user.mybatis;
 
-import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.user.bean.UserUtil;
 import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.UserAddress;
-import org.gatlin.soa.user.bean.entity.UserBind;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
@@ -110,15 +108,6 @@ public class EntityGenerator {
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
-		return instance;
-	}
-	
-	public static final UserBind newUserBind(long uid, PlatType type, String identity) {
-		UserBind instance = new UserBind();
-		instance.setUid(uid);
-		instance.setIdentity(identity);
-		instance.setPlat(type.mark());
-		instance.setCreated(DateUtil.current());
 		return instance;
 	}
 }

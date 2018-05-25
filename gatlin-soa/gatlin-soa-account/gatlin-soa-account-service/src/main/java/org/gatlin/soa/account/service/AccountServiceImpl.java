@@ -12,6 +12,7 @@ import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.account.manager.AccountManager;
 import org.gatlin.soa.bean.enums.AccountType;
+import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.WithdrawParam;
 import org.springframework.stereotype.Service;
 
@@ -78,12 +79,19 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	@Override
-	public Withdraw withdraw(WithdrawParam param) {
-		return accountManager.withdraw(param);
+	public Withdraw withdraw(WithdrawParam param, WithdrawContext context) {
+		return accountManager.withdraw(param, context);
 	}
 	
 	@Override
 	public void withdrawNotice(String id, boolean success) {
 		accountManager.withdrawNotice(id, success);
+	}
+	
+	@Override
+	public Pager<Withdraw> withdraws(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<Withdraw>(accountManager.withdraws(query));
 	}
 }

@@ -15,6 +15,7 @@ import org.gatlin.soa.config.bean.ConfigCode;
 import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.CompanyBankCardModifyParam;
 import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.Username;
@@ -35,7 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("sinapay/member")
 public class SinapayMemberController {
-	
+
 	@Resource
 	private UserService userService;
 	@Resource
@@ -54,7 +55,7 @@ public class SinapayMemberController {
 		}
 		return sinapayMemberService.realname(param);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("bank/card/bind")
 	public Object bankCardBind(@RequestBody @Valid BankCardBindParam param) {
@@ -64,42 +65,50 @@ public class SinapayMemberController {
 		Assert.hasText(CoreCode.PARAM_ERR, geo.getCity());
 		return sinapayMemberService.bankCardBind(param, bank.getId(), geo);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("bank/card/bind/confirm")
 	public Object bankCardBindConfirm(@RequestBody @Valid BankCardConfirmParam param) {
 		return sinapayMemberService.bankCardBindConfirm(param);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("bank/card/unbind")
 	public Object bankCardUnbind(@RequestBody @Valid SoaSidParam param) {
 		return sinapayMemberService.bankCardUnbind(param);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("bank/card/unbind/confirm")
 	public Object bankCardUnbindConfirm(@RequestBody @Valid BankCardConfirmParam param) {
 		sinapayMemberService.bankCardUnbindConfirm(param);
 		return Response.ok();
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("withhold")
 	public Object withhold(@RequestBody @Valid SoaParam param) {
 		return sinapayMemberService.withhold(param);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("query/balance")
-	public Object queryBalance(@RequestBody @Valid QueryBalanceParam param) { 
+	public Object queryBalance(@RequestBody @Valid QueryBalanceParam param) {
 		return sinapayMemberService.queryBalance(param);
 	}
-	
+
 	// 查询中间账户
 	@ResponseBody
 	@RequestMapping("query/balance/middle")
-	public Object queryBalance(@RequestBody @Valid SoaParam param) { 
+	public Object queryBalance(@RequestBody @Valid SoaParam param) {
 		return sinapayMemberService.queryBalanceMiddle();
+	}
+
+	// 修改企业会员绑卡信息
+	@ResponseBody
+	@RequestMapping("company/bank/card/modify")
+	public Object companyBankCardModify(@RequestBody @Valid CompanyBankCardModifyParam param) {
+		sinapayMemberService.companyBankCardModify(param);
+		return Response.ok();
 	}
 }

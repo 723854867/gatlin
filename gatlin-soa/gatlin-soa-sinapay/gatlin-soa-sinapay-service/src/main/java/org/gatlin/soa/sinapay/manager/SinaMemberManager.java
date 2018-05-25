@@ -38,6 +38,7 @@ import org.gatlin.soa.sinapay.bean.entity.SinaCompanyAudit;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
+import org.gatlin.soa.sinapay.bean.param.CompanyBankCardModifyParam;
 import org.gatlin.soa.sinapay.mybatis.EntityGenerator;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaBankCardDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaCompanyAuditDao;
@@ -137,7 +138,7 @@ public class SinaMemberManager {
 		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, cardBind);
 		int gap = (DateUtil.current() - cardBind.getCreated()) / 60;
 		Assert.isTrue(SinaCode.BANK_CARD_BIND_TICKET_INVALID, cardBind.getUsed() < usedCount && gap < minutes);
-		BankCard card = EntityGenerator.newBankCard(cardBind);
+		BankCard card = EntityGenerator.newBankCard(cardBind, sinaUserDao.getByKey(cardBind.getOwner()));
 		bankCardService.cardBind(card);
 		BankCardBindConfirmRequest.Builder builder = new BankCardBindConfirmRequest.Builder();
 		builder.ticket(cardBind.getTicket());
@@ -162,7 +163,7 @@ public class SinaMemberManager {
 		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, bankCard);
 		Assert.isTrue(SinaCode.BANK_CARD_UNBIND, null != bankCard.getCardId() && null != bankCard.getSinaCardId());
 		BankCardUnbindRequest.Builder builder = new BankCardUnbindRequest.Builder();
-		builder.identityId(bankCard.getSinaUid());
+		builder.identityId(bankCard.getOwner());
 		builder.clientIp(param.meta().getIp());
 		builder.cardId(bankCard.getSinaCardId());
 		BankCardUnbindRequest request = builder.build();
@@ -186,7 +187,7 @@ public class SinaMemberManager {
 		int gap = (DateUtil.current() - bankCard.getUpdated()) / 60;
 		Assert.isTrue(SinaCode.BANK_CARD_BIND_TICKET_INVALID, bankCard.getUsed() < usedCount && gap < minutes);
 		BankCardUnbindConfirmRequest.Builder builder = new BankCardUnbindConfirmRequest.Builder();
-		builder.identityId(bankCard.getSinaUid());
+		builder.identityId(bankCard.getOwner());
 		builder.ticket(bankCard.getTicket());
 		builder.validCode(param.getCaptcha());
 		builder.clientIp(param.meta().getIp());
@@ -235,10 +236,10 @@ public class SinaMemberManager {
 		Set<String> set = new HashSet<String>();
 		set.add(CompanyAuditState.SUCCESS.name());
 		set.add(CompanyAuditState.PROCESSING.name());
-		Query query = new Query().eq("cid", param.getId()).in("state", set).forUpdate();
+		Query query = new Query().eq("sina_uid", user.getSinaId()).in("state", set).forUpdate();
 		SinaCompanyAudit companyAudit = sinaCompanyAuditDao.queryUnique(query);
 		Assert.isNull(SinaCode.COMPANY_ALREADY_APPLY, companyAudit);
-		companyAudit = EntityGenerator.newSinaCompanyAudit(param, geo);
+		companyAudit = EntityGenerator.newSinaCompanyAudit(user, param, geo);
 		sinaCompanyAuditDao.insert(companyAudit);
 		CompanyApplyRequest.Builder builder = new CompanyApplyRequest.Builder();
 		builder.auditOrderNo(companyAudit.getId());
@@ -281,10 +282,23 @@ public class SinaMemberManager {
 		companyAudit.setState(cstate.name());
 		companyAudit.setAuditMsg(StringUtil.hasText(notice.getAudit_message()) ? notice.getAudit_message() : StringUtil.EMPTY);
 		if (cstate == CompanyAuditState.SUCCESS) {
-			BankCard card = EntityGenerator.newBankCard(companyAudit);
+			SinaUser user = sinaUserDao.getByKey(companyAudit.getSinaUid());
+			BankCard card = EntityGenerator.newBankCard(companyAudit, user);
 			bankCardService.cardBind(card);
+			SinaBankCard sinaBankCard = EntityGenerator.newSinaBankCard(card, companyAudit);
+			sinaBankCardDao.insert(sinaBankCard);
 		}
 		sinaCompanyAuditDao.update(companyAudit);
+	}
+	
+	@Transactional
+	public void companyBankCardModify(CompanyBankCardModifyParam param) { 
+		Query query = new Query().eq("id", param.getId()).forUpdate();
+		SinaBankCard bankCard = sinaBankCardDao.queryUnique(query);
+		Assert.notNull(SinaCode.BANK_CARD_UNBIND, bankCard);
+		bankCard.setCardId(param.getCardId());
+		bankCard.setUpdated(DateUtil.current());
+		sinaBankCardDao.update(bankCard);
 	}
 	
 	private SinaUser _tryActivate(Object tid, MemberType type, String ip) {

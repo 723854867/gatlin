@@ -11,6 +11,7 @@ public interface SinaCode {
 	final Code MEMBER_UNREALNAME						= new Code("code.sina.member.unrealname", "新浪会员未实名");
 	final Code BANK_UNSUPPORT							= new Code("code.sina.bank.unsupport", "新浪暂不支持该银行");
 	final Code BANK_CARD_UNBIND							= new Code("code.sina.bank.unbindt", "银行卡未在新浪绑定");
+	final Code BANK_CARD_ALREADY_BIND					= new Code("code.sina.bank.already.bind", "银行卡已在新浪绑定");
 	final Code USER_UNWITHHOLD							= new Code("code.sina.user.unwithhold", "用户未开启委托扣款");
 	final Code COMPANY_UNWITHHOLD						= new Code("code.sina.company.unwithhold", "企业未开启委托扣款");
 	final Code RECHARGE_NOT_EXIST						= new Code("code.sina.recharge.not.exist", "新浪充值订单不存在");

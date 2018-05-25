@@ -32,6 +32,7 @@ import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.BizType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.enums.WithdrawState;
+import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
@@ -79,13 +80,13 @@ public class AccountManager {
 	}
 	
 	@Transactional
-	public Withdraw withdraw(WithdrawParam param) {
-		Withdraw withdraw = EntityGenerator.newWithdraw(param);
+	public Withdraw withdraw(WithdrawParam param, WithdrawContext context) {
+		Withdraw withdraw = EntityGenerator.newWithdraw(param, context);
 		withdrawDao.insert(withdraw);
 		AccountDetail detail = new AccountDetail(withdraw.getId(), BizType.WITHDRAW);
-		BigDecimal amount = param.getAmount().add(param.getFee());
-		detail.usableDecr(param.getWithdraweeType(), param.getWithdrawee(), param.getAccountType(), amount);
-		detail.frozenIncr(param.getWithdraweeType(), param.getWithdrawee(), param.getAccountType(), amount);
+		BigDecimal amount = param.getAmount().add(context.getFee());
+		detail.userUsableDecr(param.getUser().getId(), param.getAccountType(), amount);
+		detail.userFrozenIncr(param.getUser().getId(), param.getAccountType(), amount);
 		process(detail);
 		return withdraw;
 	}
@@ -193,5 +194,9 @@ public class AccountManager {
 	
 	public List<Recharge> recharges(Query query) {
 		return rechargeDao.queryList(query);
+	}
+	
+	public List<Withdraw> withdraws(Query query) {
+		return withdrawDao.queryList(query);
 	}
 }

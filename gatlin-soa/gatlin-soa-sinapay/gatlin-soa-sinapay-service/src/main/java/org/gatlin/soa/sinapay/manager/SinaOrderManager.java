@@ -33,6 +33,7 @@ import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.enums.TargetType;
+import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.soa.config.api.ConfigService;
@@ -263,33 +264,27 @@ public class SinaOrderManager {
 	
 	// ********************* 充值  *********************
 	
+	// 个人会员提现
 	@Transactional
-	public String withdrawPay(WithdrawParam param) { 
-		SinaUser user = null;
-		AccountType accountType = AccountType.SAVING_POT;
-		if (param.getWithdraweeType() == TargetType.USER)
-			user = sinaMemberManager.user(MemberType.PERSONAL, param.getWithdrawee());
-		else {
-			accountType = AccountType.BASIC;
-			user = sinaMemberManager.user(MemberType.ENTERPRISE, param.getWithdrawee());
-		}
+	public String withdrawPay(WithdrawParam param, WithdrawContext context) { 
+		SinaUser user = sinaMemberManager.user(MemberType.PERSONAL, param.getUser().getId());
 		Assert.isTrue(SinaCode.MEMBER_NOT_EXIST, null != user);
-		Withdraw withdraw = accountService.withdraw(param);
+		Withdraw withdraw = accountService.withdraw(param, context);
 		SinaPay pay = EntityGenerator.newSinaPay(withdraw);
 		sinaPayDao.insert(pay);
-		sinaWithdrawDao.insert(EntityGenerator.newSinaWithdraw(withdraw, user, accountType));
+		sinaWithdrawDao.insert(EntityGenerator.newSinaWithdraw(withdraw, user, AccountType.SAVING_POT));
 		DepositPayRequest.Builder builder = new DepositPayRequest.Builder();
 		builder.outTradeNo(pay.getId());
-		builder.accountType(accountType);
+		builder.accountType(AccountType.SAVING_POT);
 		builder.payeeIdentityId(user.getSinaId());
 		builder.amount(param.getAmount());
-		builder.summary("提现代付");
+		builder.summary("个人提现代付");
 		builder.userIp(param.meta().getIp());
 		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_WITHDRAW_PAY_SINA));
 		DepositPayRequest request = builder.build();
-		logger.info("新浪提现代付请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		logger.info("新浪提个人现代付请求：{}", SerializeUtil.GSON.toJson(request.params()));
 		DepositResponse response = request.sync();
-		logger.info("新浪提现代付响应：{}", SerializeUtil.GSON.toJson(response));
+		logger.info("新浪提个人现代付响应：{}", SerializeUtil.GSON.toJson(response));
 		return withdraw.getId();
 	}
 	

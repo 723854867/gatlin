@@ -13,6 +13,7 @@ import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.entity.CfgGlobal;
@@ -139,7 +140,12 @@ public class CommonController {
 	public Object userTips(@RequestBody @Valid SoaParam param) {
 		User user = param.getUser();
 		Query query = new Query().eq("cfg_id", ResourceType.AVATAR.mark()).eq("owner", user.getId());
-		return new UserTips(user, resourceService.resource(query));
+		ResourceInfo avatar = resourceService.resource(query);
+		if (null == avatar) {
+			query = new Query().eq("cfg_id", ResourceType.AVATAR_DEFAULT.mark());
+			avatar = resourceService.resource(query);
+		}
+		return new UserTips(user, avatar);
 	}
 
 	@ResponseBody

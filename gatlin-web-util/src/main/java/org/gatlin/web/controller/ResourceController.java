@@ -17,7 +17,7 @@ import org.gatlin.util.lang.StringUtil;
 import org.gatlin.web.bean.param.ResourceListParam;
 import org.gatlin.web.bean.param.ResourceUploadParam;
 import org.gatlin.web.util.Uploader;
-import org.gatlin.web.util.hook.ResourceHook;
+import org.gatlin.web.util.validator.ResourceHook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;

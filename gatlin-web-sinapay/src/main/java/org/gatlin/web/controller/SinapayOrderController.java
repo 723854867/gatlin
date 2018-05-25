@@ -14,6 +14,7 @@ import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.bean.enums.TargetType;
+import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.soa.config.api.ConfigService;
@@ -29,7 +30,7 @@ import org.gatlin.soa.user.bean.model.BankCardInfo;
 import org.gatlin.soa.user.bean.param.BankCardsParam;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.web.WebConsts;
-import org.gatlin.web.util.hook.WithdrawHook;
+import org.gatlin.web.util.validator.Validators;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,9 +46,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SinapayOrderController {
 	
 	@Resource
-	private UserService userService;
+	private Validators validators;
 	@Resource
-	private WithdrawHook withdrawHook;
+	private UserService userService;
 	@Resource
 	private ConfigService configService;
 	@Resource
@@ -106,13 +107,13 @@ public class SinapayOrderController {
 		return sinapayOrderService.depositRecharge(recharge, param);
 	}
 	
-	// 托管提现代付
+	// 个人托管提现代付
 	@ResponseBody
-	@RequestMapping("withdraw/deposit/pay")
+	@RequestMapping("withdraw/deposit/pay/user")
 	public Object depositWithdrawPay(@RequestBody @Valid WithdrawParam param) {
-		param.setPlat(PlatType.SINAPAY);
-		withdrawHook.verify(param);
-		return sinapayOrderService.withdrawPay(param);
+		WithdrawContext context = new WithdrawContext(PlatType.SINAPAY, param);
+		validators.withdraw(context);
+		return sinapayOrderService.withdrawPay(param, context);
 	}
 	
 	// 提现

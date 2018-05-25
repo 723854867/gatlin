@@ -1,5 +1,8 @@
 package org.gatlin.core.util;
 
+import java.util.Map;
+
+import org.gatlin.util.lang.CollectionUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -105,5 +108,25 @@ public class SpringContextUtil implements ApplicationContextAware {
 	@SuppressWarnings("unchecked")
 	public static <T> T autowire(Class<?> beanClass) {
 		return (T) autowireCapableBeanFactory.autowire(beanClass, AutowireCapableBeanFactory.AUTOWIRE_BY_NAME, false);
+	}
+	
+	public static <T> T getBeanOfType(Class<T> type) {
+		return getBeanOfType(type, false, true);
+	}
+	
+	public static <T> Map<String, T> getBeansOfType(Class<T> type) {
+		return getApplicationContext().getBeansOfType(type, false, true);
+	}
+	
+	public static <T> T getBeanOfType(Class<T> type, boolean includeNonSingletons, boolean allowEagerInit) {
+		Map<String, T> map = getBeansOfType(type, includeNonSingletons, allowEagerInit);
+		if (CollectionUtil.isEmpty(map))
+			return null;
+		Assert.isTrue(map.size() == 1);
+		return map.values().iterator().next();
+	}
+	
+	public static <T> Map<String, T> getBeansOfType(Class<T> type, boolean includeNonSingletons, boolean allowEagerInit) {
+		return getApplicationContext().getBeansOfType(type, includeNonSingletons, allowEagerInit);
 	}
 }

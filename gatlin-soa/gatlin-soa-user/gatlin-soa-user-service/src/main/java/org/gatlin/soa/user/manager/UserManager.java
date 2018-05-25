@@ -9,7 +9,6 @@ import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
-import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.soa.user.bean.UserUtil;
 import org.gatlin.soa.user.bean.entity.UserDevice;
@@ -27,7 +26,6 @@ import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.bean.param.UserListParam;
 import org.gatlin.soa.user.bean.param.UsernameResetParam;
 import org.gatlin.soa.user.mybatis.EntityGenerator;
-import org.gatlin.soa.user.mybatis.dao.UserBindDao;
 import org.gatlin.soa.user.mybatis.dao.UserDeviceDao;
 import org.gatlin.soa.user.mybatis.dao.UserInfoDao;
 import org.gatlin.soa.user.mybatis.dao.UserInvitationDao;
@@ -46,8 +44,6 @@ public class UserManager {
 	private UserInfoDao userInfoDao;
 	@Resource
 	private UsernameDao usernameDao;
-	@Resource
-	private UserBindDao userBindDao;
 	@Resource
 	private UserDeviceDao userDeviceDao;
 	@Resource
@@ -121,10 +117,6 @@ public class UserManager {
 		} catch (DuplicateKeyException e) {
 			throw new CodeException(CoreCode.IDENTITY_OR_MOBILE_DUPLICATED, e);
 		}
-	}
-	
-	public void bind(long uid, PlatType type, String identity) {
-		userBindDao.insert(EntityGenerator.newUserBind(uid, type, identity));
 	}
 	
 	public UserInfo user(long uid) {

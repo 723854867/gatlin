@@ -10,8 +10,8 @@ public class SinaBankCard implements Identifiable<String> {
 
 	@Id
 	private String id;
-	private long uid;
 	private int used;
+	private String owner;
 	private String ip;
 	private String city;
 	private String bankId;
@@ -19,7 +19,6 @@ public class SinaBankCard implements Identifiable<String> {
 	private String ticket;
 	private String mobile;
 	private String branch;
-	private String sinaUid;
 	private String cardId;
 	private String sinaCardId;
 	private String province;
@@ -34,12 +33,12 @@ public class SinaBankCard implements Identifiable<String> {
 		this.id = id;
 	}
 	
-	public long getUid() {
-		return uid;
+	public String getOwner() {
+		return owner;
 	}
 	
-	public void setUid(long uid) {
-		this.uid = uid;
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 	
 	public int getUsed() {
@@ -49,7 +48,7 @@ public class SinaBankCard implements Identifiable<String> {
 	public void setUsed(int used) {
 		this.used = used;
 	}
-
+	
 	public String getIp() {
 		return ip;
 	}
@@ -96,14 +95,6 @@ public class SinaBankCard implements Identifiable<String> {
 
 	public void setTicket(String ticket) {
 		this.ticket = ticket;
-	}
-
-	public String getSinaUid() {
-		return sinaUid;
-	}
-	
-	public void setSinaUid(String sinaUid) {
-		this.sinaUid = sinaUid;
 	}
 
 	public String getMobile() {

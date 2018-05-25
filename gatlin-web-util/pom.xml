@@ -50,12 +50,6 @@
 			<artifactId>gatlin-soa-courier-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.gatlin</groupId>
-			<artifactId>gatlin-soa-alipay-api</artifactId>
-			<version>${project.version}</version>
-			<optional>true</optional>
-		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>

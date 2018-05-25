@@ -19,6 +19,7 @@ import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 import org.gatlin.soa.resource.manager.ResourceManager;
 import org.gatlin.util.bean.enums.CacheUnit;
 import org.gatlin.util.lang.CollectionUtil;
+import org.gatlin.util.lang.StringUtil;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -46,7 +47,9 @@ public class ResourceServiceImpl implements ResourceService {
 		CfgResource cfgResource = resourceManager.cfgResource(cfgId);
 		Assert.notNull(ResourceCode.RESOURCE_CONFIG_NOT_EXIST, cfgResource);
 		if (0 < cfgResource.getMaximum()) {
-			Query query = new Query().eq("cfg_id", cfgId).eq("owner", owner);
+			Query query = new Query().eq("cfg_id", cfgId);
+			if (StringUtil.hasText(owner))
+				query.eq("owner", owner);
 			List<Resource> resources = resourceManager.resources(query);
 			Assert.isTrue(ResourceCode.RESOURCE_COUNT_LIMIT, resources.size() < cfgResource.getMaximum());
 		}

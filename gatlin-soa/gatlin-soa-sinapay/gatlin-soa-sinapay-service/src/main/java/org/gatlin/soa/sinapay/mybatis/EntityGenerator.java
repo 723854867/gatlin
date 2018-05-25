@@ -50,19 +50,36 @@ public class EntityGenerator {
 		instance.setBankNo(param.getBankNo());
 		instance.setBranch(param.getBranch());
 		instance.setMobile(param.getMobile());
-		instance.setSinaUid(user.getSinaId());
+		instance.setOwner(user.getSinaId());
 		instance.setProvince(geo.getProvince());
-		instance.setUid(Long.valueOf(user.getTid()));
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
 		return instance;
 	}
 	
-	public static final BankCard newBankCard(SinaBankCard cardBind) {
+	public static final SinaBankCard newSinaBankCard(BankCard card, SinaCompanyAudit companyAudit) {
+		SinaBankCard instance = new SinaBankCard();
+		instance.setId(companyAudit.getId());
+		instance.setCity(card.getCity());
+		instance.setIp(companyAudit.getIp());
+		instance.setBankId(card.getBankId());
+		instance.setBankNo(card.getNo());
+		instance.setBranch(card.getBranch());
+		instance.setMobile(card.getMobile());
+		instance.setProvince(card.getProvince());
+		instance.setOwner(companyAudit.getSinaUid());
+		instance.setCardId(card.getId());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final BankCard newBankCard(SinaBankCard cardBind, SinaUser user) {
 		BankCard instance = new BankCard();
 		instance.setId(IDWorker.INSTANCE.nextSid());
-		instance.setOwner(cardBind.getUid());
+		instance.setOwner(Long.valueOf(user.getTid()));
 		instance.setBankId(cardBind.getBankId());
 		instance.setOwnerType(TargetType.USER.mark());
 		instance.setNo(cardBind.getBankNo());
@@ -128,17 +145,18 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final SinaCompanyAudit newSinaCompanyAudit(CompanyApplyParam param, Geo geo) {
+	public static final SinaCompanyAudit newSinaCompanyAudit(SinaUser user, CompanyApplyParam param, Geo geo) {
 		SinaCompanyAudit instance = new SinaCompanyAudit();
 		instance.setId(IDWorker.INSTANCE.nextSid());
-		instance.setCid(param.getId());
 		instance.setState(CompanyAuditState.PROCESSING.name());
 		instance.setCity(geo.getCity());
+		instance.setIp(param.meta().getIp());
 		instance.setProvince(geo.getProvince());
 		instance.setMobile(param.getMobile());
 		instance.setBranch(param.getBranch());
 		instance.setBankId(param.getBankId());
 		instance.setBankNo(param.getBankNo());
+		instance.setSinaUid(user.getSinaId());
 		instance.setAuditMsg(StringUtil.EMPTY);
 		int time = DateUtil.current();
 		instance.setCreated(time);
@@ -146,10 +164,10 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final BankCard newBankCard(SinaCompanyAudit companyAudit) {
+	public static final BankCard newBankCard(SinaCompanyAudit companyAudit, SinaUser user) {
 		BankCard instance = new BankCard();
 		instance.setId(IDWorker.INSTANCE.nextSid());
-		instance.setOwner(companyAudit.getCid());
+		instance.setOwner(Long.valueOf(user.getTid()));
 		instance.setBankId(companyAudit.getBankId());
 		instance.setOwnerType(TargetType.COMPANY.mark());
 		instance.setNo(companyAudit.getBankNo());

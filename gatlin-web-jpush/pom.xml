@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.gatlin</groupId>
-			<artifactId>gatlin-sdk-jpush</artifactId>
+			<artifactId>gatlin-soa-jpush-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
