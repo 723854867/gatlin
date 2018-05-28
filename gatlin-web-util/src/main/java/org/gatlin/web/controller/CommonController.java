@@ -34,6 +34,7 @@ import org.gatlin.soa.user.bean.param.PwdModifyParam;
 import org.gatlin.soa.user.bean.param.PwdResetParam;
 import org.gatlin.soa.user.bean.param.UsernameParam;
 import org.gatlin.util.lang.StringUtil;
+import org.gatlin.web.bean.model.Heartbeat;
 import org.gatlin.web.bean.model.UserTips;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -140,12 +141,7 @@ public class CommonController {
 	public Object userTips(@RequestBody @Valid SoaParam param) {
 		User user = param.getUser();
 		Query query = new Query().eq("cfg_id", ResourceType.AVATAR.mark()).eq("owner", user.getId());
-		ResourceInfo avatar = resourceService.resource(query);
-		if (null == avatar) {
-			query = new Query().eq("cfg_id", ResourceType.AVATAR_DEFAULT.mark());
-			avatar = resourceService.resource(query);
-		}
-		return new UserTips(user, avatar);
+		return new UserTips(user, resourceService.resource(query));
 	}
 
 	@ResponseBody
@@ -173,5 +169,13 @@ public class CommonController {
 		for (Entry<String, CfgGlobal> entry : configs.getGlobals().entrySet()) 
 			map.put(entry.getKey(), entry.getValue().getValue());
 		return map;
+	}
+	
+	@ResponseBody
+	@RequestMapping("heartbeat")
+	public Object heartbeat(@RequestBody @Valid SoaParam param) {
+		Query query = new Query().eq("cfg_id", ResourceType.AVATAR_DEFAULT.mark());
+		ResourceInfo avatar = resourceService.resource(query);
+		return new Heartbeat(avatar);
 	}
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.ResourceCode;
@@ -62,8 +63,8 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 	
 	@Override
-	public Resource upload(Resource resource) {
-		return resourceManager.upload(resource);
+	public Resource upload(Resource resource, boolean replace) {
+		return resourceManager.upload(resource, replace);
 	}
 	
 	@Override
@@ -72,8 +73,8 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 	
 	@Override
-	public Set<Resource> delete(String id) {
-		return resourceManager.delete(id);
+	public Set<Resource> delete(String id, User user) {
+		return resourceManager.delete(id, user);
 	}
 	
 	@Override

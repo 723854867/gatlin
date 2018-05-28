@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.bean.User;
 import org.gatlin.soa.resource.bean.ResourceCode;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
@@ -16,6 +18,7 @@ import org.gatlin.soa.resource.mybatis.EntityGenerator;
 import org.gatlin.soa.resource.mybatis.dao.CfgResourceDao;
 import org.gatlin.soa.resource.mybatis.dao.ResourceDao;
 import org.gatlin.util.DateUtil;
+import org.gatlin.util.IDWorker;
 import org.gatlin.util.lang.StringUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +49,13 @@ public class ResourceManager {
 	}
 	
 	@Transactional
-	public Resource upload(Resource resource) {
+	public Resource upload(Resource resource, boolean replace) {
+		if (replace) 		// 替换
+			resourceDao.update(resource);
+		else {
+			resource.setId(IDWorker.INSTANCE.nextSid());
+			resourceDao.insert(resource);
+		}
 		CfgResource cfgResource = cfgResource(resource.getCfgId());
 		Resource deleted = null;
 		if (cfgResource.getType() == 3) {			// 链接资源如果父资源有链接资源且不为文本资源则需要删除原链接资源
@@ -89,12 +98,15 @@ public class ResourceManager {
 	}
 	
 	@Transactional
-	public Set<Resource> delete(String id) {
+	public Set<Resource> delete(String id, User user) {
 		Set<Resource> resources = new HashSet<Resource>();
 		Resource resource = resourceDao.getByKey(id);
 		Assert.notNull(ResourceCode.RESOURCE_NOT_EXIST, resource);
+		CfgResource cfgResource = cfgResourceDao.getByKey(resource.getCfgId());
+		if (cfgResource.getType() == 2)			// 用户数据只能用户本人可以删除
+			Assert.isTrue(CoreCode.FORBID, Long.valueOf(resource.getOwner()) == user.getId());
 		if (StringUtil.hasText(resource.getLink())) {
-			CfgResource cfgResource =  cfgResourceDao.queryUnique(new Query().eq("type", 3));
+			cfgResource =  cfgResourceDao.queryUnique(new Query().eq("type", 3));
 			Resource deleted = _modifyLink(resource.getId(), cfgResource.getId());
 			if (null != deleted)
 				resources.add(deleted);

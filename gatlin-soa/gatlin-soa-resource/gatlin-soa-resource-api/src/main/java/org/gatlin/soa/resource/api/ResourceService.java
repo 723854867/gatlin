@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
@@ -18,11 +19,11 @@ public interface ResourceService {
 	
 	CfgResource uploadVerify(int cfgId, String owner, long bytes);
 	
-	Resource upload(Resource resource);
+	Resource upload(Resource resource, boolean replace);
 	
 	Resource modify(ResourceModifyParam param);
 	
-	Set<Resource> delete(String id);
+	Set<Resource> delete(String id, User user);
 	
 	ResourceInfo resource(Query query);
 	
