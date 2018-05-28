@@ -87,46 +87,17 @@ public class SinaOrderManager {
 
 	@Transactional
 	public String depositRecharge(Recharge recharge, RechargeParam param) {
-		SinaUser recharger = null;
-		AccountType accountType = null;
-		TargetType rechargerType = null;
-		if (null == param.getCompanyId()) {			// 用户用存钱罐账户
-			rechargerType = TargetType.USER;
-			accountType = AccountType.SAVING_POT;
-			recharger = sinaMemberManager.user(MemberType.PERSONAL, String.valueOf(recharge.getRecharger()));
-		} else {			// 企业只能用基本户
-			rechargerType = TargetType.COMPANY;
-			accountType = AccountType.BASIC;
-			recharger = sinaMemberManager.user(MemberType.ENTERPRISE, String.valueOf(recharge.getRecharger()));
-		}
-		Assert.isTrue(SinaCode.MEMBER_UNREALNAME, null != recharger && recharger.isRealname());
+		TargetType rechargerType = TargetType.match(recharge.getRechargerType());
+		AccountType accountType = rechargerType == TargetType.COMPANY ? AccountType.BASIC : AccountType.SAVING_POT;
+		SinaUser recharger = sinaMemberManager.user(rechargerType == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRecharger());
 		String rechargee = StringUtil.EMPTY;
-		switch (param.getRechargeeType()) {
-		case USER:
-			SinaUser user = null;
-			if (param.getRechargee() == recharge.getRecharger()) 
-				user = recharger;
-			else {
-				user = sinaMemberManager.user(MemberType.PERSONAL, String.valueOf(recharge.getRechargee()));
-				Assert.isTrue(SinaCode.MEMBER_UNREALNAME, null != user && user.isRealname());
-			}
-			rechargee = user.getSinaId();
-			break;
-		case COMPANY:
-			user = sinaMemberManager.user(MemberType.ENTERPRISE, String.valueOf(recharge.getRechargee()));
-			Assert.isTrue(SinaCode.MEMBER_UNREALNAME, null != user && user.isRealname());
-			rechargee = user.getSinaId();
-			break;
-		default:
-			break;
-		}
 		accountService.recharge(recharge);
 		sinaRechargeDao.insert(EntityGenerator.newSinaRecharge(recharge, param, rechargerType, recharger.getSinaId(), param.getRechargeeType(), rechargee));
 		DepositRechargeRequest.Builder builder = new DepositRechargeRequest.Builder();
 		builder.outTradeNo(recharge.getId());
 		builder.accountType(accountType);
 		OnlineBankPay pay = new OnlineBankPay();
-		if (rechargerType == TargetType.COMPANY)
+		if (rechargerType == TargetType.COMPANY)			// 对公充值则卡属性为对公
 			pay.setCardAttribute(CardAttribute.B);
 		builder.payMethod(pay, param.getAmount());
 		builder.payerIp(recharge.getIp());

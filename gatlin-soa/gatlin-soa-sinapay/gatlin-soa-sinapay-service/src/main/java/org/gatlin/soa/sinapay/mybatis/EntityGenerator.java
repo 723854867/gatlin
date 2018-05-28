@@ -16,6 +16,7 @@ import org.gatlin.soa.sinapay.bean.entity.SinaPay;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.entity.SinaWithdraw;
+import org.gatlin.soa.sinapay.bean.enums.BankCardState;
 import org.gatlin.soa.sinapay.bean.enums.CollectType;
 import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
@@ -51,6 +52,7 @@ public class EntityGenerator {
 		instance.setBranch(param.getBranch());
 		instance.setMobile(param.getMobile());
 		instance.setOwner(user.getSinaId());
+		instance.setState(BankCardState.BINDING.name());
 		instance.setProvince(geo.getProvince());
 		int time = DateUtil.current();
 		instance.setCreated(time);

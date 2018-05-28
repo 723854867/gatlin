@@ -21,7 +21,6 @@ public interface WebConsts {
 		final IntegerOption ACCOUNT_RECHARGE_MOD_COMPANY			= new IntegerOption("account.recharge.mod.company", 0);
 		final IntegerOption ACCOUNT_WITHDRAW_MOD_USER				= new IntegerOption("account.withdraw.mod.user", 1);
 		final IntegerOption ACCOUNT_WITHDRAW_MOD_COMPANY			= new IntegerOption("account.withdraw.mod.company", 16);
-		final IntegerOption RECHARGE_TIMEOUT						= new IntegerOption("recharge.timeout", 30);
 		final BoolOption ALIPAY_ENABLE								= new BoolOption("alipay.enable", false);
 	}
 }

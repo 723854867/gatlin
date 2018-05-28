@@ -2,12 +2,15 @@ package org.gatlin.soa.sinapay.api;
 
 import java.util.List;
 
+import org.gatlin.core.bean.info.Pager;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.bean.model.AccountMiddleTips;
 import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
+import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.model.BalanceInfo;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
@@ -44,10 +47,12 @@ public interface SinapayMemberService {
 	
 	// 确认解绑绑卡
 	void bankCardUnbindConfirm(BankCardConfirmParam param);
+
+	Pager<SinaBankCard> bankCards(Query query);
 	
-	SinaUser user(String tid, MemberType type);
+	SinaUser user(Object tid, MemberType type);
 	
-	boolean isWithhold(MemberType type, String tid);
+	boolean isWithhold(MemberType type, Object tid);
 	
 	String withhold(SoaParam param);
 	

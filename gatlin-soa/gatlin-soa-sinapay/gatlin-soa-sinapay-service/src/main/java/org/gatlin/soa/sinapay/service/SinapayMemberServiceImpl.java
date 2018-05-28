@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.gatlin.core.CoreCode;
+import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
@@ -19,6 +20,7 @@ import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.SinaCode;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
+import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.model.BalanceInfo;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
@@ -32,6 +34,8 @@ import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
 
 @Service("sinapayMemberService")
 public class SinapayMemberServiceImpl implements SinapayMemberService {
@@ -69,13 +73,24 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	}
 	
 	@Override
-	public SinaUser user(String tid, MemberType type) {
-		return sinaMemberManager.user(new Query().eq("tid", tid).eq("type", type.mark()));
+	public Pager<SinaBankCard> bankCards(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<SinaBankCard>(sinaMemberManager.bankCards(query));
 	}
 	
 	@Override
-	public boolean isWithhold(MemberType type, String tid) {
-		return sinaMemberManager.isWithhold(type, tid);
+	public SinaUser user(Object tid, MemberType type) {
+		return sinaMemberManager.user(type, tid);
+	}
+	
+	@Override
+	public boolean isWithhold(MemberType type, Object tid) {
+		SinaUser user = sinaMemberManager.user(type, tid);
+		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, user);
+		if (user.isWithhold())
+			return true;
+		return sinaMemberManager.isWithhold(user);
 	}
 	
 	@Override

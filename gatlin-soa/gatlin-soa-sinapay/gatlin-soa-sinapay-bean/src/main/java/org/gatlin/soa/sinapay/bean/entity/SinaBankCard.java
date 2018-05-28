@@ -14,6 +14,7 @@ public class SinaBankCard implements Identifiable<String> {
 	private String owner;
 	private String ip;
 	private String city;
+	private String state;
 	private String bankId;
 	private String bankNo;
 	private String ticket;
@@ -63,6 +64,14 @@ public class SinaBankCard implements Identifiable<String> {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+	
+	public String getState() {
+		return state;
+	}
+	
+	public void setState(String state) {
+		this.state = state;
 	}
 	
 	public String getCardId() {

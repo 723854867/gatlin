@@ -1,11 +1,13 @@
 package org.gatlin.soa.sinapay.manager;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.gatlin.core.CoreCode;
+import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
@@ -36,6 +38,7 @@ import org.gatlin.soa.sinapay.bean.entity.SinaBank;
 import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
 import org.gatlin.soa.sinapay.bean.entity.SinaCompanyAudit;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
+import org.gatlin.soa.sinapay.bean.enums.BankCardState;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyBankCardModifyParam;
@@ -102,12 +105,32 @@ public class SinaMemberManager {
 	
 	@Transactional
 	public String bankCardBind(BankCardBindParam param, String bankId, Geo geo) { 
-		Query query = new Query().eq("type", MemberType.PERSONAL.mark()).eq("tid", param.getUser().getId());
-		SinaUser user = user(query);
+		SinaUser user = user(MemberType.PERSONAL, param.getUser().getId());
 		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, user);
 		Assert.isTrue(SinaCode.MEMBER_UNREALNAME, user.isRealname());
 		SinaBank bank = sinaManager.bank(bankId);
 		Assert.isTrue(SinaCode.BANK_UNSUPPORT, null != bank && bank.isValid());
+		Set<String> set = new HashSet<String>();
+		set.add(BankCardState.BINDED.name());
+		set.add(BankCardState.BINDING.name());
+		Query query = new Query().eq("bank_no", param.getBankNo()).in("state", set).forUpdate();
+		SinaBankCard bankCard = sinaBankCardDao.queryUnique(query);
+		if (null != bankCard) {
+			BankCardState state = BankCardState.valueOf(bankCard.getState());
+			if (state == BankCardState.BINDING) {
+				int minutes = configService.config(SinaConsts.BANK_CARD_TICKET_EXPIRY);
+				int usedCount = configService.config(SinaConsts.BANK_CARD_TICKET_MAXIMUM_USED);
+				int gap = (DateUtil.current() - bankCard.getCreated()) / 60;
+				if (bankCard.getUsed() >= usedCount || gap >= minutes) {
+					bankCard.setState(BankCardState.FAILED.name());
+					bankCard.setUpdated(DateUtil.current());
+					sinaBankCardDao.update(bankCard);
+				} else
+					throw new CodeException(SinaCode.BANK_CARD_ALREADY_BIND);
+			} else
+				throw new CodeException(SinaCode.BANK_CARD_ALREADY_BIND);
+		}
+		Assert.isNull(SinaCode.BANK_CARD_ALREADY_BIND, bankCard);
 		BankCardBindRequest.Builder builder = new BankCardBindRequest.Builder();
 		String requestNo = IDWorker.INSTANCE.nextSid();
 		builder.requestNo(requestNo);
@@ -125,7 +148,7 @@ public class SinaMemberManager {
 		BankCardBindResponse response = request.sync();
 		logger.info("新浪绑卡响应：{}", SerializeUtil.GSON.toJson(response));
 		String ticket = response.getTicket();
-		SinaBankCard bankCard = EntityGenerator.newSinaBankCard(user, requestNo, param, geo, bank, ticket);
+		bankCard = EntityGenerator.newSinaBankCard(user, requestNo, param, geo, bank, ticket);
 		sinaBankCardDao.insert(bankCard);
 		return bankCard.getId();
 	}
@@ -203,10 +226,7 @@ public class SinaMemberManager {
 		logger.info("新浪确认解绑银行卡响应：{}", SerializeUtil.GSON.toJson(response));
 	}
 	
-	public boolean isWithhold(MemberType type, String tid) {
-		SinaUser user = user(type, tid);
-		if (user.isWithhold())
-			return true;
+	public boolean isWithhold(SinaUser user) {
 		QueryWithholdRequest.Builder builder = new QueryWithholdRequest.Builder();
 		builder.identityId(user.getSinaId());
 		QueryWithholdRequest request = builder.build();
@@ -327,5 +347,9 @@ public class SinaMemberManager {
 	public SinaUser user(MemberType type, Object tid) {
 		Query query = new Query().eq("type", type.mark()).eq("tid", tid.toString());
 		return user(query);
+	}
+	
+	public List<SinaBankCard> bankCards(Query query) {
+		return sinaBankCardDao.queryList(query);
 	}
 }
