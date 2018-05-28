@@ -12,6 +12,7 @@ import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.account.manager.AccountManager;
 import org.gatlin.soa.bean.enums.AccountType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.WithdrawParam;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,8 @@ public class AccountServiceImpl implements AccountService {
 	private AccountManager accountManager;
 
 	@Override
-	public void userCreate(long uid, int mod) {
-		accountManager.userCreate(uid, mod);
+	public void init(TargetType ownerType, long owner, int mod) {
+		accountManager.init(ownerType, owner, mod);
 	}
 	
 	@Override

@@ -14,11 +14,11 @@ import org.gatlin.util.IDWorker;
 
 public class EntityGenerator {
 
-	public static final Account newUserAccount(long uid, int type) {
+	public static final Account newAccount(TargetType ownerType, long owner, int type) {
 		Account instance = new Account();
 		instance.setType(type);
-		instance.setOwner(uid);
-		instance.setOwnerType(TargetType.USER.mark());
+		instance.setOwner(owner);
+		instance.setOwnerType(ownerType.mark());
 		instance.setUsable(BigDecimal.ZERO);
 		instance.setFrozen(BigDecimal.ZERO);
 		int time = DateUtil.current();

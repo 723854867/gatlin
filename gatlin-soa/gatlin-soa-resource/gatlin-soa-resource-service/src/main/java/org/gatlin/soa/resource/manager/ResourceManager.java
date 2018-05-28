@@ -66,7 +66,6 @@ public class ResourceManager {
 			parent.setUpdated(DateUtil.current());
 			resourceDao.update(parent);
 		}
-		resourceDao.insert(resource);
 		return deleted;
 	}
 	

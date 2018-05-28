@@ -54,11 +54,11 @@ public class AccountManager {
 	@Autowired
 	private Map<String, RechargeStateMachine> rechargeStateMachines;
 	
-	public void userCreate(Long uid, int mod) {
+	public void init(TargetType ownerType, long owner, int mod) {
 		List<Account> accounts = new ArrayList<Account>();
 		for (AccountType type : AccountType.values()) {
 			if ((type.mark() & mod) == type.mark()) 
-				accounts.add(EntityGenerator.newUserAccount(uid, type.mark()));
+				accounts.add(EntityGenerator.newAccount(ownerType, owner, type.mark()));
 		}
 		if (!CollectionUtil.isEmpty(accounts))
 			accountDao.batchInsert(accounts);

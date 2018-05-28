@@ -8,12 +8,13 @@ import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.bean.enums.AccountType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.WithdrawParam;
 
 public interface AccountService {
 
-	void userCreate(long uid, int mod);
+	void init(TargetType ownerType, long owner, int mod);
 	
 	Account account(Query query);
 	

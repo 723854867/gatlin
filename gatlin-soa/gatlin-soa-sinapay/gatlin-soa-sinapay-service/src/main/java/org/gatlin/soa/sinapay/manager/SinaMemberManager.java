@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.gatlin.core.CoreCode;
-import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
@@ -115,21 +114,6 @@ public class SinaMemberManager {
 		set.add(BankCardState.BINDING.name());
 		Query query = new Query().eq("bank_no", param.getBankNo()).in("state", set).forUpdate();
 		SinaBankCard bankCard = sinaBankCardDao.queryUnique(query);
-		if (null != bankCard) {
-			BankCardState state = BankCardState.valueOf(bankCard.getState());
-			if (state == BankCardState.BINDING) {
-				int minutes = configService.config(SinaConsts.BANK_CARD_TICKET_EXPIRY);
-				int usedCount = configService.config(SinaConsts.BANK_CARD_TICKET_MAXIMUM_USED);
-				int gap = (DateUtil.current() - bankCard.getCreated()) / 60;
-				if (bankCard.getUsed() >= usedCount || gap >= minutes) {
-					bankCard.setState(BankCardState.FAILED.name());
-					bankCard.setUpdated(DateUtil.current());
-					sinaBankCardDao.update(bankCard);
-				} else
-					throw new CodeException(SinaCode.BANK_CARD_ALREADY_BIND);
-			} else
-				throw new CodeException(SinaCode.BANK_CARD_ALREADY_BIND);
-		}
 		Assert.isNull(SinaCode.BANK_CARD_ALREADY_BIND, bankCard);
 		BankCardBindRequest.Builder builder = new BankCardBindRequest.Builder();
 		String requestNo = IDWorker.INSTANCE.nextSid();
@@ -172,9 +156,10 @@ public class SinaMemberManager {
 		BankCardBindConfirmResponse response = request.sync();
 		logger.info("新浪确认绑卡响应：{}", SerializeUtil.GSON.toJson(response));
 		cardBind.setCardId(card.getId());
-		cardBind.setSinaCardId(response.getCardId());
 		cardBind.setUpdated(DateUtil.current());
 		cardBind.setUsed(cardBind.getUsed() + 1);
+		cardBind.setSinaCardId(response.getCardId());
+		cardBind.setState(BankCardState.BINDED.name());
 		sinaBankCardDao.update(cardBind);
 		return card.getId();
 	}
@@ -215,9 +200,8 @@ public class SinaMemberManager {
 		builder.validCode(param.getCaptcha());
 		builder.clientIp(param.meta().getIp());
 		bankCardService.cardUnbind(bankCard.getCardId());
-		bankCard.setCardId(null);
-		bankCard.setSinaCardId(null);
 		bankCard.setUsed(bankCard.getUsed() + 1);
+		bankCard.setState(BankCardState.UNBIND.name());
 		bankCard.setUpdated(DateUtil.current());
 		sinaBankCardDao.update(bankCard);
 		BankCardUnbindConfirmRequest request = builder.build();

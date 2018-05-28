@@ -74,7 +74,7 @@ public class SinapayOrderController {
 		return sinapayOrderService.depositRecharge(recharge, param);
 	}
 	
-	// 托管充值(需要被充值人开了委托扣款，充值这已绑卡)：只可以企业充值企业
+	// 托管充值(需要被充值人开了委托扣款，充值者已绑卡)：只可以企业充值企业
 	@ResponseBody
 	@RequestMapping("recharge/deposit/company")
 	public Object depositRechargeCompany(@RequestBody @Valid RechargeCompanyParam param) {
