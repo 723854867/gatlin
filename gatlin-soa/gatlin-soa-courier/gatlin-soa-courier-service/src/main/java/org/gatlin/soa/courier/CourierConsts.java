@@ -2,9 +2,7 @@ package org.gatlin.soa.courier;
 
 import org.gatlin.core.bean.model.option.BoolOption;
 import org.gatlin.core.bean.model.option.IntegerOption;
-import org.gatlin.core.bean.model.option.ObjectOption;
 import org.gatlin.core.bean.model.option.StrOption;
-import org.gatlin.soa.bean.enums.PlatType;
 
 public interface CourierConsts {
 
@@ -21,7 +19,6 @@ public interface CourierConsts {
 	// 验证码次数生命周期(超过该时间没有获取验证码，则验证码次数 key 会被删除，也就是说验证码次数会被清零)，单位毫秒
 	final BoolOption SMS_ENABLE = new BoolOption("sms_enable", false);
 	final BoolOption CHUANGLAN_EMABLE = new BoolOption("chuanglan.enable", false);
-	final ObjectOption<PlatType> SMS_PLAT = new ObjectOption<PlatType>("sms_plat", PlatType.CHUANGLAN);
-	
+	final IntegerOption SMS_PLAT = new IntegerOption("sms_plat", 3);
 	final StrOption SMS_CAPTCHA = new StrOption("sms_captcha", "您好，您的验证码是{0}");
 }

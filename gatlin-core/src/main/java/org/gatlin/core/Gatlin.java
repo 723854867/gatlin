@@ -56,8 +56,8 @@ public class Gatlin implements ApplicationListener<ApplicationContextEvent> {
 		this.initial = true;
 		logger.info("spring container initialize success, start initialize application...");
 		long start = System.nanoTime();
-		this.env = GatlinConfigration.get(CoreConsts.Options.GATLIN_ENV);
-		this.locale = GatlinConfigration.get(CoreConsts.Options.GATLIN_LOCALE);
+		this.env = GatlinConfigration.get(CoreConsts.GATLIN_ENV);
+		this.locale = GatlinConfigration.get(CoreConsts.GATLIN_LOCALE);
 		Map<String, InitialHook> hooks = SpringContextUtil.getApplicationContext().getBeansOfType(InitialHook.class, false, true);
 		List<InitialHook> list = new ArrayList<InitialHook>(hooks.values());
 		Collections.sort(list, (o1, o2) -> o1.priority() - o2.priority());

@@ -5,7 +5,7 @@ import org.gatlin.core.CoreConsts;
 public class HttpCondition extends GatlinCondition<Boolean> {
 
 	public HttpCondition() {
-		super(CoreConsts.Options.HTTP_ENABLE);
+		super(CoreConsts.HTTP_ENABLE);
 	}
 
 	@Override

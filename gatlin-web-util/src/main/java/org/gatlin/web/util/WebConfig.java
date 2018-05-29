@@ -32,7 +32,7 @@ public class WebConfig {
 	@Bean("messageSource")
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		Locale locale = GatlinConfigration.get(CoreConsts.Options.GATLIN_LOCALE);
+		Locale locale = GatlinConfigration.get(CoreConsts.GATLIN_LOCALE);
 		String langFile = "classpath:conf/lang/lang_" + locale.mark();
 		messageSource.setBasenames(new String[] {langFile, "classpath:org/hibernate/validator/ValidationMessages"});
 		messageSource.setUseCodeAsDefaultMessage(false);

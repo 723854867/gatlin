@@ -5,6 +5,7 @@ import javax.validation.Valid;
 
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.model.message.WrapResponse;
+import org.gatlin.sdk.sinapay.notice.BidNotice;
 import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
 import org.gatlin.sdk.sinapay.notice.DepositRechargeNotice;
 import org.gatlin.sdk.sinapay.notice.SinaNotice;
@@ -94,6 +95,22 @@ public class SinapayNoticeController {
 	@RequestMapping("company/audit")
 	public Object companyAudit(@Valid CompanyAuditNotice notice) {
 		sinapayMemberService.companyApplyNotice(notice);
+		return new WrapResponse(SinaNotice.RESPONSE_OK);
+	}
+	
+	// 标的录入回调
+	@ResponseBody
+	@RequestMapping("bid")
+	public Object bid(@Valid BidNotice notice) {
+		sinapayOrderService.bidNotice(notice);
+		return new WrapResponse(SinaNotice.RESPONSE_OK);
+	}
+	
+	// 新浪放款回调
+	@ResponseBody
+	@RequestMapping("loanout")
+	public Object loanout(@Valid WithdrawNotice notice) {
+		sinapayOrderService.loanoutNotice(notice);
 		return new WrapResponse(SinaNotice.RESPONSE_OK);
 	}
 }

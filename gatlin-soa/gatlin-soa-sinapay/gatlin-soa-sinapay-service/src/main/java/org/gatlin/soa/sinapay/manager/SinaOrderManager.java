@@ -1,6 +1,9 @@
 package org.gatlin.soa.sinapay.manager;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -9,6 +12,8 @@ import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
+import org.gatlin.sdk.sinapay.bean.enums.BidState;
+import org.gatlin.sdk.sinapay.bean.enums.BidType;
 import org.gatlin.sdk.sinapay.bean.enums.CardAttribute;
 import org.gatlin.sdk.sinapay.bean.enums.CashdeskAddrCategory;
 import org.gatlin.sdk.sinapay.bean.enums.DepositRechargeState;
@@ -17,17 +22,24 @@ import org.gatlin.sdk.sinapay.bean.enums.OutTradeCode;
 import org.gatlin.sdk.sinapay.bean.enums.TradeState;
 import org.gatlin.sdk.sinapay.bean.enums.WithdrawState;
 import org.gatlin.sdk.sinapay.bean.model.BalancePay;
+import org.gatlin.sdk.sinapay.bean.model.BindingCardPay;
+import org.gatlin.sdk.sinapay.bean.model.BorrowerInfo;
 import org.gatlin.sdk.sinapay.bean.model.OnlineBankPay;
+import org.gatlin.sdk.sinapay.notice.BidNotice;
 import org.gatlin.sdk.sinapay.notice.DepositRechargeNotice;
 import org.gatlin.sdk.sinapay.notice.TradeNotice;
 import org.gatlin.sdk.sinapay.notice.WithdrawNotice;
+import org.gatlin.sdk.sinapay.request.order.BidCreateRequest;
 import org.gatlin.sdk.sinapay.request.order.DepositCollectRequest;
 import org.gatlin.sdk.sinapay.request.order.DepositPayRequest;
 import org.gatlin.sdk.sinapay.request.order.DepositRechargeRequest;
 import org.gatlin.sdk.sinapay.request.order.DepositWithdrawRequest;
+import org.gatlin.sdk.sinapay.request.order.PayToCardRequest;
+import org.gatlin.sdk.sinapay.response.BidCreateResponse;
 import org.gatlin.sdk.sinapay.response.DepositRechargeResponse;
 import org.gatlin.sdk.sinapay.response.DepositResponse;
 import org.gatlin.sdk.sinapay.response.DepositWithdrawResponse;
+import org.gatlin.sdk.sinapay.response.PayToCardResponse;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
@@ -37,29 +49,40 @@ import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.soa.config.api.ConfigService;
+import org.gatlin.soa.sinapay.SinaBizHook;
 import org.gatlin.soa.sinapay.bean.SinaCode;
 import org.gatlin.soa.sinapay.bean.SinaConsts;
+import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
+import org.gatlin.soa.sinapay.bean.entity.SinaBid;
 import org.gatlin.soa.sinapay.bean.entity.SinaCollect;
+import org.gatlin.soa.sinapay.bean.entity.SinaLoanout;
 import org.gatlin.soa.sinapay.bean.entity.SinaPay;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.entity.SinaWithdraw;
+import org.gatlin.soa.sinapay.bean.enums.BankCardState;
+import org.gatlin.soa.sinapay.bean.enums.BidPurpose;
 import org.gatlin.soa.sinapay.bean.enums.CollectType;
 import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
+import org.gatlin.soa.sinapay.bean.model.BidInfo;
 import org.gatlin.soa.sinapay.bean.param.RechargeParam;
 import org.gatlin.soa.sinapay.mybatis.EntityGenerator;
+import org.gatlin.soa.sinapay.mybatis.dao.SinaBidDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaCollectDao;
+import org.gatlin.soa.sinapay.mybatis.dao.SinaLoanoutDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaPayDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaRechargeDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaWithdrawDao;
 import org.gatlin.util.DateUtil;
+import org.gatlin.util.PhoneUtil;
 import org.gatlin.util.bean.enums.Client;
 import org.gatlin.util.bean.enums.DeviceType;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.serial.SerializeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,7 +94,13 @@ public class SinaOrderManager {
 	@Resource
 	private SinaPayDao sinaPayDao;
 	@Resource
+	private SinaBidDao sinaBidDao;
+	@Autowired
+	private SinaBizHook sinaBizHook;
+	@Resource
 	private ConfigService configService;
+	@Resource
+	private SinaLoanoutDao sinaLoanoutDao;
 	@Resource
 	private AccountService accountService;
 	@Resource
@@ -386,6 +415,118 @@ public class SinaOrderManager {
 		logger.info("新浪提现待收请求：{}", SerializeUtil.GSON.toJson(request.params()));
 		DepositResponse response = request.sync();
 		logger.info("新浪提现待收响应：{}", SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Transactional
+	public void bidCreate(BidInfo info) { 
+		MemberType type = info.getBtype() == TargetType.USER ? MemberType.PERSONAL : MemberType.ENTERPRISE;
+		SinaUser user = sinaMemberManager.user(type, info.getBorrower());
+		SinaBid bid = EntityGenerator.newSinaBid(user, info);
+		sinaBidDao.insert(bid);
+		BidCreateRequest.Builder builder = new BidCreateRequest.Builder();
+		builder.outBidNo(bid.getId());
+		builder.webSiteName("微钱进");
+		builder.bidName(StringUtil.uuid());
+		builder.bidType(BidType.CREDIT);
+		builder.bidAmount(info.getAmount());
+		builder.bidYearRate(info.getRate());
+		builder.bidDuration(info.getDuration());
+		builder.repayType(info.getRepayType());
+		builder.beginDate(info.getBeginDate());
+		builder.term(info.getExpiryDate());
+		builder.guaranteeMethod("企业担保");
+		List<BorrowerInfo> borrowers = new ArrayList<BorrowerInfo>();
+		borrowers.add(new BorrowerInfo(user.getSinaId(), String.valueOf(PhoneUtil.getNationalNumber(info.getMobile())), "车贷", info.getAmount()));
+		builder.borrowerInfoList(borrowers);
+		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_BID_SINA));
+		BidCreateRequest request = builder.build();
+		logger.info("新浪标的录入请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		BidCreateResponse response = request.sync();
+		logger.info("新浪标的录入响应：{}", SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Transactional
+	public SinaBid bidNotice(BidNotice notice) { 
+		Query query = new Query().eq("id", notice.getOut_bid_no()).forUpdate();
+		SinaBid bid = sinaBidDao.queryUnique(query);
+		Assert.notNull(SinaCode.BID_NOT_EXIST, bid);
+		BidState state = BidState.valueOf(bid.getState());
+		switch (state) {
+		case INIT:
+		case AUDITING:
+			bid.setState(notice.getBid_status().name());
+			bid.setUpdated(DateUtil.current());
+			break;
+		default:
+			throw new CodeException(CoreCode.DATA_STATE_CHANGED);
+		}
+		sinaBidDao.update(bid);
+		sinaBizHook.audit(bid);
+		return bid;
+	}
+	
+	@Transactional
+	public void loanout(String ip, BidPurpose purpose, Object bizId, BigDecimal amount) {
+		Query query = new Query().eq("purpose", purpose.name()).eq("biz_id", bizId);
+		SinaBid bid = sinaBidDao.queryUnique(query);
+		Assert.notNull(SinaCode.BID_NOT_EXIST, bid);
+		query = new Query().eq("owner", bid.getBorrower()).eq("state", BankCardState.BINDED.name());
+		List<SinaBankCard> cards = sinaMemberManager.bankCards(query);
+		Iterator<SinaBankCard> iterator = cards.iterator();
+		SinaBankCard card = null;
+		while (iterator.hasNext()) {
+			SinaBankCard bankCard = iterator.next();
+			if (StringUtil.hasText(bankCard.getSinaCardId())) {
+				card = bankCard;
+				break;
+			}
+		}
+		Assert.notNull(SinaCode.BANK_CARD_ID_NOT_RESET, card);
+		SinaLoanout loanout = EntityGenerator.newSinaLoanout(bid, amount);
+		sinaLoanoutDao.insert(loanout);
+		PayToCardRequest.Builder builder = new PayToCardRequest.Builder();
+		builder.outTradeNo(loanout.getId());
+		BindingCardPay pay = new BindingCardPay();
+		pay.setCardId(card.getSinaCardId());
+		pay.setSinaId(bid.getBorrower());
+		builder.collectMethod(pay);
+		builder.amount(amount);
+		builder.summary(purpose == BidPurpose.ASSET ? "放款" : "保证金归回");
+		builder.goodsId(bid.getId());
+		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_LOANOUT));
+		builder.userIp(ip);
+		PayToCardRequest request = builder.build();
+		logger.info("新浪放款请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		PayToCardResponse response = request.sync();
+		logger.info("新浪放款响应：{}", SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Transactional
+	public void loanoutNotice(WithdrawNotice notice) {
+		Query query = new Query().eq("id", notice.getOuter_trade_no()).forUpdate();
+		SinaLoanout loanout = sinaLoanoutDao.queryUnique(query);
+		Assert.notNull(SinaCode.LOANOUT_NOT_EXIST, loanout);
+		WithdrawState state = WithdrawState.valueOf(loanout.getState());
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == WithdrawState.INIT || state == WithdrawState.PROCESSING);
+		WithdrawState cstate = WithdrawState.valueOf(notice.getWithdraw_status());
+		switch (cstate) {
+		case SUCCESS:
+			loanout.setState(WithdrawState.SUCCESS.name());
+			loanout.setUpdated(DateUtil.current());
+			break;
+		case FAILED:
+			loanout.setState(WithdrawState.FAILED.name());
+			loanout.setUpdated(DateUtil.current());
+			break;
+		case PROCESSING:
+			loanout.setState(WithdrawState.PROCESSING.name());
+			loanout.setUpdated(DateUtil.current());
+			break;
+		default:
+			throw new CodeException(SinaCode.UNRECOGNIZE_DATA);
+		}
+		sinaLoanoutDao.update(loanout);
+		sinaBizHook.loanoutNotice(sinaBidDao.getByKey(loanout.getBidId()), loanout);
 	}
 	
 	private String _returnUrl(User user) {

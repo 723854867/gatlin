@@ -5,7 +5,7 @@ import org.gatlin.core.CoreConsts;
 public class MailCondition extends GatlinCondition<Boolean> {
 
 	protected MailCondition() {
-		super(CoreConsts.Options.MAIL_ENABLE);
+		super(CoreConsts.MAIL_ENABLE);
 	}
 
 	@Override

@@ -1,7 +1,10 @@
 package org.gatlin.soa.sinapay.service;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Resource;
 
+import org.gatlin.sdk.sinapay.notice.BidNotice;
 import org.gatlin.sdk.sinapay.notice.DepositRechargeNotice;
 import org.gatlin.sdk.sinapay.notice.TradeNotice;
 import org.gatlin.sdk.sinapay.notice.WithdrawNotice;
@@ -10,9 +13,12 @@ import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.soa.sinapay.api.SinapayOrderService;
+import org.gatlin.soa.sinapay.bean.entity.SinaBid;
 import org.gatlin.soa.sinapay.bean.entity.SinaCollect;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaWithdraw;
+import org.gatlin.soa.sinapay.bean.enums.BidPurpose;
+import org.gatlin.soa.sinapay.bean.model.BidInfo;
 import org.gatlin.soa.sinapay.bean.param.RechargeParam;
 import org.gatlin.soa.sinapay.manager.SinaOrderManager;
 import org.springframework.stereotype.Service;
@@ -66,5 +72,25 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 	@Override
 	public void withdrawCollect(String id, WithdrawNotice notice) {
 		sinaOrderManager.withdrawCollect(id, notice);
+	}
+	
+	@Override
+	public void bidCreate(BidInfo info) {
+		sinaOrderManager.bidCreate(info);
+	}
+	
+	@Override
+	public SinaBid bidNotice(BidNotice notice) {
+		return sinaOrderManager.bidNotice(notice);
+	}
+	
+	@Override
+	public void loanout(String ip, BidPurpose purpose, Object bizId, BigDecimal amount) {
+		sinaOrderManager.loanout(ip, purpose, bizId, amount);
+	}
+	
+	@Override
+	public void loanoutNotice(WithdrawNotice notice) {
+		sinaOrderManager.loanoutNotice(notice);
 	}
 }

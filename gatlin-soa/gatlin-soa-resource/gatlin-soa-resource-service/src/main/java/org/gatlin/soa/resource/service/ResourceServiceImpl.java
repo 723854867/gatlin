@@ -1,6 +1,7 @@
 package org.gatlin.soa.resource.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -115,5 +116,28 @@ public class ResourceServiceImpl implements ResourceService {
 		info.setPriority(resource.getPriority());
 		info.setCreated(resource.getCreated());
 		return info;
+	}
+	
+	@Override
+	public boolean minCheck(Object owner, Set<Integer> cfgIds) {
+		Query query = new Query().in("id", cfgIds).gt("minimum", 0);
+		Map<Integer, CfgResource> map = resourceManager.cfgResources(query);
+		query = new Query().eq("owner", owner).in("cfg_id", cfgIds);
+		List<Resource> resources = resourceManager.resources(query);
+		Map<Integer, List<Resource>> m = new HashMap<Integer, List<Resource>>();
+		resources.forEach(resource -> {
+			List<Resource> l = m.get(resource.getCfgId());
+			if (null == l) {
+				l = new ArrayList<Resource>();
+				m.put(resource.getCfgId(), l);
+			}
+			l.add(resource);
+		});
+		for (CfgResource resource : map.values()) {
+			List<Resource> l = m.get(resource.getId());
+			if (l.size() < resource.getMinimum())
+				return false;
+		}
+		return true;
 	}
 }

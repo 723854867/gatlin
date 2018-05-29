@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.gatlin</groupId>
-			<artifactId>gatlin-soa-user-api</artifactId>
+			<artifactId>gatlin-soa-user-bean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

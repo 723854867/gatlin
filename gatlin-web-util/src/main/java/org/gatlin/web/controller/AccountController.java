@@ -20,7 +20,7 @@ public class AccountController {
 	private AccountService accountService;
 	
 	@ResponseBody
-	@RequestMapping("user/list")
+	@RequestMapping("list")
 	public Object list(@RequestBody @Valid AccountListParam param) {
 		return accountService.accounts(param.query());
 	}

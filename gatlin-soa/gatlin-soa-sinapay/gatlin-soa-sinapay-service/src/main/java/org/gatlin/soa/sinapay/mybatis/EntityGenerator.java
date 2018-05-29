@@ -1,17 +1,23 @@
 package org.gatlin.soa.sinapay.mybatis;
 
+import java.math.BigDecimal;
+
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
+import org.gatlin.sdk.sinapay.bean.enums.BidState;
 import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.bean.enums.TradeState;
+import org.gatlin.sdk.sinapay.bean.enums.WithdrawState;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
 import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
+import org.gatlin.soa.sinapay.bean.entity.SinaBid;
 import org.gatlin.soa.sinapay.bean.entity.SinaCollect;
 import org.gatlin.soa.sinapay.bean.entity.SinaCompanyAudit;
+import org.gatlin.soa.sinapay.bean.entity.SinaLoanout;
 import org.gatlin.soa.sinapay.bean.entity.SinaPay;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
@@ -20,6 +26,7 @@ import org.gatlin.soa.sinapay.bean.enums.BankCardState;
 import org.gatlin.soa.sinapay.bean.enums.CollectType;
 import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
+import org.gatlin.soa.sinapay.bean.model.BidInfo;
 import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
 import org.gatlin.soa.sinapay.bean.param.RechargeParam;
 import org.gatlin.soa.user.bean.entity.BankCard;
@@ -72,6 +79,7 @@ public class EntityGenerator {
 		instance.setProvince(card.getProvince());
 		instance.setOwner(companyAudit.getSinaUid());
 		instance.setCardId(card.getId());
+		instance.setState(BankCardState.BINDED.name());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
@@ -177,6 +185,31 @@ public class EntityGenerator {
 		instance.setProvince(companyAudit.getProvince());
 		instance.setCity(companyAudit.getCity());
 		instance.setBranch(companyAudit.getBranch());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final SinaBid newSinaBid(SinaUser user, BidInfo info) {
+		SinaBid instance = new SinaBid();
+		instance.setId(IDWorker.INSTANCE.nextSid());
+		instance.setPurpose(info.getPurpose().name());
+		instance.setBizId(info.getBizId());
+		instance.setBorrower(user.getSinaId());
+		instance.setState(BidState.INIT.name());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final SinaLoanout newSinaLoanout(SinaBid bid, BigDecimal amount) {
+		SinaLoanout instance = new SinaLoanout();
+		instance.setId(IDWorker.INSTANCE.nextSid());
+		instance.setBidId(bid.getId());
+		instance.setAmount(amount);
+		instance.setState(WithdrawState.INIT.name());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

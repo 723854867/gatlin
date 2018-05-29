@@ -17,7 +17,7 @@ public class SmsRouteManager {
 	private ChuangLanManager chuangLanManager;
 	
 	public void send(String content, String mobile) { 
-		PlatType plat = configService.config(CourierConsts.SMS_PLAT);
+		PlatType plat = PlatType.match(configService.config(CourierConsts.SMS_PLAT));
 		switch (plat) {
 		case CHUANGLAN:
 			if (null != chuangLanManager)

@@ -10,6 +10,7 @@ public interface CoreCode {
 	final Code SYSTEM_ERR 							= new Code("code.system.err", "系统错误");
 	final Code USABLE_LACK							= new Code("code.usable.lack", "可用余额不足");
 	final Code FROZEN_LACK							= new Code("code.frozen.lack", "冻结余额不足");
+	final Code TASK_NOT_EXIST						= new Code("code.task.not.exist", "任务不存在");
 	final Code RESOURCE_LOCKED						= new Code("code.resource.locked", "资源正在被使用");
 	final Code SDK_INVOKE_FAIL						= new Code("code.sdk.invoke.fail", "第三方调用失败");
 	final Code DATA_STATE_CHANGED					= new Code("code.data.state.changed", "数据状态已改变");

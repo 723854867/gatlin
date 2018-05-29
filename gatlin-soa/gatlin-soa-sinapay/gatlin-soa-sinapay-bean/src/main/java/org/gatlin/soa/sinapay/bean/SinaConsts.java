@@ -13,6 +13,10 @@ public interface SinaConsts {
 	final StrOption URL_NOTICE_RECHARGE_SINA						= new StrOption("url_notice_recharge_sina");
 	// 待收回调
 	final StrOption URL_NOTICE_COLLECT_SINA							= new StrOption("url_notice_collect_sina");
+	// 标的录入回调
+	final StrOption URL_NOTICE_BID_SINA								= new StrOption("url_notice_bid_sina");
+	// 放款回调
+	final StrOption URL_NOTICE_LOANOUT								= new StrOption("url_notice_loanout");
 	// 提现代付回调
 	final StrOption URL_NOTICE_WITHDRAW_PAY_SINA					= new StrOption("url_notice_withdraw_pay_sina");
 	// 提现回调
@@ -25,4 +29,6 @@ public interface SinaConsts {
 	final StrOption URL_RETURN_BROWSER_WAP							= new StrOption("url_return_browser_wap");
 	// 企业审核回调地址
 	final StrOption URL_NOTICE_COMPANY_AUDIT						= new StrOption("url_notice_company_audit_sina");
+	
+	final String MESSAGE_SINA_CARD_BIND_TIMEOUT						= "timeout_sina_card_bind";
 }

@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.gatlin.core.CoreCode;
+import org.gatlin.core.bean.model.message.SchedulerMessage;
+import org.gatlin.core.service.MessageSender;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
@@ -31,6 +33,7 @@ import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
+import org.gatlin.soa.sinapay.SinaBizHook;
 import org.gatlin.soa.sinapay.bean.SinaCode;
 import org.gatlin.soa.sinapay.bean.SinaConsts;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
@@ -45,8 +48,6 @@ import org.gatlin.soa.sinapay.mybatis.EntityGenerator;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaBankCardDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaCompanyAuditDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaUserDao;
-import org.gatlin.soa.user.api.BankCardService;
-import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
@@ -70,15 +71,15 @@ public class SinaMemberManager {
 	@Resource
 	private SinaUserDao sinaUserDao;
 	@Resource
-	private UserService userService;
+	private SinaBizHook sinaBizHook;
 	@Resource
 	private SinaManager sinaManager;
+	@Resource
+	private MessageSender messageSender;
 	@Resource
 	private ConfigService configService;
 	@Resource
 	private SinaBankCardDao sinaBankCardDao;
-	@Resource
-	private BankCardService bankCardService;
 	@Resource
 	private SinaCompanyAuditDao sinaCompanyAuditDao;
 	
@@ -89,7 +90,7 @@ public class SinaMemberManager {
 		user.setRealname(true);
 		user.setUpdated(DateUtil.current());
 		sinaUserDao.update(user);
-		UserSecurity security = userService.realname(param);
+		UserSecurity security = sinaBizHook.realname(param);
 		RealnameRequest.Builder builder = new RealnameRequest.Builder();
 		builder.certNo(param.getIdentity());
 		builder.realname(param.getRealname());
@@ -115,6 +116,11 @@ public class SinaMemberManager {
 		Query query = new Query().eq("bank_no", param.getBankNo()).in("state", set).forUpdate();
 		SinaBankCard bankCard = sinaBankCardDao.queryUnique(query);
 		Assert.isNull(SinaCode.BANK_CARD_ALREADY_BIND, bankCard);
+		int minutes = configService.config(SinaConsts.BANK_CARD_TICKET_EXPIRY);
+		SchedulerMessage message = new SchedulerMessage();
+		message.setAttach(bankCard.getId());
+		message.setDelay(minutes * 60000l);
+		messageSender.send(SinaConsts.MESSAGE_SINA_CARD_BIND_TIMEOUT, message);
 		BankCardBindRequest.Builder builder = new BankCardBindRequest.Builder();
 		String requestNo = IDWorker.INSTANCE.nextSid();
 		builder.requestNo(requestNo);
@@ -139,14 +145,16 @@ public class SinaMemberManager {
 	
 	@Transactional
 	public String bankCardBindConfirm(BankCardConfirmParam param) {
+		Query query = new Query().eq("id", param.getId()).forUpdate();
+		SinaBankCard cardBind = sinaBankCardDao.queryUnique(query);
+		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, cardBind);
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, cardBind.getState().equals(BankCardState.BINDING.name()));
 		int minutes = configService.config(SinaConsts.BANK_CARD_TICKET_EXPIRY);
 		int usedCount = configService.config(SinaConsts.BANK_CARD_TICKET_MAXIMUM_USED);
-		SinaBankCard cardBind = sinaBankCardDao.getByKey(param.getId());
-		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, cardBind);
 		int gap = (DateUtil.current() - cardBind.getCreated()) / 60;
 		Assert.isTrue(SinaCode.BANK_CARD_BIND_TICKET_INVALID, cardBind.getUsed() < usedCount && gap < minutes);
 		BankCard card = EntityGenerator.newBankCard(cardBind, sinaUserDao.getByKey(cardBind.getOwner()));
-		bankCardService.cardBind(card);
+		sinaBizHook.cardBind(card);
 		BankCardBindConfirmRequest.Builder builder = new BankCardBindConfirmRequest.Builder();
 		builder.ticket(cardBind.getTicket());
 		builder.clientIp(param.meta().getIp());
@@ -169,7 +177,7 @@ public class SinaMemberManager {
 		Query query = new Query().eq("card_id", param.getId());
 		SinaBankCard bankCard = sinaBankCardDao.queryUnique(query);
 		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, bankCard);
-		Assert.isTrue(SinaCode.BANK_CARD_UNBIND, null != bankCard.getCardId() && null != bankCard.getSinaCardId());
+		Assert.isTrue(SinaCode.BANK_CARD_UNBIND, bankCard.getState().equals(BankCardState.BINDED.name()));
 		BankCardUnbindRequest.Builder builder = new BankCardUnbindRequest.Builder();
 		builder.identityId(bankCard.getOwner());
 		builder.clientIp(param.meta().getIp());
@@ -199,7 +207,7 @@ public class SinaMemberManager {
 		builder.ticket(bankCard.getTicket());
 		builder.validCode(param.getCaptcha());
 		builder.clientIp(param.meta().getIp());
-		bankCardService.cardUnbind(bankCard.getCardId());
+		sinaBizHook.cardUnbind(bankCard.getCardId());
 		bankCard.setUsed(bankCard.getUsed() + 1);
 		bankCard.setState(BankCardState.UNBIND.name());
 		bankCard.setUpdated(DateUtil.current());
@@ -288,7 +296,7 @@ public class SinaMemberManager {
 		if (cstate == CompanyAuditState.SUCCESS) {
 			SinaUser user = sinaUserDao.getByKey(companyAudit.getSinaUid());
 			BankCard card = EntityGenerator.newBankCard(companyAudit, user);
-			bankCardService.cardBind(card);
+			sinaBizHook.cardBind(card);
 			SinaBankCard sinaBankCard = EntityGenerator.newSinaBankCard(card, companyAudit);
 			sinaBankCardDao.insert(sinaBankCard);
 		}
@@ -300,7 +308,7 @@ public class SinaMemberManager {
 		Query query = new Query().eq("id", param.getId()).forUpdate();
 		SinaBankCard bankCard = sinaBankCardDao.queryUnique(query);
 		Assert.notNull(SinaCode.BANK_CARD_UNBIND, bankCard);
-		bankCard.setCardId(param.getCardId());
+		bankCard.setSinaCardId(param.getCardId());
 		bankCard.setUpdated(DateUtil.current());
 		sinaBankCardDao.update(bankCard);
 	}

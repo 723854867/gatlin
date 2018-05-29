@@ -5,11 +5,15 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.gatlin.util.DateUtil;
+import org.gatlin.util.bean.BeanCol;
+import org.gatlin.util.bean.BeanEntity;
+import org.gatlin.util.bean.EntityHelper;
 import org.gatlin.util.bean.anno.Date;
 import org.gatlin.util.bean.model.Pair;
 
@@ -18,6 +22,25 @@ import net.sf.cglib.beans.BeanMap;
 public class BeanUtil {
 
 	private static Map<Pair<String, String>, Converter> CACHE = new HashMap<Pair<String, String>, Converter>();
+	
+	public static String parse(List<?> list, String fieldSeperator, String entitySeperator) {
+		StringBuilder builder = new StringBuilder();
+		list.forEach(item -> {
+			Map<String, Object> map = beanToMap(item, false);
+			BeanEntity entity = EntityHelper.getEntity(item.getClass());
+			List<BeanCol> cols = entity.getCols();
+			cols.sort((o1, o2) -> o1.getScale() - o2.getScale());
+			for (BeanCol col : cols) {
+				Object value = map.get(col.getField().getName());
+				if (null == value)
+					continue;
+				builder.append(value.toString()).append(fieldSeperator);
+			}
+			builder.deleteCharAt(builder.length() - 1);
+			builder.append(entitySeperator);
+		});
+		return builder.deleteCharAt(builder.length() - 1).toString();
+	}
 	
 	public static <T> Map<String, Object> beanToTreeMap(T bean, boolean includeNil) {
 		Map<String, Object> map = new TreeMap<String, Object>();

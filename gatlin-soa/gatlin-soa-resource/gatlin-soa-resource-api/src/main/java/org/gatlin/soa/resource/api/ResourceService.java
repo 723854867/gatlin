@@ -28,4 +28,6 @@ public interface ResourceService {
 	ResourceInfo resource(Query query);
 	
 	Pager<ResourceInfo> resources(Query query);
+	
+	boolean minCheck(Object owner, Set<Integer> cfgIds);
 }

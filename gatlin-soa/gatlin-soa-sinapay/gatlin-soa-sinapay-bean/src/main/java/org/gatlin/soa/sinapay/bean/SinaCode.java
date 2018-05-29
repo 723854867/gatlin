@@ -17,9 +17,12 @@ public interface SinaCode {
 	final Code RECHARGE_NOT_EXIST						= new Code("code.sina.recharge.not.exist", "新浪充值订单不存在");
 	final Code BANK_CARD_BIND_TICKET_INVALID			= new Code("code.sina.bank.card.bind.ticket.invalid", "新浪绑卡ticket已失效");
 	final Code BANK_CARD_BIND_NOT_EXIST					= new Code("code.sina.bank.card.bind.not.exist", "新浪绑卡记录不存在");
+	final Code BANK_CARD_ID_NOT_RESET					= new Code("code.sina.bank.card.id.not.reset", "新浪企业绑卡ID未设置");
 	final Code RECHARGE_COLLECT_NOT_EXIST				= new Code("code.sina.recharge.collect.not.exist", "新浪充值待收交易不存在");
 	final Code WITHDRAW_UNPAYED							= new Code("code.sina.withdraw.unpayed", "新浪提现代付中");
 	final Code WITHDRAW_NOT_EXIST						= new Code("code.sina.withdraw.not.exist", "新浪提现交易不存在");
 	final Code WITHDRAW_PAY_NOT_EXIST					= new Code("code.sina.withdraw.pay.not.exist", "新浪提现代付交易不存在");
 	final Code COMPANY_ALREADY_APPLY					= new Code("code.sina.company.already.aply", "已申请新浪企业认证");
+	final Code BID_NOT_EXIST							= new Code("code.sina.bid.not.exist", "新浪标的不存在");
+	final Code LOANOUT_NOT_EXIST						= new Code("code.sina.loanout.not.exist", "新浪放款订单不存在");
 }
