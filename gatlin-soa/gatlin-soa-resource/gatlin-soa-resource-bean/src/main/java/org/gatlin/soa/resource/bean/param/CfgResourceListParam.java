@@ -1,4 +1,4 @@
-package org.gatlin.web.bean.param;
+package org.gatlin.soa.resource.bean.param;
 
 import java.util.Set;
 

@@ -116,11 +116,6 @@ public class SinaMemberManager {
 		Query query = new Query().eq("bank_no", param.getBankNo()).in("state", set).forUpdate();
 		SinaBankCard bankCard = sinaBankCardDao.queryUnique(query);
 		Assert.isNull(SinaCode.BANK_CARD_ALREADY_BIND, bankCard);
-		int minutes = configService.config(SinaConsts.BANK_CARD_TICKET_EXPIRY);
-		SchedulerMessage message = new SchedulerMessage();
-		message.setAttach(bankCard.getId());
-		message.setDelay(minutes * 60000l);
-		messageSender.send(SinaConsts.MESSAGE_SINA_CARD_BIND_TIMEOUT, message);
 		BankCardBindRequest.Builder builder = new BankCardBindRequest.Builder();
 		String requestNo = IDWorker.INSTANCE.nextSid();
 		builder.requestNo(requestNo);
@@ -140,6 +135,11 @@ public class SinaMemberManager {
 		String ticket = response.getTicket();
 		bankCard = EntityGenerator.newSinaBankCard(user, requestNo, param, geo, bank, ticket);
 		sinaBankCardDao.insert(bankCard);
+		int minutes = configService.config(SinaConsts.BANK_CARD_TICKET_EXPIRY);
+		SchedulerMessage message = new SchedulerMessage();
+		message.setAttach(bankCard.getId());
+		message.setDelay(minutes * 60000l);
+		messageSender.send(SinaConsts.MESSAGE_SINA_CARD_BIND_TIMEOUT, message);
 		return bankCard.getId();
 	}
 	

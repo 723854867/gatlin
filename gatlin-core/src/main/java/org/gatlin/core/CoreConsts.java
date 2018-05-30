@@ -14,7 +14,8 @@ public interface CoreConsts {
 	final Option<Env> GATLIN_ENV								= new Option<Env>("gatlin.env", Env.LOCAL);
 	final Option<Locale> GATLIN_LOCALE							= new Option<Locale>("gatlin.locale", Locale.ZH_CN);
 	
-	final StrOption ACTIVEMQ_TYPE								= new StrOption("activemq.type", "");
+	final StrOption MQ_ROLE										= new StrOption("mq.role", "");
+	
 	final StrOption ACTIVEMQ_USERNAME							= new StrOption("activemq.username", "");
 	final StrOption ACTIVEMQ_PASSWORD							= new StrOption("activemq.password", "");
 	final StrOption ACTIVEMQ_BROKER_URL							= new StrOption("activemq.brokerUrl");

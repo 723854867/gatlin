@@ -11,7 +11,7 @@ import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.soa.account.bean.entity.LogAccount;
 import org.gatlin.soa.account.bean.enums.AccountField;
 import org.gatlin.soa.bean.enums.AccountType;
-import org.gatlin.soa.bean.enums.BizType;
+import org.gatlin.soa.bean.enums.GatlinBizType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
@@ -38,7 +38,7 @@ public class AccountDetail implements Serializable {
 		this.bizId = bizId.toString();
 	}
 	
-	public AccountDetail(Object bizId, BizType bizType) {
+	public AccountDetail(Object bizId, GatlinBizType bizType) {
 		this.bizId = bizId.toString();
 		this.bizType = bizType.mark();
 	}

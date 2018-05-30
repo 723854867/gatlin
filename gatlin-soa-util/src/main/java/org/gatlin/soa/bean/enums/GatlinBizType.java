@@ -1,6 +1,6 @@
 package org.gatlin.soa.bean.enums;
 
-public enum BizType {
+public enum GatlinBizType {
 
 	// 充值成功
 	RECHARGE_SUCCESS(100),
@@ -13,7 +13,7 @@ public enum BizType {
 	
 	private int mark;
 	
-	private BizType(int mark) {
+	private GatlinBizType(int mark) {
 		this.mark = mark;
 	}
 	

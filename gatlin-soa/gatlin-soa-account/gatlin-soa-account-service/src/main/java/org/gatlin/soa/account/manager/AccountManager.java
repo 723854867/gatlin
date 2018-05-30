@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -23,20 +22,19 @@ import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.account.bean.enums.AccountField;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
-import org.gatlin.soa.account.istate.RechargeStateMachine;
+import org.gatlin.soa.account.hook.HookContainer;
 import org.gatlin.soa.account.mybatis.dao.AccountDao;
 import org.gatlin.soa.account.mybatis.dao.LogAccountDao;
 import org.gatlin.soa.account.mybatis.dao.RechargeDao;
 import org.gatlin.soa.account.mybatis.dao.WithdrawDao;
 import org.gatlin.soa.bean.enums.AccountType;
-import org.gatlin.soa.bean.enums.BizType;
+import org.gatlin.soa.bean.enums.GatlinBizType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.enums.WithdrawState;
 import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,8 +49,6 @@ public class AccountManager {
 	private WithdrawDao withdrawDao;
 	@Resource
 	private LogAccountDao logAccountDao; 
-	@Autowired
-	private Map<String, RechargeStateMachine> rechargeStateMachines;
 	
 	public void init(TargetType ownerType, long owner, int mod) {
 		List<Account> accounts = new ArrayList<Account>();
@@ -73,9 +69,7 @@ public class AccountManager {
 		Query query = new Query().eq("id", id).forUpdate();
 		Recharge recharge = rechargeDao.queryUnique(query);
 		Assert.notNull(AccountCode.RECHARGE_NOT_EXIST, recharge);
-		RechargeState state = RechargeState.match(recharge.getState());
-		RechargeStateMachine stateMachine = rechargeStateMachines.get(state.machineName());
-		stateMachine.update(recharge, update);
+		HookContainer.rechageNoticeHook().process(recharge, update);
 		rechargeDao.update(recharge);
 	}
 	
@@ -83,7 +77,7 @@ public class AccountManager {
 	public Withdraw withdraw(WithdrawParam param, WithdrawContext context) {
 		Withdraw withdraw = EntityGenerator.newWithdraw(param, context);
 		withdrawDao.insert(withdraw);
-		AccountDetail detail = new AccountDetail(withdraw.getId(), BizType.WITHDRAW);
+		AccountDetail detail = new AccountDetail(withdraw.getId(), GatlinBizType.WITHDRAW);
 		BigDecimal amount = param.getAmount().add(context.getFee());
 		detail.userUsableDecr(param.getUser().getId(), param.getAccountType(), amount);
 		detail.userFrozenIncr(param.getUser().getId(), param.getAccountType(), amount);
@@ -101,7 +95,7 @@ public class AccountManager {
 		withdraw.setState(success ? WithdrawState.SUCCESS.mark() : WithdrawState.FAILURE.mark());
 		withdraw.setUpdated(DateUtil.current());
 		withdrawDao.update(withdraw);
-		AccountDetail detail = new AccountDetail(withdraw.getId(), success ? BizType.WITHDRAW_SUCCESS : BizType.WITHDRAW_FAILURE);
+		AccountDetail detail = new AccountDetail(withdraw.getId(), success ? GatlinBizType.WITHDRAW_SUCCESS : GatlinBizType.WITHDRAW_FAILURE);
 		BigDecimal amount = withdraw.getAmount().add(withdraw.getFee());
 		TargetType withdrawerType = TargetType.match(withdraw.getWithdrawerType());
 		AccountType withdrawerAccountType = AccountType.match(withdraw.getWithdrawerAccountType());

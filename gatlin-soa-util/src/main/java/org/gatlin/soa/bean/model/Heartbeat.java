@@ -1,8 +1,7 @@
-package org.gatlin.web.bean.model;
+package org.gatlin.soa.bean.model;
 
 import java.io.Serializable;
 
-import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.util.DateUtil;
 
 public class Heartbeat implements Serializable {
