@@ -17,7 +17,6 @@ import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
 import org.gatlin.soa.resource.bean.param.ResourceListParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
-import org.gatlin.util.IDWorker;
 import org.gatlin.util.bean.enums.CacheUnit;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.web.bean.param.ResourceReplaceParam;
@@ -80,7 +79,6 @@ public class ResourceController {
 		return uploader.upload(param.getSource(), cfgResource.getDirectory(), resource -> {
 			resource.setName(param.getName());
 			resource.setPriority(param.getPriority());
-			resource.setId(IDWorker.INSTANCE.nextSid());
 			resource.setCfgId(param.getCfgResourceId());
 			resource.setLink(null == param.getLink() ? StringUtil.EMPTY : param.getLink());
 			resource.setOwner(null == param.getOwner() ? StringUtil.EMPTY : param.getOwner());
@@ -95,7 +93,7 @@ public class ResourceController {
 	
 	@ResponseBody
 	@RequestMapping("replace")
-	public Object modify(@Valid ResourceReplaceParam param) {
+	public Object replace(@Valid ResourceReplaceParam param) {
 		Assert.hasText(CoreCode.PARAM_ERR, param.getName());
 		Assert.notNull(CoreCode.PARAM_ERR, param.getSource());
 		ResourceInfo info = resourceService.resource(new Query().eq("id", param.getId()));

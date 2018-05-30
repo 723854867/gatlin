@@ -58,6 +58,11 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	}
 	
 	@Override
+	public void bankCardBindTimeout(String id) {
+		sinaMemberManager.bankCardBindTimeout(id);
+	}
+	
+	@Override
 	public String bankCardBindConfirm(BankCardConfirmParam param) {
 		return sinaMemberManager.bankCardBindConfirm(param);
 	}

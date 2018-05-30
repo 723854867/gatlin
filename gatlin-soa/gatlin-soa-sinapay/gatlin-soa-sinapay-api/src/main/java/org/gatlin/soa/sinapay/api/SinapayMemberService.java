@@ -39,6 +39,8 @@ public interface SinapayMemberService {
 	 */
 	String bankCardBind(BankCardBindParam param, String bankId, Geo geo);
 	
+	void bankCardBindTimeout(String id);
+	
 	// 确认绑卡
 	String bankCardBindConfirm(BankCardConfirmParam param);
 	

@@ -15,7 +15,6 @@ public interface WebConsts {
 		final IntegerOption RAPID_MAX_UPLOAD_SIZE_PER_FILE			= new IntegerOption("upload.maxUploadSizePerFile", 10485760);
 		final StrOption RESOURCE_PATH								= new StrOption("resource_path");
 		final StrOption RESOURCE_PREFIX								= new StrOption("resource_prefix");
-		final IntegerOption ACCOUNT_MOD_USER						= new IntegerOption("account.mod.user", 0);
 		final IntegerOption ACCOUNT_MOD_COMPANY						= new IntegerOption("account.mod.company", 0);
 		final IntegerOption ACCOUNT_RECHARGE_MOD_USER				= new IntegerOption("account.recharge.mod.user", 0);
 		final IntegerOption ACCOUNT_RECHARGE_MOD_PLAT				= new IntegerOption("account.recharge.mod.plat", 0);

@@ -28,7 +28,6 @@ public class GatlinConfigration {
 		private static final long serialVersionUID = 4782320407934522986L;
 		{
 			add("http.enable");
-			add("activemq.type");
 		}
 	};
 	

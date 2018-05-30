@@ -50,12 +50,6 @@ public class ResourceManager {
 	
 	@Transactional
 	public Resource upload(Resource resource, boolean replace) {
-		if (replace) 		// 替换
-			resourceDao.update(resource);
-		else {
-			resource.setId(IDWorker.INSTANCE.nextSid());
-			resourceDao.insert(resource);
-		}
 		CfgResource cfgResource = cfgResource(resource.getCfgId());
 		Resource deleted = null;
 		if (cfgResource.getType() == 3) {			// 链接资源如果父资源有链接资源且不为文本资源则需要删除原链接资源
@@ -65,6 +59,12 @@ public class ResourceManager {
 			parent.setLink(resource.getUrl());
 			parent.setUpdated(DateUtil.current());
 			resourceDao.update(parent);
+		}
+		if (replace) 		// 替换
+			resourceDao.update(resource);
+		else {
+			resource.setId(IDWorker.INSTANCE.nextSid());
+			resourceDao.insert(resource);
 		}
 		return deleted;
 	}
@@ -77,7 +77,7 @@ public class ResourceManager {
 		if (null != param.getPriority())
 			resource.setPriority(param.getPriority());
 		Resource deleted = null;
-		if (StringUtil.hasText(param.getLink())) {
+		if (StringUtil.hasText(param.getLink()) && !param.getLink().equals(resource.getLink())) {
 			CfgResource cfgResource = cfgResourceDao.getByKey(resource.getCfgId());
 			Assert.isTrue(ResourceCode.RESOURCE_LIN_DUPLICATED, cfgResource.getType() != 3);
 			cfgResource = cfgResourceDao.queryUnique(new Query().eq("type", 3));

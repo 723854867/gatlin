@@ -10,6 +10,11 @@ public class MQConsumerCondition extends GatlinCondition<String> {
 
 	@Override
 	protected boolean checkCondition(String value) {
-		return value.equalsIgnoreCase("consumer") || value.equalsIgnoreCase("all");
+		String[] roles = value.split(",");
+		for (String role : roles) {
+			if (role.equalsIgnoreCase("consumer"))
+				return true;
+		}
+		return false;
 	}
 }

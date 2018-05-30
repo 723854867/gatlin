@@ -144,6 +144,17 @@ public class SinaMemberManager {
 	}
 	
 	@Transactional
+	public void bankCardBindTimeout(String id) {
+		Query query = new Query().eq("id", id).forUpdate();
+		SinaBankCard cardBind = sinaBankCardDao.queryUnique(query);
+		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, cardBind);
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, cardBind.getState().equals(BankCardState.BINDING.name()));
+		cardBind.setState(BankCardState.FAILED.name());
+		cardBind.setUpdated(DateUtil.current());
+		sinaBankCardDao.update(cardBind);
+	}
+	
+	@Transactional
 	public String bankCardBindConfirm(BankCardConfirmParam param) {
 		Query query = new Query().eq("id", param.getId()).forUpdate();
 		SinaBankCard cardBind = sinaBankCardDao.queryUnique(query);
