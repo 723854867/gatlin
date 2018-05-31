@@ -19,6 +19,6 @@ public class MQCondition extends GatlinCondition<String> {
 			else if (role.equalsIgnoreCase("consumer"))
 				consumer = true;
 		}
-		return provider && consumer;
+		return provider || consumer;
 	}
 }

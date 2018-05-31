@@ -189,7 +189,8 @@ public class AccountDetail implements Serializable {
 			log.setAccountType(tips.type.mark());
 			log.setId(IDWorker.INSTANCE.nextSid());
 			log.setOwnerType(TargetType.PLATFORM.mark());
-			log.setBizId(StringUtil.hasText(tips.bizId) ? tips.bizId : bizId);
+			String bizId = StringUtil.hasText(tips.bizId) ? tips.bizId : this.bizId;
+			log.setBizId(StringUtil.hasText(bizId) ? bizId : StringUtil.EMPTY);
 			logs.add(log);
 		});
 		return logs;
@@ -208,7 +209,8 @@ public class AccountDetail implements Serializable {
 				log.setAccountType(tips.type.mark());
 				log.setId(IDWorker.INSTANCE.nextSid());
 				log.setOwnerType(TargetType.USER.mark());
-				log.setBizId(StringUtil.hasText(tips.bizId) ? tips.bizId : bizId);
+				String bizId = StringUtil.hasText(tips.bizId) ? tips.bizId : this.bizId;
+				log.setBizId(StringUtil.hasText(bizId) ? bizId : StringUtil.EMPTY);
 				logs.add(log);
 			});
 		});
@@ -228,7 +230,8 @@ public class AccountDetail implements Serializable {
 				log.setAccountType(tips.type.mark());
 				log.setId(IDWorker.INSTANCE.nextSid());
 				log.setOwnerType(TargetType.COMPANY.mark());
-				log.setBizId(StringUtil.hasText(tips.bizId) ? tips.bizId : bizId);
+				String bizId = StringUtil.hasText(tips.bizId) ? tips.bizId : this.bizId;
+				log.setBizId(StringUtil.hasText(bizId) ? bizId : StringUtil.EMPTY);
 				logs.add(log);
 			});
 		});
