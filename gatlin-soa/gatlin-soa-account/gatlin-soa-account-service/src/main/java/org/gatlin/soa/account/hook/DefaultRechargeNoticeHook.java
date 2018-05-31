@@ -13,6 +13,7 @@ import org.gatlin.soa.account.manager.AccountManager;
 import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.GatlinBizType;
 import org.gatlin.soa.bean.enums.TargetType;
+import org.gatlin.util.DateUtil;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,6 +38,8 @@ public class DefaultRechargeNoticeHook implements IRechargeNoticeHook {
 		default:
 			throw new CodeException(AccountCode.RECHARGE_STATE_ERR);
 		}
+		recharge.setState(update.mark());
+		recharge.setUpdated(DateUtil.current());
 	}
 	
 	protected void initUpdate(Recharge recharge, RechargeState state) { 
