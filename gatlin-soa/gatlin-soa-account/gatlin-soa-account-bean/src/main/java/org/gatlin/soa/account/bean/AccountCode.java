@@ -4,6 +4,7 @@ import org.gatlin.core.bean.model.code.Code;
 
 public interface AccountCode {
 	
+	final Code ACCOUNT_NOT_EXIST		 					= new Code("code.account.not.exist", "账户不存在");
 	final Code USABLE_LACK				 					= new Code("code.account.usable.lack", "账户可用余额不足");
 	final Code FROZEN_LACK				 					= new Code("code.account.frozen.lack", "账户冻结余额不足");
 	final Code FROZEN_AMOUNT_ERR				 			= new Code("code.account.frozen.amount.err", "解冻金额错误");

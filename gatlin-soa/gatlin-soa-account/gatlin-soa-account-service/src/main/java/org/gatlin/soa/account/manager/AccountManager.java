@@ -127,6 +127,8 @@ public class AccountManager {
 		logs.forEach(log -> set.add(log.getOwner()));
 		Query query = new Query().eq("owner_type", type.mark()).in("owner", set).forUpdate();
 		List<Account> accounts = accountDao.queryList(query);
+		if (CollectionUtil.isEmpty(accounts))
+			return;
 		_process(accounts, logs);
 	}
 	
@@ -153,13 +155,14 @@ public class AccountManager {
 					default:
 						throw new CodeException();
 					}
+					Assert.isTrue(CoreCode.USABLE_LACK, account.getUsable().compareTo(BigDecimal.ZERO) >= 0);
+					Assert.isTrue(CoreCode.FROZEN_LACK, account.getFrozen().compareTo(BigDecimal.ZERO) >= 0);
 					break;
 				}
-				Assert.isTrue(CoreCode.USABLE_LACK, account.getUsable().compareTo(BigDecimal.ZERO) >= 0);
-				Assert.isTrue(CoreCode.FROZEN_LACK, account.getFrozen().compareTo(BigDecimal.ZERO) >= 0);
 			}
 		});
-		logAccountDao.batchInsert(logs);
+		if (!CollectionUtil.isEmpty(logs))
+			logAccountDao.batchInsert(logs);
 		accountDao.updateCollection(accounts);
 	}
 	
