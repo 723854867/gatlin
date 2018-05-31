@@ -147,11 +147,7 @@ public class CommonController {
 	@ResponseBody
 	@RequestMapping("configs")
 	public Object configs(@RequestBody @Valid SoaParam param) {
-		Configs configs = configService.configs(new Query());
-		Map<String, String> map = new HashMap<String, String>();
-		for (Entry<String, CfgGlobal> entry : configs.getGlobals().entrySet()) 
-			map.put(entry.getKey(), entry.getValue().getValue());
-		return map;
+		return configService.configs(new Query()).getGlobals();
 	}
 	
 	@ResponseBody
