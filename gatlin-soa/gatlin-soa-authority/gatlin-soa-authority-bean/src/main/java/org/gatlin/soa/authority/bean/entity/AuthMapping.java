@@ -3,6 +3,7 @@ package org.gatlin.soa.authority.bean.entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.gatlin.soa.authority.bean.enums.AuthMappingType;
 import org.gatlin.util.bean.Identifiable;
 
 public class AuthMapping implements Identifiable<Long> {
@@ -14,7 +15,7 @@ public class AuthMapping implements Identifiable<Long> {
 	private long id;
 	private long sid;
 	private long tid;
-	private int type;
+	private AuthMappingType type;
 	private int created;
 
 	public long getId() {
@@ -41,11 +42,11 @@ public class AuthMapping implements Identifiable<Long> {
 		this.tid = tid;
 	}
 
-	public int getType() {
+	public AuthMappingType getType() {
 		return type;
 	}
-
-	public void setType(int type) {
+	
+	public void setType(AuthMappingType type) {
 		this.type = type;
 	}
 

@@ -15,7 +15,7 @@ public class EntityGenerator {
 		instance.setMaximum(param.getMaximum());
 		instance.setDirectory(param.getDirectory());
 		instance.setCacheSize(param.getCacheSize());
-		instance.setCacheUnit(param.getCacheUnit().name());
+		instance.setCacheUnit(param.getCacheUnit());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

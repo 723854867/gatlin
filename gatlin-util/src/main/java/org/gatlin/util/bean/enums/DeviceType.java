@@ -1,11 +1,13 @@
 package org.gatlin.util.bean.enums;
 
+import org.gatlin.util.bean.IEnum;
+
 /**
  * 设备类型
  * 
  * @author lynn
  */
-public enum DeviceType {
+public enum DeviceType implements IEnum {
 
 	// 个人电脑
 	PC(1) {
@@ -35,19 +37,12 @@ public enum DeviceType {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
 	}
 	
 	public abstract boolean support(OS os);
-	
-	public static final DeviceType match(int type) {
-		for (DeviceType temp : DeviceType.values()) {
-			if (temp.mark == type)
-				return temp;
-		}
-		return null;
-	}
 	
 	public static final boolean verify(int mod) {
 		int cmod = 0;

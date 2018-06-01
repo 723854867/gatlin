@@ -1,5 +1,7 @@
 package org.gatlin.sdk.sinapay.notice;
 
+import org.gatlin.sdk.sinapay.bean.enums.WithdrawState;
+
 public class WithdrawNotice extends SinaNotice {
 
 	private static final long serialVersionUID = 4437089553046489251L;
@@ -7,8 +9,8 @@ public class WithdrawNotice extends SinaNotice {
 	private String card_id;
 	private String outer_trade_no;
 	private String inner_trade_no;
-	private String withdraw_status;
 	private String withdraw_amount;
+	private WithdrawState withdraw_status;
 
 	public String getOuter_trade_no() {
 		return outer_trade_no;
@@ -26,14 +28,6 @@ public class WithdrawNotice extends SinaNotice {
 		this.inner_trade_no = inner_trade_no;
 	}
 
-	public String getWithdraw_status() {
-		return withdraw_status;
-	}
-
-	public void setWithdraw_status(String withdraw_status) {
-		this.withdraw_status = withdraw_status;
-	}
-
 	public String getWithdraw_amount() {
 		return withdraw_amount;
 	}
@@ -48,5 +42,13 @@ public class WithdrawNotice extends SinaNotice {
 
 	public void setCard_id(String card_id) {
 		this.card_id = card_id;
+	}
+	
+	public WithdrawState getWithdraw_status() {
+		return withdraw_status;
+	}
+	
+	public void setWithdraw_status(WithdrawState withdraw_status) {
+		this.withdraw_status = withdraw_status;
 	}
 }

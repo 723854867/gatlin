@@ -4,11 +4,14 @@ import java.math.BigDecimal;
 
 import javax.persistence.Id;
 
+import org.gatlin.soa.account.bean.enums.RechargeState;
+import org.gatlin.soa.bean.enums.PlatType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.bean.Identifiable;
+import org.gatlin.util.bean.enums.OS;
 
 /**
- * amount包括fee
- * 比如amount=10，fee=2则最终到账只有8，2进入公司账户
+ * amount包括fee 比如amount=10，fee=2则最终到账只有8，2进入公司账户
  * 
  * @author lynn
  */
@@ -18,20 +21,20 @@ public class Recharge implements Identifiable<String> {
 
 	@Id
 	private String id;
-	private int os;
-	private int plat;
-	private int state;
+	private OS os;
 	private String ip;
+	private int expiry;
+	private PlatType plat;
 	private int goodsType;
 	private long operator;
 	private String goodsId;
 	private long rechargee;
-	private int rechargeeType;
 	private long recharger;
-	private int rechargerType;
 	private BigDecimal fee;
 	private BigDecimal amount;
-	private int expiry;
+	private RechargeState state;
+	private TargetType rechargeeType;
+	private TargetType rechargerType;
 	private int created;
 	private int updated;
 
@@ -43,20 +46,12 @@ public class Recharge implements Identifiable<String> {
 		this.id = id;
 	}
 
-	public int getOs() {
+	public OS getOs() {
 		return os;
 	}
 
-	public void setOs(int os) {
+	public void setOs(OS os) {
 		this.os = os;
-	}
-	
-	public int getPlat() {
-		return plat;
-	}
-	
-	public void setPlat(int plat) {
-		this.plat = plat;
 	}
 
 	public String getIp() {
@@ -67,12 +62,12 @@ public class Recharge implements Identifiable<String> {
 		this.ip = ip;
 	}
 
-	public int getState() {
-		return state;
+	public PlatType getPlat() {
+		return plat;
 	}
 
-	public void setState(int state) {
-		this.state = state;
+	public void setPlat(PlatType plat) {
+		this.plat = plat;
 	}
 
 	public int getGoodsType() {
@@ -82,11 +77,11 @@ public class Recharge implements Identifiable<String> {
 	public void setGoodsType(int goodsType) {
 		this.goodsType = goodsType;
 	}
-	
+
 	public long getOperator() {
 		return operator;
 	}
-	
+
 	public void setOperator(long operator) {
 		this.operator = operator;
 	}
@@ -106,14 +101,6 @@ public class Recharge implements Identifiable<String> {
 	public void setRechargee(long rechargee) {
 		this.rechargee = rechargee;
 	}
-	
-	public int getRechargeeType() {
-		return rechargeeType;
-	}
-	
-	public void setRechargeeType(int rechargeeType) {
-		this.rechargeeType = rechargeeType;
-	}
 
 	public long getRecharger() {
 		return recharger;
@@ -121,14 +108,6 @@ public class Recharge implements Identifiable<String> {
 
 	public void setRecharger(long recharger) {
 		this.recharger = recharger;
-	}
-	
-	public int getRechargerType() {
-		return rechargerType;
-	}
-	
-	public void setRechargerType(int rechargerType) {
-		this.rechargerType = rechargerType;
 	}
 
 	public BigDecimal getFee() {
@@ -146,11 +125,35 @@ public class Recharge implements Identifiable<String> {
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
-	
+
+	public RechargeState getState() {
+		return state;
+	}
+
+	public void setState(RechargeState state) {
+		this.state = state;
+	}
+
+	public TargetType getRechargeeType() {
+		return rechargeeType;
+	}
+
+	public void setRechargeeType(TargetType rechargeeType) {
+		this.rechargeeType = rechargeeType;
+	}
+
+	public TargetType getRechargerType() {
+		return rechargerType;
+	}
+
+	public void setRechargerType(TargetType rechargerType) {
+		this.rechargerType = rechargerType;
+	}
+
 	public int getExpiry() {
 		return expiry;
 	}
-	
+
 	public void setExpiry(int expiry) {
 		this.expiry = expiry;
 	}

@@ -23,7 +23,7 @@ public class EntityGenerator {
 		CfgDistrict instance = new CfgDistrict();
 		instance.setCode(param.getCode());
 		instance.setName(param.getName());
-		instance.setLevel(param.getLevel().mark());
+		instance.setLevel(param.getLevel());
 		instance.setAbname(param.getName());
 		instance.setValid(true);
 		instance.setParent(param.getParent());

@@ -2,6 +2,7 @@ package org.gatlin.soa.sinapay.bean.entity;
 
 import javax.persistence.Id;
 
+import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.util.bean.Identifiable;
 
 public class SinaUser implements Identifiable<String> {
@@ -11,7 +12,7 @@ public class SinaUser implements Identifiable<String> {
 	@Id
 	private String sinaId;
 	private String tid;
-	private int type;
+	private MemberType type;
 	private boolean realname;
 	private boolean withhold;
 	private int created;
@@ -33,11 +34,11 @@ public class SinaUser implements Identifiable<String> {
 		this.tid = tid;
 	}
 
-	public int getType() {
+	public MemberType getType() {
 		return type;
 	}
-
-	public void setType(int type) {
+	
+	public void setType(MemberType type) {
 		this.type = type;
 	}
 	

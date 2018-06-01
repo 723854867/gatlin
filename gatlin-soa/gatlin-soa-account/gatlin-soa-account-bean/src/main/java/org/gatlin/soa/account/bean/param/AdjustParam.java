@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.gatlin.soa.account.bean.enums.AccountField;
-import org.gatlin.soa.bean.enums.AccountType;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaParam;
 

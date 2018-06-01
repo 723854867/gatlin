@@ -34,7 +34,7 @@ public class EntityGenerator {
 	public static final Username newUsername(UserInfo user, String username, UsernameType type) {
 		Username instance = new Username();
 		instance.setUid(user.getId());
-		instance.setType(type.mark());
+		instance.setType(type);
 		instance.setUsername(username);
 		int time = DateUtil.current();
 		instance.setCreated(time);
@@ -56,9 +56,9 @@ public class EntityGenerator {
 		instance.setToken(StringUtil.uuid());
 		instance.setUid(username.getUid());
 		instance.setUsername(username.getId());
-		instance.setOs(param.getOs().mark());
-		instance.setType(param.getDeviceType().mark());
-		instance.setClient(param.getClient().mark());
+		instance.setOs(param.getOs());
+		instance.setType(param.getDeviceType());
+		instance.setClient(param.getClient());
 		instance.setCreated(DateUtil.current());
 		return instance;
 	}

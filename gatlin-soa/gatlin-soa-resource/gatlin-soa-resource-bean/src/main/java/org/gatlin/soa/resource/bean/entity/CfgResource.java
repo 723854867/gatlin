@@ -3,6 +3,7 @@ package org.gatlin.soa.resource.bean.entity;
 import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
+import org.gatlin.util.bean.enums.CacheUnit;
 
 public class CfgResource implements Identifiable<Integer> {
 
@@ -15,8 +16,8 @@ public class CfgResource implements Identifiable<Integer> {
 	private int minimum;
 	private int maximum;
 	private int cacheSize;
-	private String cacheUnit;
 	private String directory;
+	private CacheUnit cacheUnit;
 	private int created;
 	private int updated;
 
@@ -68,20 +69,20 @@ public class CfgResource implements Identifiable<Integer> {
 		this.cacheSize = cacheSize;
 	}
 
-	public String getCacheUnit() {
-		return cacheUnit;
-	}
-
-	public void setCacheUnit(String cacheUnit) {
-		this.cacheUnit = cacheUnit;
-	}
-	
 	public String getDirectory() {
 		return directory;
 	}
 	
 	public void setDirectory(String directory) {
 		this.directory = directory;
+	}
+	
+	public CacheUnit getCacheUnit() {
+		return cacheUnit;
+	}
+	
+	public void setCacheUnit(CacheUnit cacheUnit) {
+		this.cacheUnit = cacheUnit;
 	}
 
 	public int getCreated() {

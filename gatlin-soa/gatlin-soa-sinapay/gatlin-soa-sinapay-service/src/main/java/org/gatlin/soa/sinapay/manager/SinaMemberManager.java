@@ -148,8 +148,8 @@ public class SinaMemberManager {
 		Query query = new Query().eq("id", id).forUpdate();
 		SinaBankCard cardBind = sinaBankCardDao.queryUnique(query);
 		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, cardBind);
-		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, cardBind.getState().equals(BankCardState.BINDING.name()));
-		cardBind.setState(BankCardState.FAILED.name());
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, cardBind.getState() == BankCardState.BINDING);
+		cardBind.setState(BankCardState.FAILED);
 		cardBind.setUpdated(DateUtil.current());
 		sinaBankCardDao.update(cardBind);
 	}
@@ -159,7 +159,7 @@ public class SinaMemberManager {
 		Query query = new Query().eq("id", param.getId()).forUpdate();
 		SinaBankCard cardBind = sinaBankCardDao.queryUnique(query);
 		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, cardBind);
-		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, cardBind.getState().equals(BankCardState.BINDING.name()));
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, cardBind.getState()== BankCardState.BINDING);
 		int minutes = configService.config(SinaConsts.BANK_CARD_TICKET_EXPIRY);
 		int usedCount = configService.config(SinaConsts.BANK_CARD_TICKET_MAXIMUM_USED);
 		int gap = (DateUtil.current() - cardBind.getCreated()) / 60;
@@ -178,7 +178,7 @@ public class SinaMemberManager {
 		cardBind.setUpdated(DateUtil.current());
 		cardBind.setUsed(cardBind.getUsed() + 1);
 		cardBind.setSinaCardId(response.getCardId());
-		cardBind.setState(BankCardState.BINDED.name());
+		cardBind.setState(BankCardState.BINDED);
 		sinaBankCardDao.update(cardBind);
 		return card.getId();
 	}
@@ -188,7 +188,7 @@ public class SinaMemberManager {
 		Query query = new Query().eq("card_id", param.getId());
 		SinaBankCard bankCard = sinaBankCardDao.queryUnique(query);
 		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, bankCard);
-		Assert.isTrue(SinaCode.BANK_CARD_UNBIND, bankCard.getState().equals(BankCardState.BINDED.name()));
+		Assert.isTrue(SinaCode.BANK_CARD_UNBIND, bankCard.getState() == BankCardState.BINDED);
 		BankCardUnbindRequest.Builder builder = new BankCardUnbindRequest.Builder();
 		builder.identityId(bankCard.getOwner());
 		builder.clientIp(param.meta().getIp());
@@ -220,7 +220,7 @@ public class SinaMemberManager {
 		builder.clientIp(param.meta().getIp());
 		sinaBizHook.cardUnbind(bankCard.getCardId());
 		bankCard.setUsed(bankCard.getUsed() + 1);
-		bankCard.setState(BankCardState.UNBIND.name());
+		bankCard.setState(BankCardState.UNBIND);
 		bankCard.setUpdated(DateUtil.current());
 		sinaBankCardDao.update(bankCard);
 		BankCardUnbindConfirmRequest request = builder.build();
@@ -299,12 +299,10 @@ public class SinaMemberManager {
 	public void companyApplyNotice(CompanyAuditNotice notice) { 
 		Query query = new Query().eq("id", notice.getAudit_order_no()).forUpdate();
 		SinaCompanyAudit companyAudit = sinaCompanyAuditDao.queryUnique(query);
-		CompanyAuditState state = CompanyAuditState.valueOf(companyAudit.getState());
-		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == CompanyAuditState.PROCESSING);
-		CompanyAuditState cstate = CompanyAuditState.valueOf(notice.getAudit_status());
-		companyAudit.setState(cstate.name());
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, companyAudit.getState() == CompanyAuditState.PROCESSING);
+		companyAudit.setState(notice.getAudit_status());
 		companyAudit.setAuditMsg(StringUtil.hasText(notice.getAudit_message()) ? notice.getAudit_message() : StringUtil.EMPTY);
-		if (cstate == CompanyAuditState.SUCCESS) {
+		if (notice.getAudit_status() == CompanyAuditState.SUCCESS) {
 			SinaUser user = sinaUserDao.getByKey(companyAudit.getSinaUid());
 			BankCard card = EntityGenerator.newBankCard(companyAudit, user);
 			sinaBizHook.cardBind(card);

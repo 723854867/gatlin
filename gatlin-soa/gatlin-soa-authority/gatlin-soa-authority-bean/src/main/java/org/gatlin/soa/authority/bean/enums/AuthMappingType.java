@@ -1,6 +1,8 @@
 package org.gatlin.soa.authority.bean.enums;
 
-public enum AuthMappingType {
+import org.gatlin.util.bean.IEnum;
+
+public enum AuthMappingType implements IEnum {
 	
 	// 模块api映射
 	MODULAR_API(1),
@@ -15,6 +17,7 @@ public enum AuthMappingType {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
 	}

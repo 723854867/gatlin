@@ -2,14 +2,15 @@ package org.gatlin.soa.account.bean.enums;
 
 import org.gatlin.util.bean.IEnum;
 
-public enum AccountField implements IEnum {
+public enum WithdrawState implements IEnum {
 
-	USABLE(1),
-	FROZEN(2);
+	INIT(1),
+	SUCCESS(2),
+	FAILURE(3);
 	
 	private int mark;
 	
-	private AccountField(int mark) {
+	private WithdrawState(int mark) {
 		this.mark = mark;
 	}
 	

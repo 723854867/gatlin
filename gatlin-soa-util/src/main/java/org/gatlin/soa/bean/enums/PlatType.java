@@ -1,6 +1,8 @@
 package org.gatlin.soa.bean.enums;
 
-public enum PlatType {
+import org.gatlin.util.bean.IEnum;
+
+public enum PlatType implements IEnum {
 
 	// 阿里支付
 	ALIPAY(1),
@@ -17,15 +19,8 @@ public enum PlatType {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
-	}
-	
-	public static final PlatType match(int type) {
-		for (PlatType plat : PlatType.values()) {
-			if (plat.mark == type)
-				return plat;
-		}
-		return null;
 	}
 }

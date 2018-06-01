@@ -16,11 +16,6 @@ public interface WebConsts {
 		final StrOption RESOURCE_PATH								= new StrOption("resource_path");
 		final StrOption RESOURCE_PREFIX								= new StrOption("resource_prefix");
 		final IntegerOption ACCOUNT_MOD_COMPANY						= new IntegerOption("account.mod.company", 0);
-		final IntegerOption ACCOUNT_RECHARGE_MOD_USER				= new IntegerOption("account.recharge.mod.user", 0);
-		final IntegerOption ACCOUNT_RECHARGE_MOD_PLAT				= new IntegerOption("account.recharge.mod.plat", 0);
-		final IntegerOption ACCOUNT_RECHARGE_MOD_COMPANY			= new IntegerOption("account.recharge.mod.company", 0);
-		final IntegerOption ACCOUNT_WITHDRAW_MOD_USER				= new IntegerOption("account.withdraw.mod.user", 1);
-		final IntegerOption ACCOUNT_WITHDRAW_MOD_COMPANY			= new IntegerOption("account.withdraw.mod.company", 16);
 		final BoolOption ALIPAY_ENABLE								= new BoolOption("alipay.enable", false);
 	}
 }

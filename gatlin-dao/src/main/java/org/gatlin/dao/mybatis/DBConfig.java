@@ -13,6 +13,7 @@ import org.gatlin.core.CoreCode;
 import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.dao.DaoConsts.Options;
+import org.gatlin.dao.bean.AutoEnumTypeHandler;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -95,6 +96,7 @@ public class DBConfig {
 		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
 		configuration.setCacheEnabled(GatlinConfigration.get(Options.DB_SESSION_CACHE_ENABLED));
 		configuration.setMapUnderscoreToCamelCase(GatlinConfigration.get(Options.DB_SESSION_CAMEL_2_UNDERLINE));
+		configuration.getTypeHandlerRegistry().setDefaultEnumTypeHandler(AutoEnumTypeHandler.class);
 		factory.setConfiguration(configuration);
 		return factory;
 	}

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Id;
 
+import org.gatlin.sdk.sinapay.bean.enums.WithdrawState;
 import org.gatlin.util.bean.Identifiable;
 
 public class SinaLoanout implements Identifiable<String> {
@@ -14,7 +15,7 @@ public class SinaLoanout implements Identifiable<String> {
 	private String id;
 	private String bidId;
 	private BigDecimal amount;
-	private String state;
+	private WithdrawState state;
 	private int created;
 	private int updated;
 
@@ -42,11 +43,11 @@ public class SinaLoanout implements Identifiable<String> {
 		this.amount = amount;
 	}
 
-	public String getState() {
+	public WithdrawState getState() {
 		return state;
 	}
-
-	public void setState(String state) {
+	
+	public void setState(WithdrawState state) {
 		this.state = state;
 	}
 

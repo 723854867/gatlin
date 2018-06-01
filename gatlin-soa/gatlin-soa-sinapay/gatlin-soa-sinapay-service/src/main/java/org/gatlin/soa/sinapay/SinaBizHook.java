@@ -1,7 +1,10 @@
 package org.gatlin.soa.sinapay;
 
+import java.math.BigDecimal;
+
 import org.gatlin.soa.sinapay.bean.entity.SinaBid;
 import org.gatlin.soa.sinapay.bean.entity.SinaLoanout;
+import org.gatlin.soa.sinapay.bean.param.WithdrawParam;
 import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.RealnameParam;
@@ -44,4 +47,11 @@ public interface SinaBizHook {
 	 * @param loanout 放款记录
 	 */
 	void loanoutNotice(SinaBid bid, SinaLoanout loanout);
+	
+	/**
+	 * 计算提现手续费
+	 * 
+	 * @return
+	 */
+	BigDecimal withdrawFee(WithdrawParam param);
 }

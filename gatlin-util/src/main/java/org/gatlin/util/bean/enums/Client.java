@@ -1,11 +1,13 @@
 package org.gatlin.util.bean.enums;
 
+import org.gatlin.util.bean.IEnum;
+
 /**
  * 客户端类型
  * 
  * @author lynn
  */
-public enum Client {
+public enum Client implements IEnum {
 
 	// 浏览器
 	BROWSER(1),
@@ -18,15 +20,8 @@ public enum Client {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
-	}
-	
-	public static final Client match(int client) {
-		for (Client temp : Client.values()) {
-			if (temp.mark == client)
-				return temp;
-		}
-		return null;
 	}
 }

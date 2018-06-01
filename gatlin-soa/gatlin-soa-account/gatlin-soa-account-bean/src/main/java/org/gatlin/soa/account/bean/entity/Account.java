@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.gatlin.soa.account.bean.enums.AccountType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.bean.Identifiable;
 
 public class Account implements Identifiable<Long> {
@@ -14,11 +16,11 @@ public class Account implements Identifiable<Long> {
 	@Id
 	@GeneratedValue
 	private long id;
-	private int type;
 	private long owner;
-	private int ownerType;
+	private AccountType type;
 	private BigDecimal usable;
 	private BigDecimal frozen;
+	private TargetType ownerType;
 	private int created;
 	private int updated;
 
@@ -30,14 +32,6 @@ public class Account implements Identifiable<Long> {
 		this.id = id;
 	}
 
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
 	public long getOwner() {
 		return owner;
 	}
@@ -46,12 +40,12 @@ public class Account implements Identifiable<Long> {
 		this.owner = owner;
 	}
 
-	public int getOwnerType() {
-		return ownerType;
+	public AccountType getType() {
+		return type;
 	}
 
-	public void setOwnerType(int ownerType) {
-		this.ownerType = ownerType;
+	public void setType(AccountType type) {
+		this.type = type;
 	}
 
 	public BigDecimal getUsable() {
@@ -68,6 +62,14 @@ public class Account implements Identifiable<Long> {
 
 	public void setFrozen(BigDecimal frozen) {
 		this.frozen = frozen;
+	}
+
+	public TargetType getOwnerType() {
+		return ownerType;
+	}
+
+	public void setOwnerType(TargetType ownerType) {
+		this.ownerType = ownerType;
 	}
 
 	public int getCreated() {

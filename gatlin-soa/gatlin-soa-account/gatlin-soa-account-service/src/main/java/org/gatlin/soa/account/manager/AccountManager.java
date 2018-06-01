@@ -19,20 +19,17 @@ import org.gatlin.soa.account.bean.entity.Account;
 import org.gatlin.soa.account.bean.entity.LogAccount;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
-import org.gatlin.soa.account.bean.enums.AccountField;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
+import org.gatlin.soa.account.bean.enums.WithdrawState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.account.hook.HookContainer;
 import org.gatlin.soa.account.mybatis.dao.AccountDao;
 import org.gatlin.soa.account.mybatis.dao.LogAccountDao;
 import org.gatlin.soa.account.mybatis.dao.RechargeDao;
 import org.gatlin.soa.account.mybatis.dao.WithdrawDao;
-import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.GatlinBizType;
 import org.gatlin.soa.bean.enums.TargetType;
-import org.gatlin.soa.bean.enums.WithdrawState;
-import org.gatlin.soa.bean.model.WithdrawContext;
-import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.springframework.stereotype.Component;
@@ -54,7 +51,7 @@ public class AccountManager {
 		List<Account> accounts = new ArrayList<Account>();
 		for (AccountType type : AccountType.values()) {
 			if ((type.mark() & mod) == type.mark()) 
-				accounts.add(EntityGenerator.newAccount(ownerType, owner, type.mark()));
+				accounts.add(EntityGenerator.newAccount(ownerType, owner, type));
 		}
 		if (!CollectionUtil.isEmpty(accounts))
 			accountDao.batchInsert(accounts);
@@ -74,15 +71,13 @@ public class AccountManager {
 	}
 	
 	@Transactional
-	public Withdraw withdraw(WithdrawParam param, WithdrawContext context) {
-		Withdraw withdraw = EntityGenerator.newWithdraw(param, context);
+	public void withdraw(Withdraw withdraw) {
 		withdrawDao.insert(withdraw);
 		AccountDetail detail = new AccountDetail(withdraw.getId(), GatlinBizType.WITHDRAW);
-		BigDecimal amount = param.getAmount().add(context.getFee());
-		detail.userUsableDecr(param.getUser().getId(), param.getAccountType(), amount);
-		detail.userFrozenIncr(param.getUser().getId(), param.getAccountType(), amount);
+		BigDecimal amount = withdraw.getAmount().add(withdraw.getFee());
+		detail.usableDecr(withdraw.getWithdrawerType(), withdraw.getWithdrawer(), withdraw.getAccountType(), amount);
+		detail.frozenIncr(withdraw.getWithdrawerType(), withdraw.getWithdrawer(), withdraw.getAccountType(), amount);
 		process(detail);
-		return withdraw;
 	}
 	
 	@Transactional
@@ -90,18 +85,16 @@ public class AccountManager {
 		Query query = new Query().eq("id", id).forUpdate();
 		Withdraw withdraw = withdrawDao.queryUnique(query);
 		Assert.notNull(CoreCode.WITHDRAW_NOT_EXIST, withdraw);
-		WithdrawState state = WithdrawState.match(withdraw.getState());
+		WithdrawState state = withdraw.getState();
 		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == WithdrawState.INIT);
-		withdraw.setState(success ? WithdrawState.SUCCESS.mark() : WithdrawState.FAILURE.mark());
+		withdraw.setState(success ? WithdrawState.SUCCESS : WithdrawState.FAILURE);
 		withdraw.setUpdated(DateUtil.current());
 		withdrawDao.update(withdraw);
 		AccountDetail detail = new AccountDetail(withdraw.getId(), success ? GatlinBizType.WITHDRAW_SUCCESS : GatlinBizType.WITHDRAW_FAILURE);
 		BigDecimal amount = withdraw.getAmount().add(withdraw.getFee());
-		TargetType withdrawerType = TargetType.match(withdraw.getWithdrawerType());
-		AccountType withdrawerAccountType = AccountType.match(withdraw.getWithdrawerAccountType());
-		detail.frozenDecr(withdrawerType, withdraw.getWithdrawer(), withdrawerAccountType, amount);
+		detail.frozenDecr(withdraw.getWithdrawerType(), withdraw.getWithdrawer(), withdraw.getAccountType(), amount);
 		if (!success) 
-			detail.usableIncr(withdrawerType, withdraw.getWithdrawer(), withdrawerAccountType, amount);
+			detail.usableIncr(withdraw.getWithdrawerType(), withdraw.getWithdrawer(), withdraw.getAccountType(), amount);
 		process(detail);
 	}
 	
@@ -110,7 +103,7 @@ public class AccountManager {
 		List<LogAccount> logs = detail.platformLogs();
 		if (!CollectionUtil.isEmpty(logs)) {
 			Set<Integer> set = new HashSet<Integer>();
-			logs.forEach(log -> set.add(log.getAccountType()));
+			logs.forEach(log -> set.add(log.getAccountType().mark()));
 			Query query = new Query().eq("owner_type", TargetType.PLATFORM.mark()).forUpdate();
 			List<Account> accounts = accountDao.queryList(query);
 			_process(accounts, logs);
@@ -138,8 +131,7 @@ public class AccountManager {
 			while (itr.hasNext()) {
 				Account account = itr.next();
 				if (account.getOwner() == log.getOwner() && account.getType() == log.getAccountType()) {
-					AccountField field = AccountField.match(log.getFieldType());
-					switch (field) {
+					switch (log.getFieldType()) {
 					case FROZEN:
 						log.setPreAmount(account.getFrozen());
 						account.setUpdated(DateUtil.current());

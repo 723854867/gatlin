@@ -2,6 +2,7 @@ package org.gatlin.soa.config.bean.entity;
 
 import javax.persistence.Id;
 
+import org.gatlin.soa.config.bean.enums.DistrictLevel;
 import org.gatlin.util.algorithm.tree.TreeNode;
 
 public class CfgDistrict implements TreeNode<String> {
@@ -11,10 +12,10 @@ public class CfgDistrict implements TreeNode<String> {
 	@Id
 	private String code;
 	private String name;
-	private int level;
 	private boolean valid;
 	private String abname;
 	private String parent;
+	private DistrictLevel level;
 	private int created;
 	private int updated;
 
@@ -34,14 +35,6 @@ public class CfgDistrict implements TreeNode<String> {
 		this.name = name;
 	}
 
-	public int getLevel() {
-		return level;
-	}
-	
-	public void setLevel(int level) {
-		this.level = level;
-	}
-	
 	public boolean isValid() {
 		return valid;
 	}
@@ -64,6 +57,14 @@ public class CfgDistrict implements TreeNode<String> {
 
 	public void setParent(String parent) {
 		this.parent = parent;
+	}
+	
+	public DistrictLevel getLevel() {
+		return level;
+	}
+	
+	public void setLevel(DistrictLevel level) {
+		this.level = level;
 	}
 
 	public int getCreated() {

@@ -2,6 +2,7 @@ package org.gatlin.soa.sinapay.bean.entity;
 
 import javax.persistence.Id;
 
+import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
 import org.gatlin.util.bean.Identifiable;
 
 public class SinaCompanyAudit implements Identifiable<String> {
@@ -12,7 +13,6 @@ public class SinaCompanyAudit implements Identifiable<String> {
 	private String id;
 	private String ip;
 	private String sinaUid;
-	private String state;
 	private String city;
 	private String cardId;
 	private String province;
@@ -21,6 +21,7 @@ public class SinaCompanyAudit implements Identifiable<String> {
 	private String bankId;
 	private String bankNo;
 	private String auditMsg;
+	private CompanyAuditState state;
 	private int created;
 	private int updated;
 
@@ -40,14 +41,6 @@ public class SinaCompanyAudit implements Identifiable<String> {
 		this.ip = ip;
 	}
 	
-	public String getState() {
-		return state;
-	}
-	
-	public void setState(String state) {
-		this.state = state;
-	}
-
 	public String getCity() {
 		return city;
 	}
@@ -126,6 +119,14 @@ public class SinaCompanyAudit implements Identifiable<String> {
 
 	public void setCreated(int created) {
 		this.created = created;
+	}
+	
+	public CompanyAuditState getState() {
+		return state;
+	}
+	
+	public void setState(CompanyAuditState state) {
+		this.state = state;
 	}
 
 	public int getUpdated() {

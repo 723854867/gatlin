@@ -13,11 +13,13 @@ import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 
 public interface ResourceService {
 	
+	CfgResource cfgResource(int id);
+	
 	Pager<CfgResource> configs(Query query);
 	
 	void cfgResourceEdit(CfgResourceEditParam param);
 	
-	CfgResource uploadVerify(int cfgId, String owner, long bytes);
+	CfgResource uploadVerify(CfgResource cfgResource, String owner, long bytes);
 	
 	Resource upload(Resource resource, boolean replace);
 	

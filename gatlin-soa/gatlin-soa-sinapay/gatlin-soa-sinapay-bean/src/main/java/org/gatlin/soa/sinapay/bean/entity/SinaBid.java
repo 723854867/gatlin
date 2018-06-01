@@ -2,6 +2,8 @@ package org.gatlin.soa.sinapay.bean.entity;
 
 import javax.persistence.Id;
 
+import org.gatlin.sdk.sinapay.bean.enums.BidState;
+import org.gatlin.soa.sinapay.bean.enums.BidPurpose;
 import org.gatlin.util.bean.Identifiable;
 
 public class SinaBid implements Identifiable<String> {
@@ -10,10 +12,10 @@ public class SinaBid implements Identifiable<String> {
 
 	@Id
 	private String id;
-	private String purpose;
 	private String bizId;
-	private String state;
+	private BidState state;
 	private String borrower;
+	private BidPurpose purpose;
 	private int created;
 	private int updated;
 
@@ -25,14 +27,6 @@ public class SinaBid implements Identifiable<String> {
 		this.id = id;
 	}
 
-	public String getPurpose() {
-		return purpose;
-	}
-	
-	public void setPurpose(String purpose) {
-		this.purpose = purpose;
-	}
-
 	public String getBizId() {
 		return bizId;
 	}
@@ -41,20 +35,28 @@ public class SinaBid implements Identifiable<String> {
 		this.bizId = bizId;
 	}
 
-	public String getState() {
+	public BidState getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(BidState state) {
 		this.state = state;
 	}
-	
+
 	public String getBorrower() {
 		return borrower;
 	}
-	
+
 	public void setBorrower(String borrower) {
 		this.borrower = borrower;
+	}
+
+	public BidPurpose getPurpose() {
+		return purpose;
+	}
+
+	public void setPurpose(BidPurpose purpose) {
+		this.purpose = purpose;
 	}
 
 	public int getCreated() {

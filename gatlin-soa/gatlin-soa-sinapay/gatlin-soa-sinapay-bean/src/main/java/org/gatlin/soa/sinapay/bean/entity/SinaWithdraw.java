@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Id;
 
+import org.gatlin.sdk.sinapay.bean.enums.AccountType;
+import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
 import org.gatlin.util.bean.Identifiable;
 
 public class SinaWithdraw implements Identifiable<String> {
@@ -12,10 +14,10 @@ public class SinaWithdraw implements Identifiable<String> {
 
 	@Id
 	private String id;
-	private String state;
 	private BigDecimal amount;
 	private String withdrawee;
-	private String accountType;
+	private AccountType accountType;
+	private SinaWithdrawState state;
 	private int created;
 	private int updated;
 
@@ -27,36 +29,36 @@ public class SinaWithdraw implements Identifiable<String> {
 		this.id = id;
 	}
 
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-	
 	public BigDecimal getAmount() {
 		return amount;
 	}
-	
+
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
-	
+
 	public String getWithdrawee() {
 		return withdrawee;
 	}
-	
+
 	public void setWithdrawee(String withdrawee) {
 		this.withdrawee = withdrawee;
 	}
-	
-	public String getAccountType() {
+
+	public AccountType getAccountType() {
 		return accountType;
 	}
-	
-	public void setAccountType(String accountType) {
+
+	public void setAccountType(AccountType accountType) {
 		this.accountType = accountType;
+	}
+
+	public SinaWithdrawState getState() {
+		return state;
+	}
+
+	public void setState(SinaWithdrawState state) {
+		this.state = state;
 	}
 
 	public int getCreated() {

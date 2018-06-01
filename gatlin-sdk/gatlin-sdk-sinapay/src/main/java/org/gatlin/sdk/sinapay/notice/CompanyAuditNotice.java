@@ -2,6 +2,8 @@ package org.gatlin.sdk.sinapay.notice;
 
 import javax.validation.constraints.NotEmpty;
 
+import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
+
 public class CompanyAuditNotice extends SinaNotice {
 
 	private static final long serialVersionUID = -3227242006888724873L;
@@ -9,9 +11,9 @@ public class CompanyAuditNotice extends SinaNotice {
 	@NotEmpty
 	private String audit_order_no;
 	private String inner_order_no;
-	@NotEmpty
-	private String audit_status;
 	private String audit_message;
+	@NotEmpty
+	private CompanyAuditState audit_status;
 
 	public String getAudit_order_no() {
 		return audit_order_no;
@@ -29,14 +31,6 @@ public class CompanyAuditNotice extends SinaNotice {
 		this.inner_order_no = inner_order_no;
 	}
 
-	public String getAudit_status() {
-		return audit_status;
-	}
-
-	public void setAudit_status(String audit_status) {
-		this.audit_status = audit_status;
-	}
-
 	public String getAudit_message() {
 		return audit_message;
 	}
@@ -44,5 +38,12 @@ public class CompanyAuditNotice extends SinaNotice {
 	public void setAudit_message(String audit_message) {
 		this.audit_message = audit_message;
 	}
-
+	
+	public CompanyAuditState getAudit_status() {
+		return audit_status;
+	}
+	
+	public void setAudit_status(CompanyAuditState audit_status) {
+		this.audit_status = audit_status;
+	}
 }

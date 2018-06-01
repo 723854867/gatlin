@@ -79,8 +79,7 @@ public class SinapayNoticeController {
 	@RequestMapping("withdraw/deposit")
 	public Object withdrawDeposit(@Valid WithdrawNotice notice) {
 		SinaWithdraw withdraw = sinapayOrderService.withdrawNotice(notice);
-		SinaWithdrawState state = SinaWithdrawState.valueOf(withdraw.getState());
-		if (state == SinaWithdrawState.FAILED) {			// 提现失败：发起待收
+		if (withdraw.getState() == SinaWithdrawState.FAILED) {			// 提现失败：发起待收
 			try {
 				sinapayOrderService.withdrawCollect(withdraw.getId(), notice);
 			} catch (Exception e) {

@@ -1,6 +1,6 @@
 package org.gatlin.soa.account.bean.param;
 
-import org.gatlin.soa.bean.enums.AccountType;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaParam;
 

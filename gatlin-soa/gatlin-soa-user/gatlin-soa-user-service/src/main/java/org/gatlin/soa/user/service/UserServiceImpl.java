@@ -27,9 +27,6 @@ import org.gatlin.soa.user.bean.param.UserListParam;
 import org.gatlin.soa.user.bean.param.UsernameResetParam;
 import org.gatlin.soa.user.manager.UserManager;
 import org.gatlin.soa.user.mybatis.EntityGenerator;
-import org.gatlin.util.bean.enums.Client;
-import org.gatlin.util.bean.enums.DeviceType;
-import org.gatlin.util.bean.enums.OS;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -88,9 +85,9 @@ public class UserServiceImpl implements UserService {
 		user.setCreated(info.getCreated());
 		user.setNickname(info.getNickname());
 		if (null != device) {
-			user.setOs(OS.match(device.getOs()));
-			user.setClient(Client.match(device.getClient()));
-			user.setDeviceType(DeviceType.match(device.getType()));
+			user.setOs(device.getOs());
+			user.setClient(device.getClient());
+			user.setDeviceType(device.getType());
 		}
 		return user;
 	}

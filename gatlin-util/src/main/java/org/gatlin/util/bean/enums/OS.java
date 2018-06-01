@@ -1,11 +1,13 @@
 package org.gatlin.util.bean.enums;
 
+import org.gatlin.util.bean.IEnum;
+
 /**
  * 操作系统类型
  * 
  * @author lynn
  */
-public enum OS {
+public enum OS implements IEnum {
 
 	// ios
 	IOS(1),
@@ -24,15 +26,8 @@ public enum OS {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
-	}
-	
-	public static final OS match(int os) {
-		for (OS temp : OS.values()) {
-			if (temp.mark == os)
-				return temp;
-		}
-		return null;
 	}
 }

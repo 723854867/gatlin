@@ -63,7 +63,7 @@ public class AuthManager {
 		api.setDeviceMod(param.getDeviceMod());
 		api.setLockTimeout(param.getLockTimeout());
 		api.setSecurityLevel(param.getSecurityLevel());
-		api.setStorageType(param.getStorageType().name());
+		api.setStorageType(param.getStorageType());
 		api.setUpdated(DateUtil.current());
 		cfgApiDao.update(api);
 	}

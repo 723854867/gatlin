@@ -48,7 +48,7 @@ public class GeoManager {
 		if (null != param.getUsed() && param.getUsed()) 
 			_addressCount(param.getUser().getId(), true);
 		if (null != geo) 
-			address.setCounty(geo.getCountryCode());
+			address.setCounty(geo.getCountyCode());
 		if (null != param.getUsed())
 			address.setUsed(param.getUsed());
 		if (StringUtil.hasText(param.getMemo()))

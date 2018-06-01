@@ -19,7 +19,6 @@ import org.gatlin.soa.resource.bean.entity.Resource;
 import org.gatlin.soa.resource.bean.param.CfgResourceEditParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 import org.gatlin.soa.resource.manager.ResourceManager;
-import org.gatlin.util.bean.enums.CacheUnit;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
 import org.springframework.stereotype.Service;
@@ -31,6 +30,11 @@ public class ResourceServiceImpl implements ResourceService {
 	
 	@javax.annotation.Resource
 	private ResourceManager resourceManager;
+	
+	@Override
+	public CfgResource cfgResource(int id) {
+		return resourceManager.cfgResource(id);
+	}
 	
 	@Override
 	public Pager<CfgResource> configs(Query query) {
@@ -45,19 +49,16 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 	
 	@Override
-	public CfgResource uploadVerify(int cfgId, String owner, long bytes) {
-		CfgResource cfgResource = resourceManager.cfgResource(cfgId);
-		Assert.notNull(ResourceCode.RESOURCE_CONFIG_NOT_EXIST, cfgResource);
+	public CfgResource uploadVerify(CfgResource cfgResource, String owner, long bytes) {
 		if (0 < cfgResource.getMaximum()) {
-			Query query = new Query().eq("cfg_id", cfgId);
+			Query query = new Query().eq("cfg_id", cfgResource.getId());
 			if (StringUtil.hasText(owner))
 				query.eq("owner", owner);
 			List<Resource> resources = resourceManager.resources(query);
 			Assert.isTrue(ResourceCode.RESOURCE_COUNT_LIMIT, resources.size() < cfgResource.getMaximum());
 		}
 		if (0 < cfgResource.getCacheSize()) {
-			CacheUnit unit = CacheUnit.valueOf(cfgResource.getCacheUnit());
-			long maximumSize = unit.bytes(cfgResource.getCacheSize());
+			long maximumSize = cfgResource.getCacheUnit().bytes(cfgResource.getCacheSize());
 			Assert.isTrue(ResourceCode.RESOURCE_SIZE_LIMIT, maximumSize >= bytes);
 		}
 		return cfgResource;

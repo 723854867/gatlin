@@ -1,15 +1,32 @@
 package org.gatlin.soa.config.bean.enums;
 
-public enum DistrictLevel {
+import org.gatlin.util.bean.IEnum;
+
+public enum DistrictLevel implements IEnum {
 
 	// 国
 	COUNTRY(0),
 	// 省
-	PROVINCE(1),
+	PROVINCE(1) {
+		@Override
+		public DistrictLevel parentLevel() {
+			return COUNTRY;
+		}
+	},
 	// 市
-	CITY(2),
+	CITY(2) {
+		@Override
+		public DistrictLevel parentLevel() {
+			return PROVINCE;
+		}
+	},
 	// 县
-	COUNTY(3);
+	COUNTY(3) {
+		@Override
+		public DistrictLevel parentLevel() {
+			return CITY;
+		}
+	};
 	
 	private int mark;
 	
@@ -17,15 +34,12 @@ public enum DistrictLevel {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
 	}
 	
-	public static final DistrictLevel match(int level) {
-		for (DistrictLevel temp : DistrictLevel.values()) {
-			if (temp.mark == level)
-				return temp;
-		}
-		return null;
+	public DistrictLevel parentLevel() {
+		throw new UnsupportedOperationException(name() + " has no parent level");
 	}
 }

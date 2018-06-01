@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 
 import javax.persistence.Id;
 
+import org.gatlin.soa.account.bean.enums.AccountField;
+import org.gatlin.soa.account.bean.enums.AccountType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.bean.Identifiable;
 
 public class LogAccount implements Identifiable<String> {
@@ -15,12 +18,12 @@ public class LogAccount implements Identifiable<String> {
 	private long owner;
 	private int bizType;
 	private String bizId;
-	private int ownerType;
-	private int fieldType;
-	private int accountType;
 	private BigDecimal amount;
+	private TargetType ownerType;
 	private BigDecimal preAmount;
 	private BigDecimal postAmount;
+	private AccountField fieldType;
+	private AccountType accountType;
 	private int created;
 
 	public String getId() {
@@ -55,27 +58,11 @@ public class LogAccount implements Identifiable<String> {
 		this.bizId = bizId;
 	}
 
-	public int getOwnerType() {
-		return ownerType;
-	}
-	
-	public void setOwnerType(int ownerType) {
-		this.ownerType = ownerType;
-	}
-
-	public int getFieldType() {
-		return fieldType;
-	}
-
-	public void setFieldType(int fieldType) {
-		this.fieldType = fieldType;
-	}
-
-	public int getAccountType() {
+	public AccountType getAccountType() {
 		return accountType;
 	}
-
-	public void setAccountType(int accountType) {
+	
+	public void setAccountType(AccountType accountType) {
 		this.accountType = accountType;
 	}
 
@@ -85,6 +72,14 @@ public class LogAccount implements Identifiable<String> {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+	
+	public TargetType getOwnerType() {
+		return ownerType;
+	}
+	
+	public void setOwnerType(TargetType ownerType) {
+		this.ownerType = ownerType;
 	}
 
 	public BigDecimal getPreAmount() {
@@ -101,6 +96,14 @@ public class LogAccount implements Identifiable<String> {
 
 	public void setPostAmount(BigDecimal postAmount) {
 		this.postAmount = postAmount;
+	}
+	
+	public AccountField getFieldType() {
+		return fieldType;
+	}
+	
+	public void setFieldType(AccountField fieldType) {
+		this.fieldType = fieldType;
 	}
 
 	public int getCreated() {

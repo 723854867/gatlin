@@ -2,6 +2,7 @@ package org.gatlin.soa.sinapay.bean.entity;
 
 import javax.persistence.Id;
 
+import org.gatlin.sdk.sinapay.bean.enums.TradeState;
 import org.gatlin.util.bean.Identifiable;
 
 public class SinaPay implements Identifiable<String> {
@@ -10,7 +11,7 @@ public class SinaPay implements Identifiable<String> {
 
 	@Id
 	private String id;
-	private String state;
+	private TradeState state;
 	private String withdrawId;
 	private int created;
 	private int updated;
@@ -23,11 +24,11 @@ public class SinaPay implements Identifiable<String> {
 		this.id = id;
 	}
 
-	public String getState() {
+	public TradeState getState() {
 		return state;
 	}
-
-	public void setState(String state) {
+	
+	public void setState(TradeState state) {
 		this.state = state;
 	}
 	

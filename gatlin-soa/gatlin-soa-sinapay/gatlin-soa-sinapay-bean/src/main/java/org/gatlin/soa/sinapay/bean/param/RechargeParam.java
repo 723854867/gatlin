@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
-import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaParam;
 
@@ -19,8 +18,6 @@ public class RechargeParam extends SoaParam {
 	@NotNull
 	@DecimalMin("0.01")
 	private BigDecimal amount;
-	@NotNull
-	private AccountType accountType;
 	private TargetType rechargeeType;
 	
 	public Long getRechargee() {
@@ -37,14 +34,6 @@ public class RechargeParam extends SoaParam {
 	
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
-	}
-	
-	public AccountType getAccountType() {
-		return accountType;
-	}
-	
-	public void setAccountType(AccountType accountType) {
-		this.accountType = accountType;
 	}
 	
 	public TargetType getRechargeeType() {

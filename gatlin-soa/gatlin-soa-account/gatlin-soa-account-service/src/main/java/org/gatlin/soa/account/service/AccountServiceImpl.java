@@ -8,13 +8,11 @@ import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.Account;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.account.manager.AccountManager;
-import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.TargetType;
-import org.gatlin.soa.bean.model.WithdrawContext;
-import org.gatlin.soa.bean.param.WithdrawParam;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -80,8 +78,8 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	@Override
-	public Withdraw withdraw(WithdrawParam param, WithdrawContext context) {
-		return accountManager.withdraw(param, context);
+	public void withdraw(Withdraw withdraw) {
+		accountManager.withdraw(withdraw);
 	}
 	
 	@Override

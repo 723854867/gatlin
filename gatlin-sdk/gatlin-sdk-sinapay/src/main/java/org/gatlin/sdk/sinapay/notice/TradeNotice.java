@@ -2,6 +2,8 @@ package org.gatlin.sdk.sinapay.notice;
 
 import javax.validation.constraints.NotEmpty;
 
+import org.gatlin.sdk.sinapay.bean.enums.TradeState;
+
 public class TradeNotice extends SinaNotice {
 
 	private static final long serialVersionUID = 7287692695576876636L;
@@ -11,7 +13,7 @@ public class TradeNotice extends SinaNotice {
 	@NotEmpty
 	private String inner_trade_no;
 	@NotEmpty
-	private String trade_status;
+	private TradeState trade_status;
 	private String trade_amount;
 	private String gmt_create;
 	private String gmt_payment;
@@ -35,11 +37,11 @@ public class TradeNotice extends SinaNotice {
 		this.inner_trade_no = inner_trade_no;
 	}
 
-	public String getTrade_status() {
+	public TradeState getTrade_status() {
 		return trade_status;
 	}
-
-	public void setTrade_status(String trade_status) {
+	
+	public void setTrade_status(TradeState trade_status) {
 		this.trade_status = trade_status;
 	}
 

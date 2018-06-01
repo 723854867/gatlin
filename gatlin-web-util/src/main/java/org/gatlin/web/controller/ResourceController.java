@@ -17,7 +17,6 @@ import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
 import org.gatlin.soa.resource.bean.param.ResourceListParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
-import org.gatlin.util.bean.enums.CacheUnit;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.web.bean.param.ResourceReplaceParam;
 import org.gatlin.web.bean.param.ResourceUploadParam;
@@ -73,9 +72,11 @@ public class ResourceController {
 	public Object upload(@Valid ResourceUploadParam param) {
 		Assert.hasText(CoreCode.PARAM_ERR, param.getName());
 		Assert.notNull(CoreCode.PARAM_ERR, param.getSource());
-		CfgResource cfgResource = resourceService.uploadVerify(param.getCfgResourceId(), param.getOwner(), param.getSource().getSize());
+		CfgResource cfgResource = resourceService.cfgResource(param.getCfgResourceId());
+		Assert.notNull(ResourceCode.RESOURCE_CONFIG_NOT_EXIST, cfgResource);
 		if (null != resourceHook)
 			resourceHook.uploadVerify(cfgResource, param);
+		resourceService.uploadVerify(cfgResource, param.getOwner(), param.getSource().getSize());
 		return uploader.upload(param.getSource(), cfgResource.getDirectory(), resource -> {
 			resource.setName(param.getName());
 			resource.setPriority(param.getPriority());
@@ -100,8 +101,7 @@ public class ResourceController {
 		Assert.notNull(ResourceCode.RESOURCE_NOT_EXIST, info);
 		CfgResource cfgResource = resourceService.configs(new Query().eq("id", info.getCfgId())).getList().iterator().next();
 		if (0 < cfgResource.getCacheSize()) {
-			CacheUnit unit = CacheUnit.valueOf(cfgResource.getCacheUnit());
-			long maximumSize = unit.bytes(cfgResource.getCacheSize());
+			long maximumSize = cfgResource.getCacheUnit().bytes(cfgResource.getCacheSize());
 			Assert.isTrue(ResourceCode.RESOURCE_SIZE_LIMIT, maximumSize >= param.getSource().getSize());
 		}
 		return uploader.upload(param.getSource(), cfgResource.getDirectory(), resource -> {

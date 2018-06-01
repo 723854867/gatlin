@@ -35,7 +35,7 @@ public class DistrictManager {
 		if (StringUtil.hasText(param.getParent())) {
 			CfgDistrict parent = cfgDistrictDao.getByKey(param.getParent());
 			Assert.notNull(ConfigCode.DISTRICT_NOT_EXIST, parent);
-			Assert.isTrue(CoreCode.FORBID, parent.getLevel() != DistrictLevel.COUNTY.mark());
+			Assert.isTrue(CoreCode.FORBID, parent.getLevel() != DistrictLevel.COUNTY);
 		}
 		CfgDistrict instance = EntityGenerator.newCfgDistrict(param);
 		cfgDistrictDao.insert(instance);
@@ -50,18 +50,18 @@ public class DistrictManager {
 		if (StringUtil.hasText(param.getAbname()))
 			district.setAbname(param.getAbname());
 		if (null != param.getLevel())
-			district.setLevel(param.getLevel().mark());
+			district.setLevel(param.getLevel());
 		if (StringUtil.hasText(param.getAbname()))
-			Assert.isTrue(CoreCode.PARAM_ERR, district.getLevel() == DistrictLevel.PROVINCE.mark());
+			Assert.isTrue(CoreCode.PARAM_ERR, district.getLevel() == DistrictLevel.PROVINCE);
 		if (StringUtil.hasText(param.getParent()) && !district.getParent().equals(param.getParent())) {
 			CfgDistrict parent = cfgDistrictDao.getByKey(param.getParent());
 			Assert.notNull(ConfigCode.DISTRICT_NOT_EXIST, parent);
-			Assert.isTrue(parent.getLevel() == district.getLevel() + 1);
+			Assert.isTrue(parent.getLevel() == district.getLevel().parentLevel());
 		}
 		if (null != param.getValid() && district.isValid() ^ param.getValid()) {
 			if (param.getValid()) {
 				Map<DistrictLevel, CfgDistrict> parents = parents(district);
-				parents.put(DistrictLevel.match(district.getLevel()), district);
+				parents.put(district.getLevel(), district);
 				if (!CollectionUtil.isEmpty(parents)) {
 					parents.values().forEach(item -> {
 						item.setValid(true);
@@ -89,7 +89,7 @@ public class DistrictManager {
 		CfgDistrict district = district(code);
 		Assert.notNull(ConfigCode.DISTRICT_NOT_EXIST, district);
 		Map<DistrictLevel, CfgDistrict> m = parents(district);
-		m.put(DistrictLevel.match(district.getLevel()), district);
+		m.put(district.getLevel(), district);
 		CfgDistrict city = m.get(DistrictLevel.CITY);
 		CfgDistrict county = m.get(DistrictLevel.COUNTY);
 		CfgDistrict country = m.get(DistrictLevel.COUNTRY);
@@ -119,7 +119,7 @@ public class DistrictManager {
 			Assert.notNull(ConfigCode.DISTRICT_NOT_EXIST, district);
 			Map<DistrictLevel, CfgDistrict> m = new HashMap<DistrictLevel, CfgDistrict>();
 			while (true) {
-				m.put(DistrictLevel.match(district.getLevel()), district);
+				m.put(district.getLevel(), district);
 				if (!StringUtil.hasText(district.getParent()))
 					break;
 				district = districts.get(district.getParent());
@@ -151,7 +151,7 @@ public class DistrictManager {
 		Map<DistrictLevel, CfgDistrict> map = new HashMap<DistrictLevel, CfgDistrict>();
 		while(StringUtil.hasText(district.getParent())) {
 			district = district(district.getParent());
-			map.put(DistrictLevel.match(district.getLevel()), district);
+			map.put(district.getLevel(), district);
 		}
 		return map;
 	}

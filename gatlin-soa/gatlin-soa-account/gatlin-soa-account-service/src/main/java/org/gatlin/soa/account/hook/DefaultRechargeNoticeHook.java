@@ -7,13 +7,13 @@ import javax.annotation.Resource;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.soa.account.bean.AccountCode;
 import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.account.manager.AccountManager;
-import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.GatlinBizType;
-import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.DateUtil;
+import org.gatlin.util.lang.EnumUtil;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,8 +24,7 @@ public class DefaultRechargeNoticeHook implements IRechargeNoticeHook {
 
 	@Override
 	public void process(Recharge recharge, RechargeState update) {
-		RechargeState pstate = RechargeState.match(recharge.getState());
-		switch (pstate) {
+		switch (recharge.getState()) {
 		case INIT:
 			initUpdate(recharge, update);
 			break;
@@ -38,7 +37,7 @@ public class DefaultRechargeNoticeHook implements IRechargeNoticeHook {
 		default:
 			throw new CodeException(AccountCode.RECHARGE_STATE_ERR);
 		}
-		recharge.setState(update.mark());
+		recharge.setState(update);
 		recharge.setUpdated(DateUtil.current());
 	}
 	
@@ -103,11 +102,10 @@ public class DefaultRechargeNoticeHook implements IRechargeNoticeHook {
 	protected void success(Recharge recharge) { 
 		switch (recharge.getGoodsType()) {
 		case 1:				// 账户充值成功
-			TargetType rechargeeType = TargetType.match(recharge.getRechargeeType());
-			AccountType accountType = AccountType.match(Integer.valueOf(recharge.getGoodsId()));
+			AccountType accountType = EnumUtil.valueOf(AccountType.class, Integer.valueOf(recharge.getGoodsId()));
 			AccountDetail detail = new AccountDetail(recharge.getId(), GatlinBizType.RECHARGE_SUCCESS);
 			BigDecimal amount = recharge.getAmount().subtract(recharge.getFee());
-			detail.usableIncr(rechargeeType, recharge.getRechargee(), accountType, amount);
+			detail.usableIncr(recharge.getRechargeeType(), recharge.getRechargee(), accountType, amount);
 			accountManager.process(detail);
 			break;
 		default:

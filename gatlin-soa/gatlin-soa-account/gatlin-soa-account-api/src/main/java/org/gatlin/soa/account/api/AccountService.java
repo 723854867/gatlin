@@ -5,12 +5,10 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.bean.entity.Account;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.account.bean.model.AccountDetail;
-import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.TargetType;
-import org.gatlin.soa.bean.model.WithdrawContext;
-import org.gatlin.soa.bean.param.WithdrawParam;
 
 public interface AccountService {
 
@@ -34,7 +32,7 @@ public interface AccountService {
 	
 	Pager<Recharge> recharges(Query query);
 	
-	Withdraw withdraw(WithdrawParam param, WithdrawContext context);
+	void withdraw(Withdraw withdraw);
 	
 	void withdrawNotice(String id, boolean success);
 	

@@ -12,7 +12,6 @@ import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
-import org.gatlin.sdk.sinapay.bean.enums.BidState;
 import org.gatlin.sdk.sinapay.bean.enums.BidType;
 import org.gatlin.sdk.sinapay.bean.enums.CardAttribute;
 import org.gatlin.sdk.sinapay.bean.enums.CashdeskAddrCategory;
@@ -45,9 +44,7 @@ import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.enums.TargetType;
-import org.gatlin.soa.bean.model.WithdrawContext;
 import org.gatlin.soa.bean.param.SoaSidParam;
-import org.gatlin.soa.bean.param.WithdrawParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.sinapay.SinaBizHook;
 import org.gatlin.soa.sinapay.bean.SinaCode;
@@ -67,6 +64,7 @@ import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
 import org.gatlin.soa.sinapay.bean.model.BidInfo;
 import org.gatlin.soa.sinapay.bean.param.RechargeParam;
+import org.gatlin.soa.sinapay.bean.param.WithdrawParam;
 import org.gatlin.soa.sinapay.mybatis.EntityGenerator;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaBidDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaCollectDao;
@@ -116,7 +114,7 @@ public class SinaOrderManager {
 
 	@Transactional
 	public String depositRecharge(Recharge recharge, RechargeParam param) {
-		TargetType rechargerType = TargetType.match(recharge.getRechargerType());
+		TargetType rechargerType = recharge.getRechargerType();
 		AccountType accountType = rechargerType == TargetType.COMPANY ? AccountType.BASIC : AccountType.SAVING_POT;
 		SinaUser recharger = sinaMemberManager.user(rechargerType == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRecharger());
 		String rechargee = StringUtil.EMPTY;
@@ -200,24 +198,21 @@ public class SinaOrderManager {
 		Query query = new Query().eq("id", notice.getOuter_trade_no()).forUpdate();
 		SinaCollect collect = sinaCollectDao.queryUnique(query);
 		Assert.notNull(SinaCode.RECHARGE_COLLECT_NOT_EXIST, collect);
-		TradeState state = TradeState.valueOf(collect.getState());
-		TradeState cstate = TradeState.valueOf(notice.getTrade_status());
-		switch (state) {
+		switch (collect.getState()) {
 		case WAIT_PAY:
-			Assert.isTrue(CoreCode.DATA_STATE_CHANGED, cstate == TradeState.PAY_FINISHED || cstate == TradeState.TRADE_FAILED || cstate == TradeState.TRADE_FINISHED || cstate == TradeState.TRADE_CLOSED);
+			Assert.isTrue(CoreCode.DATA_STATE_CHANGED, notice.getTrade_status() == TradeState.PAY_FINISHED || notice.getTrade_status() == TradeState.TRADE_FAILED || notice.getTrade_status() == TradeState.TRADE_FINISHED || notice.getTrade_status() == TradeState.TRADE_CLOSED);
 			break;
 		case PAY_FINISHED:
-			Assert.isTrue(CoreCode.DATA_STATE_CHANGED, cstate == TradeState.TRADE_FINISHED || cstate == TradeState.TRADE_FAILED);
+			Assert.isTrue(CoreCode.DATA_STATE_CHANGED, notice.getTrade_status() == TradeState.TRADE_FINISHED || notice.getTrade_status() == TradeState.TRADE_FAILED);
 			break;
 		default:
 			throw new CodeException(CoreCode.DATA_STATE_CHANGED);
 		}
-		CollectType type = CollectType.valueOf(collect.getType());
 		query = new Query().eq("id", collect.getTid()).forUpdate();
-		switch (type) {
+		switch (collect.getType()) {
 		case RECHARGE:						// 充值待收
 			SinaRecharge recharge = sinaRechargeDao.queryUnique(query);
-			switch (cstate) {
+			switch (notice.getTrade_status()) {
 			case TRADE_FAILED:
 			case TRADE_CLOSED:
 				recharge.setState(RechargeState.WAIT_RECALL.name());
@@ -236,15 +231,15 @@ public class SinaOrderManager {
 			break;
 		case WITHDRAW_FAILED:						// 提现失败待收
 			SinaWithdraw withdraw = sinaWithdrawDao.queryUnique(query);
-			switch (cstate) {
+			switch (notice.getTrade_status()) {
 			case TRADE_FAILED:
 			case TRADE_CLOSED:
-				withdraw.setState(SinaWithdrawState.FAILED.name());
+				withdraw.setState(SinaWithdrawState.FAILED);
 				withdraw.setUpdated(DateUtil.current());
 				sinaWithdrawDao.update(withdraw);
 				break;
 			case TRADE_FINISHED:
-				withdraw.setState(SinaWithdrawState.RECALLED.name());
+				withdraw.setState(SinaWithdrawState.RECALLED);
 				withdraw.setUpdated(DateUtil.current());
 				sinaWithdrawDao.update(withdraw);
 				accountService.withdrawNotice(withdraw.getId(), false);
@@ -266,10 +261,12 @@ public class SinaOrderManager {
 	
 	// 个人会员提现
 	@Transactional
-	public String withdrawPay(WithdrawParam param, WithdrawContext context) { 
+	public String withdrawPay(WithdrawParam param) { 
 		SinaUser user = sinaMemberManager.user(MemberType.PERSONAL, param.getUser().getId());
 		Assert.isTrue(SinaCode.MEMBER_NOT_EXIST, null != user);
-		Withdraw withdraw = accountService.withdraw(param, context);
+		BigDecimal fee = sinaBizHook.withdrawFee(param);
+		Withdraw withdraw = EntityGenerator.newWithdraw(param, fee);
+		accountService.withdraw(withdraw);
 		SinaPay pay = EntityGenerator.newSinaPay(withdraw);
 		sinaPayDao.insert(pay);
 		sinaWithdrawDao.insert(EntityGenerator.newSinaWithdraw(withdraw, user, AccountType.SAVING_POT));
@@ -293,29 +290,27 @@ public class SinaOrderManager {
 		Query query = new Query().eq("id", notice.getOuter_trade_no()).forUpdate();
 		SinaPay pay = sinaPayDao.queryUnique(query);
 		Assert.notNull(SinaCode.WITHDRAW_PAY_NOT_EXIST, pay);
-		TradeState state = TradeState.valueOf(pay.getState());
-		TradeState cstate = TradeState.valueOf(notice.getTrade_status());
-		switch (state) {
+		switch (pay.getState()) {
 		case WAIT_PAY:
-			Assert.isTrue(CoreCode.DATA_STATE_CHANGED, cstate == TradeState.PAY_FINISHED || cstate == TradeState.TRADE_FAILED || cstate == TradeState.TRADE_FINISHED || cstate == TradeState.TRADE_CLOSED);
+			Assert.isTrue(CoreCode.DATA_STATE_CHANGED, notice.getTrade_status() == TradeState.PAY_FINISHED || notice.getTrade_status() == TradeState.TRADE_FAILED || notice.getTrade_status() == TradeState.TRADE_FINISHED || notice.getTrade_status() == TradeState.TRADE_CLOSED);
 			break;
 		case PAY_FINISHED:
-			Assert.isTrue(CoreCode.DATA_STATE_CHANGED, cstate == TradeState.TRADE_FINISHED || cstate == TradeState.TRADE_FAILED);
+			Assert.isTrue(CoreCode.DATA_STATE_CHANGED, notice.getTrade_status() == TradeState.TRADE_FINISHED || notice.getTrade_status() == TradeState.TRADE_FAILED);
 			break;
 		default:
 			throw new CodeException(CoreCode.DATA_STATE_CHANGED);
 		}
 		query = new Query().eq("id", pay.getWithdrawId()).forUpdate();
 		SinaWithdraw withdraw = sinaWithdrawDao.queryUnique(query);
-		switch (cstate) {
+		switch (notice.getTrade_status()) {
 		case TRADE_FAILED:
 		case TRADE_CLOSED:
-			withdraw.setState(SinaWithdrawState.PAY_FAILED.name());
+			withdraw.setState(SinaWithdrawState.PAY_FAILED);
 			withdraw.setUpdated(DateUtil.current());
 			sinaWithdrawDao.update(withdraw);
 			break;
 		case TRADE_FINISHED:
-			withdraw.setState(SinaWithdrawState.PAYED.name());
+			withdraw.setState(SinaWithdrawState.PAYED);
 			withdraw.setUpdated(DateUtil.current());
 			sinaWithdrawDao.update(withdraw);
 			break;
@@ -332,18 +327,17 @@ public class SinaOrderManager {
 		Query query = new Query().eq("id", param.getId()).forUpdate();
 		SinaWithdraw withdraw = sinaWithdrawDao.queryUnique(query);
 		Assert.notNull(SinaCode.WITHDRAW_NOT_EXIST, withdraw);
-		SinaWithdrawState state = SinaWithdrawState.valueOf(withdraw.getState());
-		if (state != SinaWithdrawState.PAYED) {
-			if (state == SinaWithdrawState.WAIT_PAY)
+		if (withdraw.getState() != SinaWithdrawState.PAYED) {
+			if (withdraw.getState() == SinaWithdrawState.WAIT_PAY)
 				throw new CodeException(SinaCode.WITHDRAW_UNPAYED);
 			throw new CodeException(CoreCode.DATA_STATE_CHANGED);
 		}
-		withdraw.setState(SinaWithdrawState.WITHDRAWING.name());
+		withdraw.setState(SinaWithdrawState.WITHDRAWING);
 		withdraw.setUpdated(DateUtil.current());
 		sinaWithdrawDao.update(withdraw);
 		DepositWithdrawRequest.Builder builder = new DepositWithdrawRequest.Builder();
 		builder.outTradeNo(withdraw.getId());
-		builder.accountType(AccountType.valueOf(withdraw.getAccountType()));
+		builder.accountType(withdraw.getAccountType());
 		builder.identityId(withdraw.getWithdrawee());
 		builder.amount(withdraw.getAmount());
 		builder.userIp(param.meta().getIp());
@@ -366,21 +360,19 @@ public class SinaOrderManager {
 		Query query = new Query().eq("id", notice.getOuter_trade_no()).forUpdate();
 		SinaWithdraw withdraw = sinaWithdrawDao.queryUnique(query);
 		Assert.notNull(SinaCode.WITHDRAW_NOT_EXIST, withdraw);
-		SinaWithdrawState state = SinaWithdrawState.valueOf(withdraw.getState());
-		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == SinaWithdrawState.WITHDRAWING || state == SinaWithdrawState.PROCESSING);
-		WithdrawState cstate = WithdrawState.valueOf(notice.getWithdraw_status());
-		switch (cstate) {
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, withdraw.getState() == SinaWithdrawState.WITHDRAWING || withdraw.getState() == SinaWithdrawState.PROCESSING);
+		switch (notice.getWithdraw_status()) {
 		case SUCCESS:
-			withdraw.setState(SinaWithdrawState.SUCCESS.name());
+			withdraw.setState(SinaWithdrawState.SUCCESS);
 			withdraw.setUpdated(DateUtil.current());
 			accountService.withdrawNotice(withdraw.getId(), true);
 			break;
 		case FAILED:
-			withdraw.setState(SinaWithdrawState.FAILED.name());
+			withdraw.setState(SinaWithdrawState.FAILED);
 			withdraw.setUpdated(DateUtil.current());
 			break;
 		case PROCESSING:
-			withdraw.setState(SinaWithdrawState.PROCESSING.name());
+			withdraw.setState(SinaWithdrawState.PROCESSING);
 			withdraw.setUpdated(DateUtil.current());
 			break;
 		default:
@@ -394,9 +386,8 @@ public class SinaOrderManager {
 	public void withdrawCollect(String id, WithdrawNotice notice) {
 		SinaWithdraw withdraw = sinaWithdrawDao.queryUnique(new Query().eq("id", id).forUpdate());
 		Assert.notNull(SinaCode.WITHDRAW_NOT_EXIST, withdraw);
-		SinaWithdrawState state = SinaWithdrawState.valueOf(withdraw.getState());
-		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == SinaWithdrawState.FAILED);
-		withdraw.setState(SinaWithdrawState.RECALLING.name());
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, withdraw.getState() == SinaWithdrawState.FAILED);
+		withdraw.setState(SinaWithdrawState.RECALLING);
 		withdraw.setUpdated(DateUtil.current());
 		sinaWithdrawDao.update(withdraw);
 		SinaCollect collect = EntityGenerator.newSinaCollect(CollectType.WITHDRAW_FAILED, withdraw.getId());
@@ -450,11 +441,10 @@ public class SinaOrderManager {
 		Query query = new Query().eq("id", notice.getOut_bid_no()).forUpdate();
 		SinaBid bid = sinaBidDao.queryUnique(query);
 		Assert.notNull(SinaCode.BID_NOT_EXIST, bid);
-		BidState state = BidState.valueOf(bid.getState());
-		switch (state) {
+		switch (bid.getState()) {
 		case INIT:
 		case AUDITING:
-			bid.setState(notice.getBid_status().name());
+			bid.setState(notice.getBid_status());
 			bid.setUpdated(DateUtil.current());
 			break;
 		default:
@@ -506,20 +496,18 @@ public class SinaOrderManager {
 		Query query = new Query().eq("id", notice.getOuter_trade_no()).forUpdate();
 		SinaLoanout loanout = sinaLoanoutDao.queryUnique(query);
 		Assert.notNull(SinaCode.LOANOUT_NOT_EXIST, loanout);
-		WithdrawState state = WithdrawState.valueOf(loanout.getState());
-		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == WithdrawState.INIT || state == WithdrawState.PROCESSING);
-		WithdrawState cstate = WithdrawState.valueOf(notice.getWithdraw_status());
-		switch (cstate) {
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, loanout.getState() == WithdrawState.INIT || loanout.getState() == WithdrawState.PROCESSING);
+		switch (notice.getWithdraw_status()) {
 		case SUCCESS:
-			loanout.setState(WithdrawState.SUCCESS.name());
+			loanout.setState(WithdrawState.SUCCESS);
 			loanout.setUpdated(DateUtil.current());
 			break;
 		case FAILED:
-			loanout.setState(WithdrawState.FAILED.name());
+			loanout.setState(WithdrawState.FAILED);
 			loanout.setUpdated(DateUtil.current());
 			break;
 		case PROCESSING:
-			loanout.setState(WithdrawState.PROCESSING.name());
+			loanout.setState(WithdrawState.PROCESSING);
 			loanout.setUpdated(DateUtil.current());
 			break;
 		default:

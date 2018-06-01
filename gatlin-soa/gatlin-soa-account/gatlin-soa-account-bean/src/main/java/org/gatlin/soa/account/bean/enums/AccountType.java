@@ -1,11 +1,13 @@
-package org.gatlin.soa.bean.enums;
+package org.gatlin.soa.account.bean.enums;
+
+import org.gatlin.util.bean.IEnum;
 
 /**
  * 账户类型
  * 
  * @author lynn
  */
-public enum AccountType {
+public enum AccountType implements IEnum {
 
 	// 基本账户
 	BASIC(1),
@@ -24,15 +26,8 @@ public enum AccountType {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
-	}
-	
-	public static final AccountType match(int mark) {
-		for (AccountType temp : AccountType.values()) {
-			if (temp.mark == mark)
-				return temp;
-		}
-		return null;
 	}
 }

@@ -1,6 +1,8 @@
 package org.gatlin.util.bean.enums;
 
-public enum TimeUnit {
+import org.gatlin.util.bean.IEnum;
+
+public enum TimeUnit implements IEnum {
 
 	SECOND(1, 1000),
 	MINUTE(2, 60000),
@@ -19,6 +21,7 @@ public enum TimeUnit {
 		this.millis = millis;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
 	}

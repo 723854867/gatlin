@@ -3,6 +3,7 @@ package org.gatlin.soa.user.bean.entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.util.bean.Identifiable;
 
 /**
@@ -22,8 +23,8 @@ public class Username implements Identifiable<Long> {
 	@GeneratedValue
 	private long id;
 	private long uid;
-	private int type;
 	private String username;
+	private UsernameType type;
 	private int created;
 	private int updated;
 	
@@ -43,20 +44,20 @@ public class Username implements Identifiable<Long> {
 		this.uid = uid;
 	}
 
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
 	public String getUsername() {
 		return username;
 	}
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	public UsernameType getType() {
+		return type;
+	}
+	
+	public void setType(UsernameType type) {
+		this.type = type;
 	}
 
 	public int getCreated() {

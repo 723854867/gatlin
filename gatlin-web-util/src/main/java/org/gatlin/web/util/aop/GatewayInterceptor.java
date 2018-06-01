@@ -24,7 +24,6 @@ import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.authority.api.AuthService;
 import org.gatlin.soa.authority.bean.entity.CfgApi;
-import org.gatlin.soa.authority.bean.enums.StorageType;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.log.api.LogService;
@@ -135,8 +134,7 @@ public class GatewayInterceptor {
 			}
 			// 开启日志记录
 			if (null != api) {
-				 StorageType type = StorageType.valueOf(api.getStorageType());
-				 switch (type) {
+				 switch (api.getStorageType()) {
 				case FILE:
 					logger.info("客户端请求：{}", SerializeUtil.GSON.toJson(log));
 					break;

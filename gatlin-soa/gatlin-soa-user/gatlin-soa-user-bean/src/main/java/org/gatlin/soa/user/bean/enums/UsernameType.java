@@ -1,11 +1,13 @@
 package org.gatlin.soa.user.bean.enums;
 
+import org.gatlin.util.bean.IEnum;
+
 /**
  * 用户名类型
  * 
  * @author lynn
  */
-public enum UsernameType {
+public enum UsernameType implements IEnum {
 
 	// 普通用户名
 	COMMON(0),
@@ -20,15 +22,8 @@ public enum UsernameType {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
-	}
-	
-	public static final UsernameType match(int type) {
-		for (UsernameType temp : UsernameType.values()) {
-			if (temp.mark == type)
-				return temp;
-		}
-		return null;
 	}
 }

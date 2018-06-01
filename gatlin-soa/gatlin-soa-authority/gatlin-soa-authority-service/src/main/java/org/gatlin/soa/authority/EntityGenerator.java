@@ -20,7 +20,7 @@ public class EntityGenerator {
 		instance.setDeviceMod(param.getDeviceMod());
 		instance.setLockTimeout(param.getLockTimeout());
 		instance.setSecurityLevel(param.getSecurityLevel());
-		instance.setStorageType(param.getStorageType().name());
+		instance.setStorageType(param.getStorageType());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
@@ -53,7 +53,7 @@ public class EntityGenerator {
 		AuthMapping instance = new AuthMapping();
 		instance.setSid(sid);
 		instance.setTid(tid);
-		instance.setType(type.mark());
+		instance.setType(type);
 		instance.setCreated(DateUtil.current());
 		return instance;
 	}

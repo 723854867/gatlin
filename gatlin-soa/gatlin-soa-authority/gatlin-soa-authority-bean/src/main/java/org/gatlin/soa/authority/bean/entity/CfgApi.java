@@ -3,6 +3,7 @@ package org.gatlin.soa.authority.bean.entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.gatlin.soa.authority.bean.enums.StorageType;
 import org.gatlin.util.bean.Identifiable;
 
 public class CfgApi implements Identifiable<Integer> {
@@ -18,9 +19,9 @@ public class CfgApi implements Identifiable<Integer> {
 	private int deviceMod;
 	private boolean serial;
 	private int lockTimeout;
-	private String storageType;
 	// 安全级别：和服务器的当前状态级别对应，只有级别高于服务器的状态级别才可以调用
 	private int securityLevel;
+	private StorageType storageType;
 	private int created;
 	private int updated;
 	
@@ -80,20 +81,20 @@ public class CfgApi implements Identifiable<Integer> {
 		this.lockTimeout = lockTimeout;
 	}
 
-	public String getStorageType() {
-		return storageType;
-	}
-
-	public void setStorageType(String storageType) {
-		this.storageType = storageType;
-	}
-	
 	public int getSecurityLevel() {
 		return securityLevel;
 	}
 	
 	public void setSecurityLevel(int securityLevel) {
 		this.securityLevel = securityLevel;
+	}
+	
+	public StorageType getStorageType() {
+		return storageType;
+	}
+	
+	public void setStorageType(StorageType storageType) {
+		this.storageType = storageType;
 	}
 
 	public int getCreated() {

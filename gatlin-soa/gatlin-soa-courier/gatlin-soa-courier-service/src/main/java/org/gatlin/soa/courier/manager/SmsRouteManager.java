@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.courier.CourierConsts;
+import org.gatlin.util.lang.EnumUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ public class SmsRouteManager {
 	private ChuangLanManager chuangLanManager;
 	
 	public void send(String content, String mobile) { 
-		PlatType plat = PlatType.match(configService.config(CourierConsts.SMS_PLAT));
+		PlatType plat = EnumUtil.valueOf(PlatType.class, configService.config(CourierConsts.SMS_PLAT));
 		switch (plat) {
 		case CHUANGLAN:
 			if (null != chuangLanManager)

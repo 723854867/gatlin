@@ -1,11 +1,8 @@
 package org.gatlin.web.controller;
 
-import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import org.gatlin.core.util.SpringContextUtil;
 import org.gatlin.sdk.alipay.AlipayConfig;
 import org.gatlin.sdk.alipay.bean.AlipayException;
 import org.gatlin.sdk.alipay.bean.enums.Code;
@@ -15,14 +12,13 @@ import org.gatlin.soa.SoaConsts;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.AccountUtil;
 import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.alipay.api.AlipayAccountService;
-import org.gatlin.soa.alipay.bean.model.RechargeContext;
 import org.gatlin.soa.alipay.bean.param.RechargeParam;
 import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.web.AlipayCondition;
-import org.gatlin.web.validator.IAlipayRechargeValidator;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,11 +41,8 @@ public class AlipayController {
 	@ResponseBody
 	@RequestMapping("recharge/account")
 	public Object recharge(@RequestBody @Valid RechargeParam param) {
-		Map<String, IAlipayRechargeValidator> validators = SpringContextUtil.getBeansOfType(IAlipayRechargeValidator.class);
-		RechargeContext context = new RechargeContext(param);
-		validators.values().forEach(validator -> validator.validate(context));
 		int timeout = configService.config(SoaConsts.RECHARGE_TIMEOUT);
-		Recharge recharge = AccountUtil.newRecharge(param, PlatType.ALIPAY, 1, param.getAccountType().mark(), param.getAmount(), timeout);
+		Recharge recharge = AccountUtil.newRecharge(param, PlatType.ALIPAY, 1, AccountType.BASIC, param.getAmount(), timeout);
 		return alipayAccountService.recharge(recharge);
 	}
 	

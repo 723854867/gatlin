@@ -2,45 +2,30 @@ package org.gatlin.soa.sinapay.bean.entity;
 
 import javax.persistence.Id;
 
+import org.gatlin.soa.sinapay.bean.enums.BankCardState;
 import org.gatlin.util.bean.Identifiable;
 
 public class SinaBankCard implements Identifiable<String> {
 
 	private static final long serialVersionUID = 4659851172140139451L;
 
+	private int used;
 	@Id
 	private String id;
-	private int used;
-	private String owner;
 	private String ip;
 	private String city;
-	private String state;
+	private String owner;
 	private String bankId;
 	private String bankNo;
 	private String ticket;
 	private String mobile;
 	private String branch;
 	private String cardId;
-	private String sinaCardId;
 	private String province;
+	private String sinaCardId;
+	private BankCardState state;
 	private int created;
 	private int updated;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public String getOwner() {
-		return owner;
-	}
-	
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
 	
 	public int getUsed() {
 		return used;
@@ -50,6 +35,14 @@ public class SinaBankCard implements Identifiable<String> {
 		this.used = used;
 	}
 	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getIp() {
 		return ip;
 	}
@@ -57,7 +50,7 @@ public class SinaBankCard implements Identifiable<String> {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
-	
+
 	public String getCity() {
 		return city;
 	}
@@ -65,23 +58,15 @@ public class SinaBankCard implements Identifiable<String> {
 	public void setCity(String city) {
 		this.city = city;
 	}
-	
-	public String getState() {
-		return state;
+
+	public String getOwner() {
+		return owner;
 	}
-	
-	public void setState(String state) {
-		this.state = state;
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
-	
-	public String getCardId() {
-		return cardId;
-	}
-	
-	public void setCardId(String cardId) {
-		this.cardId = cardId;
-	}
-	
+
 	public String getBankId() {
 		return bankId;
 	}
@@ -122,6 +107,14 @@ public class SinaBankCard implements Identifiable<String> {
 		this.branch = branch;
 	}
 
+	public String getCardId() {
+		return cardId;
+	}
+
+	public void setCardId(String cardId) {
+		this.cardId = cardId;
+	}
+
 	public String getProvince() {
 		return province;
 	}
@@ -129,13 +122,21 @@ public class SinaBankCard implements Identifiable<String> {
 	public void setProvince(String province) {
 		this.province = province;
 	}
-	
+
 	public String getSinaCardId() {
 		return sinaCardId;
 	}
-	
+
 	public void setSinaCardId(String sinaCardId) {
 		this.sinaCardId = sinaCardId;
+	}
+
+	public BankCardState getState() {
+		return state;
+	}
+
+	public void setState(BankCardState state) {
+		this.state = state;
 	}
 
 	public int getCreated() {

@@ -42,7 +42,7 @@ public class ResourceManager {
 			resource.setMaximum(param.getMaximum());
 			resource.setDirectory(param.getDirectory());
 			resource.setCacheSize(param.getCacheSize());
-			resource.setCacheUnit(param.getCacheUnit().name());
+			resource.setCacheUnit(param.getCacheUnit());
 			resource.setUpdated(DateUtil.current());
 			cfgResourceDao.update(resource);
 		}

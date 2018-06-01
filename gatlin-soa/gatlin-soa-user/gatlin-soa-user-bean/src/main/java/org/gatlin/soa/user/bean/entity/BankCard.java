@@ -2,6 +2,7 @@ package org.gatlin.soa.user.bean.entity;
 
 import javax.persistence.Id;
 
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.bean.Identifiable;
 
 public class BankCard implements Identifiable<String> {
@@ -11,7 +12,6 @@ public class BankCard implements Identifiable<String> {
 	@Id
 	private String id;
 	private long owner;
-	private int ownerType;
 	private String no;
 	private String bankId;
 	private boolean used;
@@ -19,6 +19,7 @@ public class BankCard implements Identifiable<String> {
 	private String province;
 	private String city;
 	private String branch;
+	private TargetType ownerType;
 	private int created;
 	private int updated;
 
@@ -36,14 +37,6 @@ public class BankCard implements Identifiable<String> {
 
 	public void setOwner(long owner) {
 		this.owner = owner;
-	}
-
-	public int getOwnerType() {
-		return ownerType;
-	}
-
-	public void setOwnerType(int ownerType) {
-		this.ownerType = ownerType;
 	}
 
 	public String getNo() {
@@ -100,6 +93,14 @@ public class BankCard implements Identifiable<String> {
 
 	public void setBranch(String branch) {
 		this.branch = branch;
+	}
+	
+	public TargetType getOwnerType() {
+		return ownerType;
+	}
+	
+	public void setOwnerType(TargetType ownerType) {
+		this.ownerType = ownerType;
 	}
 
 	public int getCreated() {
