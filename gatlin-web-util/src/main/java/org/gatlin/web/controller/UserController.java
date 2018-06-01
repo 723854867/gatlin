@@ -9,12 +9,12 @@ import javax.validation.Valid;
 
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.bean.model.message.Response;
-import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
+import org.gatlin.soa.resource.bean.param.ResourcesParam;
 import org.gatlin.soa.user.api.BankCardService;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.model.BankCardInfo;
@@ -47,10 +47,12 @@ public class UserController {
 		Pager<UserListInfo> pager = userService.users(param);
 		if (CollectionUtil.isEmpty(pager.getList()))
 			return pager;
-		Set<Long> uids = new HashSet<Long>();
-		pager.getList().forEach(item -> uids.add(item.getUid()));
-		Query query = new Query().eq("cfg_id", ResourceType.AVATAR.mark()).in("owner", uids);
-		Pager<ResourceInfo> resources = resourceService.resources(query);
+		Set<String> uids = new HashSet<String>();
+		pager.getList().forEach(item -> uids.add(String.valueOf(item.getUid())));
+		ResourcesParam rp = new ResourcesParam();
+		rp.addCfgId(ResourceType.AVATAR.mark());
+		rp.setOwners(uids);
+		Pager<ResourceInfo> resources = resourceService.resources(rp);
 		if (CollectionUtil.isEmpty(resources.getList()))
 			return pager;
 		for (UserListInfo info : pager.getList()) {
@@ -97,8 +99,10 @@ public class UserController {
 			return pager;
 		Set<String> set = new HashSet<String>();
 		pager.getList().forEach(item -> set.add(item.getBankId()));
-		Query query = new Query().in("owner", set).eq("cfg_id", ResourceType.BANK_ICON.mark());
-		Pager<ResourceInfo> resources = resourceService.resources(query);
+		ResourcesParam rp = new ResourcesParam();
+		rp.setOwners(set);
+		rp.addCfgId(ResourceType.BANK_ICON.mark());
+		Pager<ResourceInfo> resources = resourceService.resources(rp);
 		pager.getList().forEach(card -> {
 			if (!CollectionUtil.isEmpty(resources.getList())) {
 				Iterator<ResourceInfo> itr = resources.getList().iterator();

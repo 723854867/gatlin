@@ -2,7 +2,6 @@ package org.gatlin.soa.resource.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,8 +17,8 @@ import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
 import org.gatlin.soa.resource.bean.param.CfgResourceEditParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
+import org.gatlin.soa.resource.bean.param.ResourcesParam;
 import org.gatlin.soa.resource.manager.ResourceManager;
-import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
 import org.springframework.stereotype.Service;
 
@@ -89,20 +88,10 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 	
 	@Override
-	public Pager<ResourceInfo> resources(Query query) {
-		if (null != query.getPage())
-			PageHelper.startPage(query.getPage(), query.getPageSize());
-		List<Resource> resources = resourceManager.resources(query);
-		if (CollectionUtil.isEmpty(resources))
-			return Pager.<ResourceInfo>empty();
-		Set<Integer> set = new HashSet<Integer>();
-		resources.forEach(item -> set.add(item.getCfgId()));
-		Map<Integer, CfgResource> map = resourceManager.cfgResources(new Query().in("id", set));
-		return Pager.<ResourceInfo, Resource>convert(resources, () -> {
-			List<ResourceInfo> infos = new ArrayList<ResourceInfo>();
-			resources.forEach(item -> infos.add(_resourceInfo(item, map.get(item.getCfgId()))));
-			return infos;
-		});
+	public Pager<ResourceInfo> resources(ResourcesParam param) {
+		if (null != param.getPage())
+			PageHelper.startPage(param.getPage(), param.getPageSize());
+		return new Pager<ResourceInfo>(resourceManager.resources(param));
 	}
 	
 	private ResourceInfo _resourceInfo(Resource resource, CfgResource cfgResource) {

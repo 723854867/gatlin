@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gatlin.soa.resource.mybatis.dao.ResourceDao" >
+
+	<select id="list" parameterType="org.gatlin.soa.resource.bean.param.ResourcesParam" resultMap="resource.resourceMap">
+		SELECT 
+			resource.id resource_id,
+			resource.url resource_url,
+			resource.name resource_name,
+			resource.link resource_link,
+			resource.owner resource_owner,
+			resource.cfg_id resource_cfg_id,
+			cfg_resource.type resource_type,
+			resource.created resource_created,
+			resource.priority resource_priority
+		FROM 
+			resource 
+		LEFT JOIN 
+			cfg_resource ON resource.`cfg_id` = cfg_resource.`id`
+		<where>
+			<if test="null != id">
+				resource.id=#{id}
+			</if>
+			<if test="null != type">
+				AND cfg_resource.type=#{type}
+			</if>
+			<if test="null != name">
+				AND `resource.name` LIKE concat(concat('%',#{name}),'%')
+			</if>
+			<if test="null != owners and owners.size > 0">
+				AND resource.owner IN
+				<foreach collection="owners" item="owner" open="(" separator="," close=")">
+					#{owner}
+				</foreach>
+			</if>
+			<if test="null != cfgIds and cfgIds.size() > 0">
+				AND cfg_resource.id IN
+				<foreach collection="cfgIds" item="cfgId" open="(" separator="," close=")">
+					#{cfgId}
+				</foreach>
+			</if>
+		</where>
+	</select>
+</mapper>

@@ -2,6 +2,7 @@ package org.gatlin.soa.user.bean.model;
 
 import java.io.Serializable;
 
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.ResourceInfo;
 
 public class BankCardInfo implements Serializable {
@@ -11,7 +12,6 @@ public class BankCardInfo implements Serializable {
 	private String id;
 	private long owner;
 	private String bankId;
-	private int ownerType;
 	private String bankNo;
 	private boolean used;
 	private String mobile;
@@ -21,6 +21,7 @@ public class BankCardInfo implements Serializable {
 	private int created;
 	private String ownerName;
 	private String ownerPhone;
+	private TargetType ownerType;
 	private String ownerIdentity;
 	private ResourceInfo icon;
 
@@ -46,14 +47,6 @@ public class BankCardInfo implements Serializable {
 	
 	public void setBankId(String bankId) {
 		this.bankId = bankId;
-	}
-
-	public int getOwnerType() {
-		return ownerType;
-	}
-
-	public void setOwnerType(int ownerType) {
-		this.ownerType = ownerType;
 	}
 
 	public String getBankNo() {
@@ -126,6 +119,14 @@ public class BankCardInfo implements Serializable {
 	
 	public void setOwnerPhone(String ownerPhone) {
 		this.ownerPhone = ownerPhone;
+	}
+	
+	public TargetType getOwnerType() {
+		return ownerType;
+	}
+	
+	public void setOwnerType(TargetType ownerType) {
+		this.ownerType = ownerType;
 	}
 
 	public String getOwnerIdentity() {

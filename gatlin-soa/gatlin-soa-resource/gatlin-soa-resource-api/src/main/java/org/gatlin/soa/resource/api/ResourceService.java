@@ -10,6 +10,7 @@ import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
 import org.gatlin.soa.resource.bean.param.CfgResourceEditParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
+import org.gatlin.soa.resource.bean.param.ResourcesParam;
 
 public interface ResourceService {
 	
@@ -29,7 +30,7 @@ public interface ResourceService {
 	
 	ResourceInfo resource(Query query);
 	
-	Pager<ResourceInfo> resources(Query query);
+	Pager<ResourceInfo> resources(ResourcesParam param);
 	
 	boolean minCheck(Object owner, Set<Integer> cfgIds);
 }

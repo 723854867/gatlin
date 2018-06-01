@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="resource" >
+
+	<resultMap id="resourceMap" type="org.gatlin.soa.bean.model.ResourceInfo">
+		<id property="id" column="resource_id" javaType="string" jdbcType="VARCHAR"/>
+		<result property="type" column="resource_type" javaType="int" jdbcType="INTEGER"/>
+		<result property="url" column="resource_url" javaType="string" jdbcType="VARCHAR"/>
+		<result property="name" column="resource_name" javaType="string" jdbcType="VARCHAR"/>
+		<result property="link" column="resource_link" javaType="string" jdbcType="VARCHAR"/>
+		<result property="cfgId" column="resource_cfg_id" javaType="int" jdbcType="INTEGER"/>
+		<result property="owner" column="resource_owner" javaType="string" jdbcType="VARCHAR"/>
+		<result property="created" column="resource_created" javaType="int" jdbcType="INTEGER"/>
+		<result property="priority" column="resource_priority" javaType="int" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<sql id="resourceSql">
+		SELECT 
+			resource.id resource_id,
+			resource.url resource_url,
+			resource.name resource_name,
+			resource.link resource_link,
+			resource.owner resource_owner,
+			resource.cfg_id resource_cfg_id,
+			cfg_resource.type resource_type,
+			resource.created resource_created,
+			resource.priority resource_priority
+		FROM 
+			resource 
+		LEFT JOIN 
+			cfg_resource ON resource.`cfg_id` = cfg_resource.`id` 
+		WHERE 
+			cfg_resource.`type`=${resource_type}
+	</sql>
+</mapper>

@@ -9,11 +9,13 @@ import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.bean.ResourceCode;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
 import org.gatlin.soa.resource.bean.param.CfgResourceEditParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
+import org.gatlin.soa.resource.bean.param.ResourcesParam;
 import org.gatlin.soa.resource.mybatis.EntityGenerator;
 import org.gatlin.soa.resource.mybatis.dao.CfgResourceDao;
 import org.gatlin.soa.resource.mybatis.dao.ResourceDao;
@@ -128,6 +130,10 @@ public class ResourceManager {
 	
 	public List<CfgResource> configs(Query query) {
 		return cfgResourceDao.queryList(query);
+	}
+	
+	public List<ResourceInfo> resources(ResourcesParam param) {
+		return resourceDao.list(param);
 	}
 	
 	public Map<Integer, CfgResource> cfgResources(Query query) {

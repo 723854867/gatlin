@@ -2,22 +2,35 @@ package org.gatlin.soa.user.bean.model;
 
 import java.io.Serializable;
 
+import org.gatlin.soa.user.bean.enums.UsernameType;
+import org.gatlin.util.bean.enums.Client;
+import org.gatlin.util.bean.enums.DeviceType;
+import org.gatlin.util.bean.enums.OS;
+
 public class UserListInfo implements Serializable {
 
 	private static final long serialVersionUID = 677982987429988079L;
 
+	private OS os;
 	private long uid;
-	private int type;
-	private String username;
 	private int bindTime;
+	private String token;
+	private String avatar;
+	private Client client;
+	private String username;
 	private String nickname;
 	private int registerTime;
-	private String token;
-	private Integer os;
-	private Integer deviceType;
-	private Integer client;
+	private UsernameType type;
 	private Integer loginTime;
-	private String avatar;
+	private DeviceType deviceType;
+
+	public OS getOs() {
+		return os;
+	}
+
+	public void setOs(OS os) {
+		this.os = os;
+	}
 
 	public long getUid() {
 		return uid;
@@ -27,12 +40,36 @@ public class UserListInfo implements Serializable {
 		this.uid = uid;
 	}
 
-	public int getType() {
-		return type;
+	public int getBindTime() {
+		return bindTime;
 	}
 
-	public void setType(int type) {
-		this.type = type;
+	public void setBindTime(int bindTime) {
+		this.bindTime = bindTime;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 	public String getUsername() {
@@ -41,14 +78,6 @@ public class UserListInfo implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public int getBindTime() {
-		return bindTime;
-	}
-
-	public void setBindTime(int bindTime) {
-		this.bindTime = bindTime;
 	}
 
 	public String getNickname() {
@@ -67,36 +96,12 @@ public class UserListInfo implements Serializable {
 		this.registerTime = registerTime;
 	}
 
-	public String getToken() {
-		return token;
+	public UsernameType getType() {
+		return type;
 	}
 
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public Integer getOs() {
-		return os;
-	}
-
-	public void setOs(Integer os) {
-		this.os = os;
-	}
-
-	public Integer getDeviceType() {
-		return deviceType;
-	}
-
-	public void setDeviceType(Integer deviceType) {
-		this.deviceType = deviceType;
-	}
-
-	public Integer getClient() {
-		return client;
-	}
-
-	public void setClient(Integer client) {
-		this.client = client;
+	public void setType(UsernameType type) {
+		this.type = type;
 	}
 
 	public Integer getLoginTime() {
@@ -107,11 +112,11 @@ public class UserListInfo implements Serializable {
 		this.loginTime = loginTime;
 	}
 
-	public String getAvatar() {
-		return avatar;
+	public DeviceType getDeviceType() {
+		return deviceType;
 	}
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
+	public void setDeviceType(DeviceType deviceType) {
+		this.deviceType = deviceType;
 	}
 }

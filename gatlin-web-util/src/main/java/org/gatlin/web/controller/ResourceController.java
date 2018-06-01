@@ -15,8 +15,8 @@ import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.ResourceCode;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
-import org.gatlin.soa.resource.bean.param.ResourceListParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
+import org.gatlin.soa.resource.bean.param.ResourcesParam;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.web.bean.param.ResourceReplaceParam;
 import org.gatlin.web.bean.param.ResourceUploadParam;
@@ -41,8 +41,8 @@ public class ResourceController {
 	
 	@ResponseBody
 	@RequestMapping("list")
-	public Object pictures(@RequestBody @Valid ResourceListParam param) {
-		return resourceService.resources(param.query());
+	public Object pictures(@RequestBody @Valid ResourcesParam param) {
+		return resourceService.resources(param);
 	}
 	
 	@ResponseBody

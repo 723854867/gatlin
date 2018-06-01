@@ -159,17 +159,17 @@ public class AccountManager {
 	}
 	
 	public Account platAccount(AccountType type) {
-		Query query = new Query().eq("type", type.mark()).eq("owner_type", TargetType.PLATFORM.mark());
+		Query query = new Query().eq("type", type.mark()).eq("owner_type", TargetType.PLATFORM);
 		return account(query);
 	}
 	
 	public Account userAccount(long uid, AccountType type) {
-		Query query = new Query().eq("type", type.mark()).eq("owner_type", TargetType.USER.mark()).eq("owner", uid);
+		Query query = new Query().eq("type", type.mark()).eq("owner_type", TargetType.USER).eq("owner", uid);
 		return account(query);
 	}
 	
 	public Account companyAccount(int companyId, AccountType type) {
-		Query query = new Query().eq("type", type.mark()).eq("owner_type", TargetType.COMPANY.mark()).eq("owner", companyId);
+		Query query = new Query().eq("type", type.mark()).eq("owner_type", TargetType.COMPANY).eq("owner", companyId);
 		return account(query);
 	}
 	

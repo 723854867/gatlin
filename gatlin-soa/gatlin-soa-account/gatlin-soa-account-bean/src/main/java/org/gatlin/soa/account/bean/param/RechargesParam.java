@@ -107,11 +107,11 @@ public class RechargesParam extends SoaParam {
 		if (StringUtil.hasText(id))
 			this.query.like("id", id);
 		if (null != os)
-			this.query.eq("os", os.mark());
+			this.query.eq("os", os);
 		if (null != plat)
-			this.query.eq("plat", plat.mark());
+			this.query.eq("plat", plat);
 		if (null != state)
-			this.query.eq("state", state.mark());
+			this.query.eq("state", state);
 		if (StringUtil.hasText(goodsId))
 			this.query.eq("goods_id", goodsId);
 		if (null != goodsType)

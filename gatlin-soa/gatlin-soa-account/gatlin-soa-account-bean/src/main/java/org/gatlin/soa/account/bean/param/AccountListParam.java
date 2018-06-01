@@ -42,8 +42,8 @@ public class AccountListParam extends SoaParam {
 		if (null != owner)
 			this.query.eq("owner", owner);
 		if (null != type)
-			this.query.eq("type", type.mark());
+			this.query.eq("type", type);
 		if (null != ownerType)
-			this.query.eq("owner_type", ownerType.mark());
+			this.query.eq("owner_type", ownerType);
 	}
 }

@@ -8,10 +8,10 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.gatlin.core.bean.info.Pager;
-import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
+import org.gatlin.soa.resource.bean.param.ResourcesParam;
 import org.gatlin.soa.user.api.BankCardService;
 import org.gatlin.soa.user.bean.model.BankCardInfo;
 import org.gatlin.soa.user.bean.param.BankCardsParam;
@@ -39,8 +39,10 @@ public class BankController {
 			return pager;
 		Set<String> set = new HashSet<String>();
 		pager.getList().forEach(item -> set.add(item.getBankId()));
-		Query query = new Query().in("owner", set).eq("cfg_id", ResourceType.BANK_ICON.mark());
-		Pager<ResourceInfo> resources = resourceService.resources(query);
+		ResourcesParam rp = new ResourcesParam();
+		rp.setOwners(set);
+		rp.addCfgId(ResourceType.BANK_ICON.mark());
+		Pager<ResourceInfo> resources = resourceService.resources(rp);
 		pager.getList().forEach(card -> {
 			if (!CollectionUtil.isEmpty(resources.getList())) {
 				Iterator<ResourceInfo> itr = resources.getList().iterator();

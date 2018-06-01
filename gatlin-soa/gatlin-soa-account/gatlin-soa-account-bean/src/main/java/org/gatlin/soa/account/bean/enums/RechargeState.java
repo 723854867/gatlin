@@ -1,6 +1,8 @@
 package org.gatlin.soa.account.bean.enums;
 
-public enum RechargeState {
+import org.gatlin.util.bean.IEnum;
+
+public enum RechargeState implements IEnum {
 
 	// 仅仅是本地创建
 	INIT(1),
@@ -21,6 +23,7 @@ public enum RechargeState {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
 	}

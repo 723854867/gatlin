@@ -1,17 +1,18 @@
 package org.gatlin.soa.resource.bean.param;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.gatlin.soa.bean.param.SoaParam;
-import org.gatlin.util.lang.CollectionUtil;
 
-public class ResourceListParam extends SoaParam {
+public class ResourcesParam extends SoaParam {
 
 	private static final long serialVersionUID = -7722967233692883158L;
 
 	private Integer id;
 	private String name;
-	private Integer owner;
+	private Integer type;
+	private Set<String> owners;
 	private Set<Integer> cfgIds;
 
 	public Integer getId() {
@@ -29,13 +30,21 @@ public class ResourceListParam extends SoaParam {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public Integer getOwner() {
-		return owner;
+	
+	public Integer getType() {
+		return type;
 	}
-
-	public void setOwner(Integer owner) {
-		this.owner = owner;
+	
+	public void setType(Integer type) {
+		this.type = type;
+	}
+	
+	public Set<String> getOwners() {
+		return owners;
+	}
+	
+	public void setOwners(Set<String> owners) {
+		this.owners = owners;
 	}
 	
 	public Set<Integer> getCfgIds() {
@@ -46,17 +55,20 @@ public class ResourceListParam extends SoaParam {
 		this.cfgIds = cfgIds;
 	}
 	
+	public void addOwner(String owner) {
+		if (null == owners)
+			this.owners = new HashSet<String>();
+		this.owners.add(owner);
+	}
+	
+	public void addCfgId(int cfgId) {
+		if (null == cfgIds)
+			this.cfgIds = new HashSet<Integer>();
+		this.cfgIds.add(cfgId);
+	}
+	
 	@Override
 	public void verify() {
 		super.verify();
-		if (null != id)
-			this.query.eq("id", id);
-		if (null != name)
-			this.query.like("name", name);
-		if (!CollectionUtil.isEmpty(cfgIds))
-			this.query.in("cfg_id", cfgIds);
-		if (null != owner)
-			this.query.eq("owner", owner);
-		this.query.orderByAsc("priority");
 	}
 }
