@@ -171,4 +171,11 @@ public class UserServiceImpl implements UserService {
 	public UserSecurity security(long uid) {
 		return userManager.security(uid);
 	}
+	
+	@Override
+	public Pager<UserSecurity> securities(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<UserSecurity>(userManager.securities(query));
+	}
 }

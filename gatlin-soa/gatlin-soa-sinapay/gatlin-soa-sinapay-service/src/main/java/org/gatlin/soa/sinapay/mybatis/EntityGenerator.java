@@ -222,18 +222,14 @@ public class EntityGenerator {
 	public static final Withdraw newWithdraw(WithdrawParam param, BigDecimal fee) {
 		User user = param.getUser();
 		Withdraw instance = new Withdraw();
-		instance.setOperator(user.getId());
 		instance.setFee(fee);
 		instance.setOs(user.getOs());
 		instance.setIp(param.meta().getIp());
 		instance.setAmount(param.getAmount());
 		instance.setPlat(PlatType.SINAPAY);
+		instance.setUid(param.getUser().getId());
 		instance.setId(IDWorker.INSTANCE.nextSid());
 		instance.setState(org.gatlin.soa.account.bean.enums.WithdrawState.INIT);
-		instance.setWithdrawee(param.getUser().getId());
-		instance.setWithdraweeType(TargetType.USER);
-		instance.setWithdrawer(instance.getWithdrawee());
-		instance.setWithdrawerType(TargetType.USER);
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

@@ -2,6 +2,8 @@ package org.gatlin.soa.resource.bean.enums;
 
 public enum ResourceType {
 
+	// 轮播图
+	BANNER(1),
 	// 用户头像
 	AVATAR(50),
 	// 用户默认头像

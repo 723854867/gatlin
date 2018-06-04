@@ -75,8 +75,8 @@ public class AccountManager {
 		withdrawDao.insert(withdraw);
 		AccountDetail detail = new AccountDetail(withdraw.getId(), GatlinBizType.WITHDRAW);
 		BigDecimal amount = withdraw.getAmount().add(withdraw.getFee());
-		detail.usableDecr(withdraw.getWithdrawerType(), withdraw.getWithdrawer(), withdraw.getAccountType(), amount);
-		detail.frozenIncr(withdraw.getWithdrawerType(), withdraw.getWithdrawer(), withdraw.getAccountType(), amount);
+		detail.usableDecr(TargetType.USER, withdraw.getUid(), AccountType.BASIC, amount);
+		detail.frozenIncr(TargetType.USER, withdraw.getUid(), AccountType.BASIC, amount);
 		process(detail);
 	}
 	
@@ -92,9 +92,9 @@ public class AccountManager {
 		withdrawDao.update(withdraw);
 		AccountDetail detail = new AccountDetail(withdraw.getId(), success ? GatlinBizType.WITHDRAW_SUCCESS : GatlinBizType.WITHDRAW_FAILURE);
 		BigDecimal amount = withdraw.getAmount().add(withdraw.getFee());
-		detail.frozenDecr(withdraw.getWithdrawerType(), withdraw.getWithdrawer(), withdraw.getAccountType(), amount);
+		detail.frozenDecr(TargetType.USER, withdraw.getUid(), AccountType.BASIC, amount);
 		if (!success) 
-			detail.usableIncr(withdraw.getWithdrawerType(), withdraw.getWithdrawer(), withdraw.getAccountType(), amount);
+			detail.usableIncr(TargetType.USER, withdraw.getUid(), AccountType.BASIC, amount);
 		process(detail);
 	}
 	

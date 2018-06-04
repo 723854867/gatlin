@@ -56,4 +56,6 @@ public interface UserService {
 	UserSecurity realname(RealnameParam param);
 	
 	UserSecurity security(long uid);
+	
+	Pager<UserSecurity> securities(Query query);
 }

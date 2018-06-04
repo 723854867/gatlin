@@ -88,11 +88,6 @@ public class SinapayOrderController {
 	@ResponseBody
 	@RequestMapping("withdraw/deposit/pay/user")
 	public Object depositWithdrawPay(@RequestBody @Valid WithdrawParam param) {
-//		Map<String, IWithdrawValidator> hooks = SpringContextUtil.getApplicationContext().getBeansOfType(IWithdrawValidator.class, false, true);
-//		List<IWithdrawValidator> list = new ArrayList<IWithdrawValidator>(hooks.values());
-//		Collections.sort(list, (o1, o2) -> o1.priority() - o2.priority());
-//		for (IWithdrawValidator validator : list)
-//			validator.validate(context);
 		return sinapayOrderService.withdrawPay(param);
 	}
 	

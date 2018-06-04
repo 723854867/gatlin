@@ -22,6 +22,7 @@ import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.BankCardsParam;
 import org.gatlin.soa.user.bean.param.UserListParam;
 import org.gatlin.soa.user.bean.param.UserModifyParam;
+import org.gatlin.soa.user.bean.param.UserSecuritiesParam;
 import org.gatlin.soa.user.bean.param.UsernameResetParam;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
@@ -99,5 +100,11 @@ public class UserController {
 			card.setOwnerIdentity(StringUtil.mask(card.getOwnerIdentity(), 3, 4));
 		});
 		return pager;
+	}
+	
+	@ResponseBody
+	@RequestMapping("securities")
+	public Object securities(@RequestBody @Valid UserSecuritiesParam param) {
+		return userService.securities(param.query());
 	}
 }

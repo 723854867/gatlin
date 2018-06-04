@@ -4,10 +4,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Id;
 
-import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.enums.WithdrawState;
 import org.gatlin.soa.bean.enums.PlatType;
-import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.util.bean.Identifiable;
 import org.gatlin.util.bean.enums.OS;
 
@@ -23,17 +21,12 @@ public class Withdraw implements Identifiable<String> {
 	@Id
 	private String id;
 	private OS os;
+	private long uid;
 	private String ip;
 	private PlatType plat;
-	private long operator;
 	private BigDecimal fee;
-	private long withdrawer;
-	private long withdrawee;
 	private BigDecimal amount;
 	private WithdrawState state;
-	private AccountType accountType;
-	private TargetType withdraweeType;
-	private TargetType withdrawerType;
 	private int created;
 	private int updated;
 
@@ -53,6 +46,14 @@ public class Withdraw implements Identifiable<String> {
 		this.os = os;
 	}
 
+	public long getUid() {
+		return uid;
+	}
+
+	public void setUid(long uid) {
+		this.uid = uid;
+	}
+
 	public String getIp() {
 		return ip;
 	}
@@ -69,36 +70,12 @@ public class Withdraw implements Identifiable<String> {
 		this.plat = plat;
 	}
 
-	public long getOperator() {
-		return operator;
-	}
-
-	public void setOperator(long operator) {
-		this.operator = operator;
-	}
-
 	public BigDecimal getFee() {
 		return fee;
 	}
 
 	public void setFee(BigDecimal fee) {
 		this.fee = fee;
-	}
-
-	public long getWithdrawer() {
-		return withdrawer;
-	}
-
-	public void setWithdrawer(long withdrawer) {
-		this.withdrawer = withdrawer;
-	}
-
-	public long getWithdrawee() {
-		return withdrawee;
-	}
-
-	public void setWithdrawee(long withdrawee) {
-		this.withdrawee = withdrawee;
 	}
 
 	public BigDecimal getAmount() {
@@ -115,30 +92,6 @@ public class Withdraw implements Identifiable<String> {
 
 	public void setState(WithdrawState state) {
 		this.state = state;
-	}
-	
-	public AccountType getAccountType() {
-		return accountType;
-	}
-	
-	public void setAccountType(AccountType accountType) {
-		this.accountType = accountType;
-	}
-
-	public TargetType getWithdraweeType() {
-		return withdraweeType;
-	}
-
-	public void setWithdraweeType(TargetType withdraweeType) {
-		this.withdraweeType = withdraweeType;
-	}
-
-	public TargetType getWithdrawerType() {
-		return withdrawerType;
-	}
-
-	public void setWithdrawerType(TargetType withdrawerType) {
-		this.withdrawerType = withdrawerType;
 	}
 
 	public int getCreated() {

@@ -14,6 +14,7 @@ import org.gatlin.soa.account.bean.param.AccountListParam;
 import org.gatlin.soa.account.bean.param.AdjustParam;
 import org.gatlin.soa.account.bean.param.RechargesParam;
 import org.gatlin.soa.bean.enums.GatlinBizType;
+import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.util.lang.NumberUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +46,19 @@ public class AccountController {
 		Query query = param.query();
 		query.eq("recharger", param.getUser().getId());
 		return accountService.recharges(query);
+	}
+	
+	@ResponseBody
+	@RequestMapping("withdraws")
+	public Object withdraws(@RequestBody @Valid RechargesParam param) {
+		return accountService.withdraws(param.query());
+	}
+	
+	@ResponseBody
+	@RequestMapping("user/withdraws")
+	public Object userWithdraws(@RequestBody @Valid SoaParam param) {
+		Query query = new Query().eq("uid", param.getUser().getId());
+		return accountService.withdraws(query);
 	}
 	
 	@ResponseBody

@@ -147,4 +147,8 @@ public class UserManager {
 	public List<Username> usernames(Query query) {
 		return usernameDao.queryList(query);
 	}
+	
+	public List<UserSecurity> securities(Query query) {
+		return userSecurityDao.queryList(query);
+	}
 }
