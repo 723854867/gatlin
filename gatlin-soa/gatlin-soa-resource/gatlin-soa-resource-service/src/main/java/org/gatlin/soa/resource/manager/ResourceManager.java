@@ -1,5 +1,7 @@
 package org.gatlin.soa.resource.manager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -132,11 +134,46 @@ public class ResourceManager {
 		return cfgResourceDao.queryList(query);
 	}
 	
-	public List<ResourceInfo> resources(ResourcesParam param) {
+	public List<ResourceInfo> list(ResourcesParam param) {
 		return resourceDao.list(param);
 	}
 	
 	public Map<Integer, CfgResource> cfgResources(Query query) {
 		return cfgResourceDao.query(query);
+	}
+	
+	public Map<String, ResourceInfo> ownerMap(ResourcesParam param) {
+		List<ResourceInfo> list = resourceDao.list(param);
+		Map<String, ResourceInfo> map = new HashMap<String, ResourceInfo>();
+		list.forEach(info -> map.put(info.getOwner(), info));
+		return map;
+	}
+	
+	public Map<String, List<ResourceInfo>> ownerListMap(ResourcesParam param) {
+		List<ResourceInfo> list = resourceDao.list(param);
+		Map<String, List<ResourceInfo>> map = new HashMap<String, List<ResourceInfo>>();
+		list.forEach(info -> {
+			List<ResourceInfo> l = map.get(info.getOwner());
+			if (null == l) {
+				l = new ArrayList<ResourceInfo>();
+				map.put(info.getOwner(), l);
+			}
+			l.add(info);
+		});
+		return map;
+	}
+	
+	public Map<Integer, List<ResourceInfo>> cfgIdListMap(ResourcesParam param) {
+		List<ResourceInfo> list = resourceDao.list(param);
+		Map<Integer, List<ResourceInfo>> map = new HashMap<Integer, List<ResourceInfo>>();
+		list.forEach(info -> {
+			List<ResourceInfo> l = map.get(info.getCfgId());
+			if (null == l) {
+				l = new ArrayList<ResourceInfo>();
+				map.put(info.getCfgId(), l);
+			}
+			l.add(info);
+		});
+		return map;
 	}
 }

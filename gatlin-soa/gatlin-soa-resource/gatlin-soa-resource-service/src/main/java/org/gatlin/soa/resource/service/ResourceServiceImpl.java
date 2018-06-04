@@ -88,10 +88,25 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 	
 	@Override
-	public Pager<ResourceInfo> resources(ResourcesParam param) {
+	public Pager<ResourceInfo> list(ResourcesParam param) {
 		if (null != param.getPage())
 			PageHelper.startPage(param.getPage(), param.getPageSize());
-		return new Pager<ResourceInfo>(resourceManager.resources(param));
+		return new Pager<ResourceInfo>(resourceManager.list(param));
+	}
+	
+	@Override
+	public Map<Integer, List<ResourceInfo>> cfgIdListMap(ResourcesParam param) {
+		return resourceManager.cfgIdListMap(param);
+	}
+	
+	@Override
+	public Map<String, ResourceInfo> ownerMap(ResourcesParam param) {
+		return resourceManager.ownerMap(param);
+	}
+	
+	@Override
+	public Map<String, List<ResourceInfo>> ownerListMap(ResourcesParam param) {
+		return resourceManager.ownerListMap(param);
 	}
 	
 	private ResourceInfo _resourceInfo(Resource resource, CfgResource cfgResource) {

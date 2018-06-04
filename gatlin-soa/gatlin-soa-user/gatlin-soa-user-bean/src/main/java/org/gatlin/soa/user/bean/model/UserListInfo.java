@@ -2,6 +2,7 @@ package org.gatlin.soa.user.bean.model;
 
 import java.io.Serializable;
 
+import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.util.bean.enums.Client;
 import org.gatlin.util.bean.enums.DeviceType;
@@ -15,13 +16,13 @@ public class UserListInfo implements Serializable {
 	private long uid;
 	private int bindTime;
 	private String token;
-	private String avatar;
 	private Client client;
 	private String username;
 	private String nickname;
 	private int registerTime;
 	private UsernameType type;
 	private Integer loginTime;
+	private ResourceInfo avatar;
 	private DeviceType deviceType;
 
 	public OS getOs() {
@@ -54,14 +55,6 @@ public class UserListInfo implements Serializable {
 
 	public void setToken(String token) {
 		this.token = token;
-	}
-
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
 	}
 
 	public Client getClient() {
@@ -110,6 +103,14 @@ public class UserListInfo implements Serializable {
 
 	public void setLoginTime(Integer loginTime) {
 		this.loginTime = loginTime;
+	}
+	
+	public ResourceInfo getAvatar() {
+		return avatar;
+	}
+	
+	public void setAvatar(ResourceInfo avatar) {
+		this.avatar = avatar;
 	}
 
 	public DeviceType getDeviceType() {

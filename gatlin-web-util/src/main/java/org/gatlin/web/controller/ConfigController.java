@@ -2,8 +2,8 @@ package org.gatlin.web.controller;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -47,24 +47,10 @@ public class ConfigController {
 		ResourcesParam rp = new ResourcesParam();
 		rp.addCfgId(ResourceType.BANK_ICON.mark());
 		rp.setOwners(set);
-		Pager<ResourceInfo> resources = resourceService.resources(rp);
+		Map<String, ResourceInfo> map = resourceService.ownerMap(rp);
 		return Pager.<BankInfo, CfgBank>convert(pager, () -> {
 			List<BankInfo> list = new ArrayList<BankInfo>();
-			pager.getList().forEach(item -> {
-				ResourceInfo icon = null;
-				if (!CollectionUtil.isEmpty(resources.getList())) {
-					Iterator<ResourceInfo> itr = resources.getList().iterator();
-					while (itr.hasNext()) {
-						ResourceInfo temp = itr.next();
-						if (temp.getOwner().equals(item.getId())) {
-							itr.remove();
-							icon = temp;
-							break;
-						}
-					}
-				}
-				list.add(new BankInfo(item, icon));
-			});
+			pager.getList().forEach(item -> list.add(new BankInfo(item, map.get(item.getId()))));
 			return list;
 		});
 	}

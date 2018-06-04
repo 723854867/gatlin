@@ -1,7 +1,7 @@
 package org.gatlin.web.controller;
 
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -52,21 +52,9 @@ public class UserController {
 		ResourcesParam rp = new ResourcesParam();
 		rp.addCfgId(ResourceType.AVATAR.mark());
 		rp.setOwners(uids);
-		Pager<ResourceInfo> resources = resourceService.resources(rp);
-		if (CollectionUtil.isEmpty(resources.getList()))
-			return pager;
-		for (UserListInfo info : pager.getList()) {
-			Iterator<ResourceInfo> itr = resources.getList().iterator();
-			while (itr.hasNext()) {
-				ResourceInfo resource = itr.next();
-				long owner = Long.valueOf(resource.getOwner());
-				if (owner == info.getUid()) {
-					itr.remove();
-					info.setAvatar(resource.getUrl());
-					break;
-				}
-			}
-		}
+		Map<String, ResourceInfo> map = resourceService.ownerMap(rp);
+		for (UserListInfo info : pager.getList()) 
+			info.setAvatar(map.get(String.valueOf(info.getUid())));
 		return pager;
 	}
 	
@@ -102,18 +90,9 @@ public class UserController {
 		ResourcesParam rp = new ResourcesParam();
 		rp.setOwners(set);
 		rp.addCfgId(ResourceType.BANK_ICON.mark());
-		Pager<ResourceInfo> resources = resourceService.resources(rp);
+		Map<String, ResourceInfo> map = resourceService.ownerMap(rp);
 		pager.getList().forEach(card -> {
-			if (!CollectionUtil.isEmpty(resources.getList())) {
-				Iterator<ResourceInfo> itr = resources.getList().iterator();
-				while (itr.hasNext()) {
-					ResourceInfo icon = itr.next();
-					if (icon.getOwner().equals(card.getBankId())) {
-						card.setIcon(icon);
-						break;
-					}
-				}
-			}
+			card.setIcon(map.get(card.getId()));
 			card.setMobile(StringUtil.mask(card.getMobile(), 6, 4));
 			card.setOwnerName(StringUtil.mask(card.getOwnerName(), 1, 0));
 			card.setOwnerPhone(StringUtil.mask(card.getOwnerPhone(), 3, 4));

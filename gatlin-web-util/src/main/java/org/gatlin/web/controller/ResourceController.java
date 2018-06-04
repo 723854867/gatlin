@@ -41,8 +41,8 @@ public class ResourceController {
 	
 	@ResponseBody
 	@RequestMapping("list")
-	public Object pictures(@RequestBody @Valid ResourcesParam param) {
-		return resourceService.resources(param);
+	public Object list(@RequestBody @Valid ResourcesParam param) {
+		return resourceService.list(param);
 	}
 	
 	@ResponseBody

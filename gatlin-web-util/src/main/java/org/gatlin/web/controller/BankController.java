@@ -1,7 +1,7 @@
 package org.gatlin.web.controller;
 
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -42,18 +42,9 @@ public class BankController {
 		ResourcesParam rp = new ResourcesParam();
 		rp.setOwners(set);
 		rp.addCfgId(ResourceType.BANK_ICON.mark());
-		Pager<ResourceInfo> resources = resourceService.resources(rp);
+		Map<String, ResourceInfo> map = resourceService.ownerMap(rp);
 		pager.getList().forEach(card -> {
-			if (!CollectionUtil.isEmpty(resources.getList())) {
-				Iterator<ResourceInfo> itr = resources.getList().iterator();
-				while (itr.hasNext()) {
-					ResourceInfo icon = itr.next();
-					if (icon.getOwner().equals(card.getBankId())) {
-						card.setIcon(icon);
-						break;
-					}
-				}
-			}
+			card.setIcon(map.get(card.getId()));
 			card.setMobile(StringUtil.mask(card.getMobile(), 6, 4));
 			card.setOwnerName(StringUtil.mask(card.getOwnerName(), 1, 0));
 			card.setOwnerPhone(StringUtil.mask(card.getOwnerPhone(), 3, 4));

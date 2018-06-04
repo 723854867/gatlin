@@ -1,5 +1,7 @@
 package org.gatlin.soa.resource.api;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.gatlin.core.bean.info.Pager;
@@ -30,7 +32,13 @@ public interface ResourceService {
 	
 	ResourceInfo resource(Query query);
 	
-	Pager<ResourceInfo> resources(ResourcesParam param);
+	Pager<ResourceInfo> list(ResourcesParam param);
+	
+	Map<Integer, List<ResourceInfo>> cfgIdListMap(ResourcesParam param);
+	
+	Map<String, ResourceInfo> ownerMap(ResourcesParam param);
+	
+	Map<String, List<ResourceInfo>> ownerListMap(ResourcesParam param);
 	
 	boolean minCheck(Object owner, Set<Integer> cfgIds);
 }
