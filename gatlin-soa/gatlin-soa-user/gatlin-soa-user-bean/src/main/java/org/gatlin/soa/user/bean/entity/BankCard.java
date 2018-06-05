@@ -22,7 +22,7 @@ public class BankCard implements Identifiable<String> {
 	private TargetType ownerType;
 	private int created;
 	private int updated;
-
+	
 	public String getId() {
 		return id;
 	}

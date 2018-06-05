@@ -1,5 +1,6 @@
 package org.gatlin.core.util;
 
+import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.model.code.Code;
 import org.gatlin.util.lang.StringUtil;
@@ -49,6 +50,12 @@ public class Assert {
 		if (!expression)
 			throw new CodeException(code);
 		return expression;
+	}
+	
+	public static final String hasText(String content) {
+		if (!StringUtil.hasText(content))
+			throw new CodeException(CoreCode.SYSTEM_ERR);
+		return content;
 	}
 	
 	public static final String hasText(Code code, String content) {
