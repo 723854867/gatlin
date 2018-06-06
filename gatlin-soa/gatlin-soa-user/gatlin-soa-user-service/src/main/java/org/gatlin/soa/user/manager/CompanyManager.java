@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.Employee;
@@ -68,5 +69,9 @@ public class CompanyManager {
 	
 	public Employee employee(long employeeId) {
 		return employeeDao.getByKey(employeeId);
+	}
+	
+	public List<Company> companies(Query query) {
+		return companyDao.queryList(query);
 	}
 }

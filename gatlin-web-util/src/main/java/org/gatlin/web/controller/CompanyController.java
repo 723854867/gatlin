@@ -9,6 +9,7 @@ import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.user.api.CompanyService;
 import org.gatlin.soa.user.bean.param.CompanyAddParam;
+import org.gatlin.soa.user.bean.param.CompaniesParam;
 import org.gatlin.soa.user.bean.param.EmployeeAddParam;
 import org.gatlin.soa.user.bean.param.EmployeeModifyParam;
 import org.gatlin.soa.user.bean.param.EmployeesParam;
@@ -36,6 +37,11 @@ public class CompanyController {
 		return companyId;
 	}
 	
+	@ResponseBody
+	@RequestMapping("list")
+	public Object list(@RequestBody @Valid CompaniesParam param) {
+		return companyService.companies(param.query());
+	}
 
 	@ResponseBody
 	@RequestMapping("employees")

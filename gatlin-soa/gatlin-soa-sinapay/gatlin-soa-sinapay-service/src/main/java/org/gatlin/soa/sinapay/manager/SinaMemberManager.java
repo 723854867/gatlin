@@ -21,6 +21,7 @@ import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindRequest;
 import org.gatlin.sdk.sinapay.request.member.CompanyApplyRequest;
+import org.gatlin.sdk.sinapay.request.member.PwdResetRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryWithholdRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
 import org.gatlin.sdk.sinapay.request.member.WithholdRequest;
@@ -325,6 +326,17 @@ public class SinaMemberManager {
 		bankCard.setSinaCardId(param.getCardId());
 		bankCard.setUpdated(DateUtil.current());
 		sinaBankCardDao.update(bankCard);
+	}
+	
+	public String pwdReset(SoaParam param) { 
+		SinaUser user = user(MemberType.PERSONAL, param.getUser().getId());
+		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, user);
+		PwdResetRequest.Builder builder = new PwdResetRequest.Builder();
+		builder.identityId(user.getSinaId());
+		builder.returnUrl(_returnUrl(param.getUser()));
+		PwdResetRequest request = builder.build();
+		RedirectResponse response = request.sync();
+		return response.getRedirectUrl();
 	}
 	
 	private SinaUser _tryActivate(Object tid, MemberType type, String ip) {

@@ -1,6 +1,7 @@
 package org.gatlin.soa.sinapay.bean.param;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -21,5 +22,11 @@ public class RechargeParam extends SoaParam {
 	
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+	
+	@Override
+	public void verify() {
+		super.verify();
+		this.amount = amount.setScale(2, RoundingMode.UP);
 	}
 }

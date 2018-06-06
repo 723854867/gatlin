@@ -139,4 +139,9 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	public void companyBankCardModify(CompanyBankCardModifyParam param) {
 		sinaMemberManager.companyBankCardModify(param);
 	}
+	
+	@Override
+	public String pwdReset(SoaParam param) {
+		return sinaMemberManager.pwdReset(param);
+	}
 }

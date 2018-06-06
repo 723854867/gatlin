@@ -67,4 +67,6 @@ public interface SinapayMemberService {
 	void companyApplyNotice(CompanyAuditNotice notice);
 	
 	void companyBankCardModify(CompanyBankCardModifyParam param); 
+	
+	String pwdReset(SoaParam param);
 }

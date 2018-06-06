@@ -1,6 +1,7 @@
 package org.gatlin.soa.user.api;
 
 import org.gatlin.core.bean.info.Pager;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.Employee;
 import org.gatlin.soa.user.bean.model.EmployeeInfo;
@@ -14,6 +15,8 @@ public interface CompanyService {
 	int add(CompanyAddParam param);
 	
 	Company company(int companyId);
+	
+	Pager<Company> companies(Query query);
 	
 	Employee employee(long employeeId);
 	

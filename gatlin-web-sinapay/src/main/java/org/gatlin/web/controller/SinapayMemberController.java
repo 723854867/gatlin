@@ -111,4 +111,11 @@ public class SinapayMemberController {
 		sinapayMemberService.companyBankCardModify(param);
 		return Response.ok();
 	}
+	
+	// 修改密码
+	@ResponseBody
+	@RequestMapping("pwd/reset")
+	public Object pwdReset(@RequestBody @Valid SoaParam param) { 
+		return sinapayMemberService.pwdReset(param);
+	}
 }

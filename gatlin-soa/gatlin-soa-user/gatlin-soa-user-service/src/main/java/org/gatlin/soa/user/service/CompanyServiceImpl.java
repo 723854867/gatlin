@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.user.api.CompanyService;
 import org.gatlin.soa.user.api.UserService;
@@ -41,6 +42,13 @@ public class CompanyServiceImpl implements CompanyService {
 	@Override
 	public Employee employee(long employeeId) {
 		return companyManager.employee(employeeId);
+	}
+	
+	@Override
+	public Pager<Company> companies(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<Company>(companyManager.companies(query));
 	}
 	
 	@Override

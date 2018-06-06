@@ -12,6 +12,7 @@ import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindRequest;
 import org.gatlin.sdk.sinapay.request.member.CompanyApplyRequest;
+import org.gatlin.sdk.sinapay.request.member.PwdResetRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryBalanceRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryBankCardRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryMiddleBalanceRequest;
@@ -218,6 +219,16 @@ public class SinaMemberTest extends SinaTest {
 		CompanyApplyRequest request = builder.build();
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		SinapayResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testPwdModify() { 
+		PwdResetRequest.Builder builder = new PwdResetRequest.Builder();
+		builder.identityId("453951420639477760");
+		PwdResetRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		RedirectResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));
 	}
 }
