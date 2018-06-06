@@ -1,6 +1,7 @@
 package org.gatlin.web.controller;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -8,7 +9,10 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.gatlin.core.bean.info.Pager;
+import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.model.ResourceInfo;
+import org.gatlin.soa.config.api.ConfigService;
+import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
 import org.gatlin.soa.resource.bean.param.ResourcesParam;
@@ -27,6 +31,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class BankController {
 	
 	@Resource
+	private ConfigService configService;
+	@Resource
 	private BankCardService bankCardService;
 	@Resource
 	private ResourceService resourceService;
@@ -43,12 +49,19 @@ public class BankController {
 		rp.setOwners(set);
 		rp.addCfgId(ResourceType.BANK_ICON.mark());
 		Map<String, ResourceInfo> map = resourceService.ownerMap(rp);
+		List<CfgBank> list = configService.banks(new Query().in("id", set)).getList();
 		pager.getList().forEach(card -> {
 			card.setIcon(map.get(card.getId()));
 			card.setMobile(StringUtil.mask(card.getMobile(), 6, 4));
 			card.setOwnerName(StringUtil.mask(card.getOwnerName(), 1, 0));
 			card.setOwnerPhone(StringUtil.mask(card.getOwnerPhone(), 3, 4));
 			card.setOwnerIdentity(StringUtil.mask(card.getOwnerIdentity(), 3, 4));
+			for (CfgBank bank : list) {
+				if (bank.getId().equals(card.getBankId())) {
+					card.setBankName(bank.getName());
+					break;
+				}
+			}
 		});
 		return pager;
 	}

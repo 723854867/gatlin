@@ -13,6 +13,7 @@ public class BankCardInfo implements Serializable {
 	private long owner;
 	private String bankId;
 	private String bankNo;
+	private String bankName;
 	private boolean used;
 	private String mobile;
 	private String city;
@@ -55,6 +56,14 @@ public class BankCardInfo implements Serializable {
 
 	public void setBankNo(String bankNo) {
 		this.bankNo = bankNo;
+	}
+	
+	public String getBankName() {
+		return bankName;
+	}
+	
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
 	}
 
 	public boolean isUsed() {

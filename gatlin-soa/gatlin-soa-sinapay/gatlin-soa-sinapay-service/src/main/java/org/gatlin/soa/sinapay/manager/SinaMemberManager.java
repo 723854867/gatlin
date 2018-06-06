@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.gatlin.core.CoreCode;
+import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.model.message.SchedulerMessage;
 import org.gatlin.core.service.MessageSender;
 import org.gatlin.core.util.Assert;
@@ -29,6 +30,7 @@ import org.gatlin.sdk.sinapay.response.BankCardUnbindResponse;
 import org.gatlin.sdk.sinapay.response.QueryWithholdResponse;
 import org.gatlin.sdk.sinapay.response.RedirectResponse;
 import org.gatlin.sdk.sinapay.response.SinapayResponse;
+import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
@@ -56,6 +58,8 @@ import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
 import org.gatlin.util.PhoneUtil;
+import org.gatlin.util.bean.enums.Client;
+import org.gatlin.util.bean.enums.DeviceType;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.serial.SerializeUtil;
 import org.slf4j.Logger;
@@ -247,6 +251,7 @@ public class SinaMemberManager {
 		Assert.isTrue(SinaCode.MEMBER_UNREALNAME, null != user && user.isRealname());
 		WithholdRequest.Builder builder = new WithholdRequest.Builder();
 		builder.identityId(user.getSinaId());
+		builder.returnUrl(_returnUrl(param.getUser()));
 		WithholdRequest request = builder.build();
 		RedirectResponse response = request.sync();
 		return response.getRedirectUrl();
@@ -339,6 +344,24 @@ public class SinaMemberManager {
 			return user;
 		}
 		return user;
+	}
+	
+	private String _returnUrl(User user) {
+		Client client = user.getClient();
+		switch (client) {
+		case BROWSER:
+			DeviceType device = user.getDeviceType();
+			switch (device) {
+			case PC:
+				return configService.config(SinaConsts.URL_RETURN_BROWSER_PC);
+			default:
+				return configService.config(SinaConsts.URL_RETURN_BROWSER_WAP);
+			}
+		case ORIGINAL:			// 原生客户端范围appurl
+			return configService.config(SinaConsts.URL_RETURN_ORIGINAL);
+		default:
+			throw new CodeException();
+		}
 	}
 	
 	public SinaUser user(Query query) {

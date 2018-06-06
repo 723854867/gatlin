@@ -1,7 +1,6 @@
 package org.gatlin.web.bean.param;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.gatlin.soa.bean.param.SoaSidParam;

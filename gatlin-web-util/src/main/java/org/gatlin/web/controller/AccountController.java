@@ -13,8 +13,8 @@ import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.account.bean.param.AccountListParam;
 import org.gatlin.soa.account.bean.param.AdjustParam;
 import org.gatlin.soa.account.bean.param.RechargesParam;
+import org.gatlin.soa.account.bean.param.WithdrawsParam;
 import org.gatlin.soa.bean.enums.GatlinBizType;
-import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.util.lang.NumberUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,14 +50,14 @@ public class AccountController {
 	
 	@ResponseBody
 	@RequestMapping("withdraws")
-	public Object withdraws(@RequestBody @Valid RechargesParam param) {
+	public Object withdraws(@RequestBody @Valid WithdrawsParam param) {
 		return accountService.withdraws(param.query());
 	}
 	
 	@ResponseBody
 	@RequestMapping("user/withdraws")
-	public Object userWithdraws(@RequestBody @Valid SoaParam param) {
-		Query query = new Query().eq("uid", param.getUser().getId());
+	public Object userWithdraws(@RequestBody @Valid WithdrawsParam param) {
+		Query query = param.query().eq("uid", param.getUser().getId());
 		return accountService.withdraws(query);
 	}
 	
