@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.soa.bean.model.ResourceInfo;
+import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.config.bean.model.BankInfo;
@@ -38,7 +39,7 @@ public class ConfigController {
 	
 	@ResponseBody
 	@RequestMapping("banks")
-	public Object banks(@RequestBody @Valid BankParam param) {
+	public Object banks(@RequestBody @Valid SoaParam param) {
 		Pager<CfgBank> pager = configService.banks(param.query());
 		if (CollectionUtil.isEmpty(pager.getList()))
 			return pager;
