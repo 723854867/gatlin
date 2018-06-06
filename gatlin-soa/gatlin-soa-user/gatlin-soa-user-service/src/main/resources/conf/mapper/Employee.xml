@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gatlin.soa.user.mybatis.dao.EmployeeDao" >
+
+	<select id="list" parameterType="org.gatlin.soa.user.bean.param.EmployeesParam" resultType="org.gatlin.soa.user.bean.model.EmployeeInfo">
+		SELECT 
+			a.id,
+			a.created,
+			a.company_id,
+			b.realname name,
+			b.mobile,
+			b.identity,
+			c.name cname
+		FROM
+			employee a
+		LEFT JOIN
+			user_security b ON a.uid=b.uid
+		LEFT JOIN 
+			company c ON a.company_id=c.id
+		<where>
+			<if test="null != id">
+				id=#{id}
+			</if>
+			<if test="null != companyId">
+				AND a.company_id=#{companyId}
+			</if>
+			<if test="null != name">
+				AND `b.realname` LIKE concat(concat('%',#{name}),'%')
+			</if>
+			<if test="null != mobile">
+				AND `b.mobile` LIKE concat(concat('%',#{mobile}),'%')
+			</if>
+			<if test="null != identity">
+				AND `b.identity` LIKE concat(concat('%',#{identity}),'%')
+			</if>
+			<if test="null != companyName">
+				AND `c.name` LIKE concat(concat('%',#{companyName}),'%')
+			</if>
+		</where>
+	</select>
+</mapper>

@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.CoreCode;
+import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.authority.EntityGenerator;
@@ -33,6 +35,7 @@ import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,7 +84,11 @@ public class AuthManager {
 		if (0 != param.getParent())
 			Assert.notNull(AuthCode.MODULAR_NOT_EXIST, parent);
 		CfgModular modular = EntityGenerator.newCfgModular(param, parent);
-		cfgModularDao.insert(modular);
+		try {
+			cfgModularDao.insert(modular);
+		} catch (DuplicateKeyException e) {
+			throw new CodeException(CoreCode.FORBID, e);
+		}
 		return modular.getId();
 	}
 	
@@ -95,7 +102,11 @@ public class AuthManager {
 		modular.setPriority(param.getPriority());
 		modular.setParent(param.getParent());
 		modular.setUpdated(DateUtil.current());
-		cfgModularDao.update(modular);
+		try {
+			cfgModularDao.update(modular);
+		} catch (DuplicateKeyException e) {
+			throw new CodeException(CoreCode.FORBID, e);
+		}
 	}
 	
 	@Transactional

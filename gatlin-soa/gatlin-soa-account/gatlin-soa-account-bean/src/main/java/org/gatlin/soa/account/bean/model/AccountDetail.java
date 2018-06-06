@@ -254,8 +254,8 @@ public class AccountDetail implements Serializable {
 			this.field = field;
 		}
 		
-		public AccountTips bizId(String bizId) {
-			this.bizId = bizId;
+		public AccountTips bizId(Object bizId) {
+			this.bizId = bizId.toString();
 			return this;
 		}
 		

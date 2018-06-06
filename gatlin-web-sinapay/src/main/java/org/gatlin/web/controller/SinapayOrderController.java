@@ -3,7 +3,6 @@ package org.gatlin.web.controller;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import org.gatlin.core.util.Assert;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.SoaConsts;
 import org.gatlin.soa.account.bean.AccountUtil;
@@ -21,7 +20,8 @@ import org.gatlin.soa.sinapay.bean.param.WithdrawParam;
 import org.gatlin.soa.user.api.BankCardService;
 import org.gatlin.soa.user.api.CompanyService;
 import org.gatlin.soa.user.api.UserService;
-import org.gatlin.soa.user.bean.UserCode;
+import org.gatlin.soa.user.bean.entity.Employee;
+import org.gatlin.web.Checker;
 import org.gatlin.web.SinapayChecker;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SinapayOrderController {
 	
 	@Resource
+	private Checker checker;
+	@Resource
 	private UserService userService;
 	@Resource
 	private ConfigService configService;
@@ -52,34 +54,43 @@ public class SinapayOrderController {
 	@Resource
 	private SinapayMemberService sinapayMemberService;
 	
-	// 托管充值(需要被充值人开了委托扣款，充值这已绑卡)：可以实现个人充值企业，个人充值个人
+	// 托管充值(需要被充值人开了委托扣款，充值这已绑卡)：个人充值
 	@ResponseBody
 	@RequestMapping("recharge/deposit")
 	public Object depositRecharge(@RequestBody @Valid RechargeParam param) {
-		// 企业只能充值保证金，个人只能充值基本户
-		AccountType accountType = param.getRechargeeType() == TargetType.COMPANY ? AccountType.DEPOSIT : AccountType.BASIC;
-		MemberType rechargeeType = param.getRechargeeType() == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL;
-		sinapayChecker.checkWithhold(rechargeeType, param.getRechargee());			
+		sinapayChecker.checkWithhold(MemberType.PERSONAL, param.getUser().getId());			
 		sinapayChecker.checkCardBind(MemberType.PERSONAL, param.getUser().getId());
 		int timeout = configService.config(SoaConsts.RECHARGE_TIMEOUT);
-		Recharge recharge = AccountUtil.newRecharge(param, PlatType.SINAPAY, 1, accountType.mark(), param.getAmount(), timeout);
-		recharge.setRechargee(param.getRechargee());
-		recharge.setRechargeeType(param.getRechargeeType());
+		Recharge recharge = AccountUtil.newRecharge(param, PlatType.SINAPAY, 1, AccountType.BASIC, param.getAmount(), timeout);
 		return sinapayOrderService.depositRecharge(recharge, param);
 	}
 	
-	// 托管充值(需要被充值人开了委托扣款，充值者已绑卡)：只可以企业充值企业
+	// 托管充值(企业充值对私-使用雇员自己的账号充值)
 	@ResponseBody
-	@RequestMapping("recharge/deposit/company")
-	public Object depositRechargeCompany(@RequestBody @Valid RechargeCompanyParam param) {
-		Assert.notNull(UserCode.COMPANY_NOT_EIXST, companyService.company(param.getRechargee().intValue()));
-		sinapayChecker.checkWithhold(MemberType.ENTERPRISE, param.getCompanyId());
-		sinapayChecker.checkCardBind(MemberType.ENTERPRISE, param.getCompanyId());
+	@RequestMapping("recharge/deposit/company/c")
+	public Object depositRechargeCompanyC(@RequestBody @Valid RechargeCompanyParam param) {
+		Employee employee = checker.employeeVerify(param);
+		sinapayChecker.checkWithhold(MemberType.PERSONAL, param.getUser().getId());			
+		sinapayChecker.checkCardBind(MemberType.PERSONAL, param.getUser().getId());
 		int timeout = configService.config(SoaConsts.RECHARGE_TIMEOUT);
 		Recharge recharge = AccountUtil.newRecharge(param, PlatType.SINAPAY, 1, AccountType.DEPOSIT.mark(), param.getAmount(), timeout);
-		recharge.setRechargee(param.getCompanyId());
+		recharge.setRechargerType(TargetType.COMPANY);
+		recharge.setRechargee(employee.getCompanyId());
+		return sinapayOrderService.depositRecharge(recharge, param);
+	}
+	
+	// 托管充值(企业充值对公-使用企业账户充值)
+	@ResponseBody
+	@RequestMapping("recharge/deposit/company/b")
+	public Object depositRechargeCompanyB(@RequestBody @Valid RechargeCompanyParam param) {
+		Employee employee = checker.employeeVerify(param);
+		sinapayChecker.checkWithhold(MemberType.ENTERPRISE, employee.getCompanyId());
+		sinapayChecker.checkCardBind(MemberType.ENTERPRISE, employee.getCompanyId());
+		int timeout = configService.config(SoaConsts.RECHARGE_TIMEOUT);
+		Recharge recharge = AccountUtil.newRecharge(param, PlatType.SINAPAY, 1, AccountType.DEPOSIT.mark(), param.getAmount(), timeout);
+		recharge.setRechargee(employee.getCompanyId());
 		recharge.setRechargeeType(TargetType.COMPANY);
-		recharge.setRecharger(param.getCompanyId());
+		recharge.setRecharger(employee.getCompanyId());
 		recharge.setRechargerType(TargetType.COMPANY);
 		return sinapayOrderService.depositRecharge(recharge, param);
 	}

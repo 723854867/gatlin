@@ -44,6 +44,7 @@ import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.enums.TargetType;
+import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.sinapay.SinaBizHook;
@@ -63,7 +64,6 @@ import org.gatlin.soa.sinapay.bean.enums.CollectType;
 import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
 import org.gatlin.soa.sinapay.bean.model.BidInfo;
-import org.gatlin.soa.sinapay.bean.param.RechargeParam;
 import org.gatlin.soa.sinapay.bean.param.WithdrawParam;
 import org.gatlin.soa.sinapay.mybatis.EntityGenerator;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaBidDao;
@@ -113,20 +113,20 @@ public class SinaOrderManager {
 	// ********************* 充值  *********************
 
 	@Transactional
-	public String depositRecharge(Recharge recharge, RechargeParam param) {
+	public String depositRecharge(Recharge recharge, SoaParam param) {
 		TargetType rechargerType = recharge.getRechargerType();
 		AccountType accountType = rechargerType == TargetType.COMPANY ? AccountType.BASIC : AccountType.SAVING_POT;
 		SinaUser recharger = sinaMemberManager.user(rechargerType == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRecharger());
-		String rechargee = StringUtil.EMPTY;
+		SinaUser rechargee = sinaMemberManager.user(recharge.getRechargeeType() == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRechargee());
 		accountService.recharge(recharge);
-		sinaRechargeDao.insert(EntityGenerator.newSinaRecharge(recharge, param, rechargerType, recharger.getSinaId(), param.getRechargeeType(), rechargee));
+		sinaRechargeDao.insert(EntityGenerator.newSinaRecharge(recharge, recharger.getSinaId(), rechargee.getSinaId()));
 		DepositRechargeRequest.Builder builder = new DepositRechargeRequest.Builder();
 		builder.outTradeNo(recharge.getId());
 		builder.accountType(accountType);
 		OnlineBankPay pay = new OnlineBankPay();
 		if (rechargerType == TargetType.COMPANY)			// 对公充值则卡属性为对公
 			pay.setCardAttribute(CardAttribute.B);
-		builder.payMethod(pay, param.getAmount());
+		builder.payMethod(pay, recharge.getAmount());
 		builder.payerIp(recharge.getIp());
 		builder.identityId(recharger.getSinaId());
 		if (recharge.getFee().compareTo(BigDecimal.ZERO) > 0)

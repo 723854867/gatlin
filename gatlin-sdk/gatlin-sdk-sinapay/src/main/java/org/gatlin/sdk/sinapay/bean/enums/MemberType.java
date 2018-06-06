@@ -1,6 +1,8 @@
 package org.gatlin.sdk.sinapay.bean.enums;
 
-public enum MemberType {
+import org.gatlin.util.bean.IEnum;
+
+public enum MemberType implements IEnum {
 
 	PERSONAL(1),
 	ENTERPRISE(2);
@@ -11,6 +13,7 @@ public enum MemberType {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
 	}

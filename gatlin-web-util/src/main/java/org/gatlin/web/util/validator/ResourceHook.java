@@ -31,7 +31,7 @@ public abstract class ResourceHook {
 			break;
 		case 2:
 			Assert.notNull(UserCode.USER_NOT_EIXST, param.getUser());
-			param.setOwner(String.valueOf(param.getUser().getId()));
+			param.setOwner(param.getUser().getId());
 			break;
 		case 3:
 			Assert.hasText(CoreCode.PARAM_ERR, param.getOwner());

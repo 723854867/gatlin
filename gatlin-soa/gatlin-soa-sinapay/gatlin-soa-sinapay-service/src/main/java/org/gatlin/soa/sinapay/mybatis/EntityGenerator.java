@@ -30,7 +30,6 @@ import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
 import org.gatlin.soa.sinapay.bean.model.BidInfo;
 import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
-import org.gatlin.soa.sinapay.bean.param.RechargeParam;
 import org.gatlin.soa.sinapay.bean.param.WithdrawParam;
 import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
@@ -106,14 +105,13 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final SinaRecharge newSinaRecharge(Recharge recharge, RechargeParam param, TargetType rechargerType, String recharger, 
-			TargetType rechargeeType, String rechargee) {
+	public static final SinaRecharge newSinaRecharge(Recharge recharge, String recharger, String rechargee) {
 		SinaRecharge instance = new SinaRecharge();
 		instance.setId(recharge.getId());
 		instance.setRechargee(rechargee);
 		instance.setRecharger(recharger);
-		instance.setRechargerType(rechargerType);
-		instance.setRechargeeType(rechargeeType);
+		instance.setRechargerType(recharge.getRechargerType());
+		instance.setRechargeeType(recharge.getRechargeeType());
 		instance.setAmount(recharge.getAmount());
 		instance.setState(RechargeState.PROCESSING.name());
 		int time = DateUtil.current();

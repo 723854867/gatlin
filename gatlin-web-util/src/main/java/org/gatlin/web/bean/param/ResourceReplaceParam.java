@@ -5,13 +5,13 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.gatlin.soa.bean.param.SoaSidParam;
+import org.gatlin.util.lang.StringUtil;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ResourceReplaceParam extends SoaSidParam {
 
 	private static final long serialVersionUID = 4099609243779018993L;
 
-	@NotEmpty
 	private String name;
 	private String link;
 	@Min(0)
@@ -49,5 +49,12 @@ public class ResourceReplaceParam extends SoaSidParam {
 
 	public void setSource(MultipartFile source) {
 		this.source = source;
+	}
+	
+	@Override
+	public void verify() {
+		super.verify();
+		if (!StringUtil.hasText(name))
+			this.name = source.getOriginalFilename();
 	}
 }

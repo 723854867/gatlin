@@ -3,15 +3,18 @@ package org.gatlin.soa.user.mybatis;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.user.bean.UserUtil;
 import org.gatlin.soa.user.bean.entity.Company;
+import org.gatlin.soa.user.bean.entity.Employee;
 import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.entity.Username;
+import org.gatlin.soa.user.bean.enums.EmployeeState;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.param.AddressAddparam;
 import org.gatlin.soa.user.bean.param.CompanyAddParam;
+import org.gatlin.soa.user.bean.param.EmployeeAddParam;
 import org.gatlin.soa.user.bean.param.LoginParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.gatlin.util.DateUtil;
@@ -105,6 +108,17 @@ public class EntityGenerator {
 		instance.setIdentity(param.getIdentity());
 		instance.setMobile(param.getMobile());
 		instance.setRealname(param.getRealname());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final Employee newEmployee(EmployeeAddParam param) {
+		Employee instance = new Employee();
+		instance.setUid(param.getUid());
+		instance.setCompanyId(param.getId());
+		instance.setState(EmployeeState.NORMAL);
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

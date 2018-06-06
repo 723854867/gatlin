@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
-import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.soa.bean.param.SoaIdParam;
 
-public class RechargeParam extends SoaParam {
+public class RechargeCompanyParam extends SoaIdParam {
 
-	private static final long serialVersionUID = -6068871705392042154L;
+	private static final long serialVersionUID = -4153003202832703710L;
 
 	@NotNull
 	@DecimalMin("0.01")

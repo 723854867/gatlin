@@ -1,5 +1,7 @@
 package org.gatlin.soa.courier.manager;
 
+import java.util.Collection;
+
 import javax.annotation.Resource;
 
 import org.gatlin.soa.bean.enums.PlatType;
@@ -23,6 +25,18 @@ public class SmsRouteManager {
 		case CHUANGLAN:
 			if (null != chuangLanManager)
 				chuangLanManager.sendSms(content, mobile);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void send(String content, Collection<String> mobiles) { 
+		PlatType plat = EnumUtil.valueOf(PlatType.class, configService.config(CourierConsts.SMS_PLAT));
+		switch (plat) {
+		case CHUANGLAN:
+			if (null != chuangLanManager)
+				chuangLanManager.sendSms(content, mobiles);
 			break;
 		default:
 			break;
