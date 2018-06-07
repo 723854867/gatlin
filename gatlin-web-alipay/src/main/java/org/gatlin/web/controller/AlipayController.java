@@ -42,7 +42,7 @@ public class AlipayController {
 	@RequestMapping("recharge/account")
 	public Object recharge(@RequestBody @Valid RechargeParam param) {
 		int timeout = configService.config(SoaConsts.RECHARGE_TIMEOUT);
-		Recharge recharge = AccountUtil.newRecharge(param, PlatType.ALIPAY, 1, AccountType.BASIC, param.getAmount(), timeout);
+		Recharge recharge = AccountUtil.newRecharge(param, PlatType.ALIPAY, 1, AccountType.BASIC.mark(), param.getAmount(), timeout);
 		return alipayAccountService.recharge(recharge);
 	}
 	

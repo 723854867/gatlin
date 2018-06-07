@@ -1,6 +1,7 @@
 package org.gatlin.sdk.sinapay.notice;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.gatlin.sdk.sinapay.bean.enums.TradeState;
 
@@ -12,7 +13,7 @@ public class TradeNotice extends SinaNotice {
 	private String outer_trade_no;
 	@NotEmpty
 	private String inner_trade_no;
-	@NotEmpty
+	@NotNull
 	private TradeState trade_status;
 	private String trade_amount;
 	private String gmt_create;

@@ -264,8 +264,7 @@ public class SinaOrderManager {
 	public String withdrawPay(WithdrawParam param) { 
 		SinaUser user = sinaMemberManager.user(MemberType.PERSONAL, param.getUser().getId());
 		Assert.isTrue(SinaCode.MEMBER_NOT_EXIST, null != user);
-		BigDecimal fee = sinaBizHook.withdrawFee(param);
-		Withdraw withdraw = EntityGenerator.newWithdraw(param, fee);
+		Withdraw withdraw = sinaBizHook.withdraw(param);
 		accountService.withdraw(withdraw);
 		SinaPay pay = EntityGenerator.newSinaPay(withdraw);
 		sinaPayDao.insert(pay);

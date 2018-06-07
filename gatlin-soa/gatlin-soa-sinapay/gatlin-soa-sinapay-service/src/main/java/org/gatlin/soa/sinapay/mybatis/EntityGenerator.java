@@ -10,8 +10,6 @@ import org.gatlin.sdk.sinapay.bean.enums.TradeState;
 import org.gatlin.sdk.sinapay.bean.enums.WithdrawState;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
-import org.gatlin.soa.bean.User;
-import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
@@ -30,7 +28,6 @@ import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
 import org.gatlin.soa.sinapay.bean.model.BidInfo;
 import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
-import org.gatlin.soa.sinapay.bean.param.WithdrawParam;
 import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.util.DateUtil;
@@ -211,23 +208,6 @@ public class EntityGenerator {
 		instance.setBidId(bid.getId());
 		instance.setAmount(amount);
 		instance.setState(WithdrawState.INIT);
-		int time = DateUtil.current();
-		instance.setCreated(time);
-		instance.setUpdated(time);
-		return instance;
-	}
-	
-	public static final Withdraw newWithdraw(WithdrawParam param, BigDecimal fee) {
-		User user = param.getUser();
-		Withdraw instance = new Withdraw();
-		instance.setFee(fee);
-		instance.setOs(user.getOs());
-		instance.setIp(param.meta().getIp());
-		instance.setAmount(param.getAmount());
-		instance.setPlat(PlatType.SINAPAY);
-		instance.setUid(param.getUser().getId());
-		instance.setId(IDWorker.INSTANCE.nextSid());
-		instance.setState(org.gatlin.soa.account.bean.enums.WithdrawState.INIT);
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

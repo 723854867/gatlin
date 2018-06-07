@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class DefaultRechargeNoticeHook implements IRechargeNoticeHook {
 	
 	@Resource
-	private AccountManager accountManager;
+	protected AccountManager accountManager;
 
 	@Override
 	public void process(Recharge recharge, RechargeState update) {
