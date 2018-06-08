@@ -2,7 +2,9 @@ package org.gatlin.soa.user.bean.param;
 
 import javax.validation.constraints.Min;
 
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.util.lang.EnumUtil;
 
 public class BankCardsParam extends SoaParam {
 
@@ -107,5 +109,13 @@ public class BankCardsParam extends SoaParam {
 	
 	public void setTimeStart(Integer timeStart) {
 		this.timeStart = timeStart;
+	}
+	
+	@Override
+	public void verify() {
+		super.verify();
+		TargetType targetType = EnumUtil.valueOf(TargetType.class, ownerType);
+		if (null == targetType)
+			this.ownerType = TargetType.USER.mark();
 	}
 }

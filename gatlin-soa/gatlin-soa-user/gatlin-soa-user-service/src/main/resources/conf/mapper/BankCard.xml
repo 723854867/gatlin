@@ -18,26 +18,26 @@
 				a.branch,
 				a.created,
 				<choose>
-					<when test="ownerType == 1">
-						b.`realname` owner_name,
-						b.`identity` owner_identity,
-						b.`mobile` owner_phone
-					</when>
-					<otherwise>
+					<when test="ownerType == 2">
 						b.`name` owner_name,
 						b.`identity` owner_identity,
 						b.`telephone` owner_phone
+					</when>
+					<otherwise>
+						b.`realname` owner_name,
+						b.`identity` owner_identity,
+						b.`mobile` owner_phone
 					</otherwise>
 				</choose>
 			FROM
 				(SELECT * FROM bank_card WHERE owner_type=#{ownerType}) a 
 			LEFT JOIN
 			<choose>
-				<when test="ownerType == 1">
-					`user_security` b ON a.`owner`=b.`uid`
+				<when test="ownerType == 2">
+					`company` b ON a.`owner`=b.`id`
 				</when>
 				<otherwise>
-					`company` b ON a.`owner`=b.`id`
+					`user_security` b ON a.`owner`=b.`uid`
 				</otherwise>
 			</choose>
 		) c
