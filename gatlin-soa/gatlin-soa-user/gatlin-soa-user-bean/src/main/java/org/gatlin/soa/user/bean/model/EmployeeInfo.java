@@ -2,6 +2,8 @@ package org.gatlin.soa.user.bean.model;
 
 import java.io.Serializable;
 
+import org.gatlin.soa.user.bean.enums.EmployeeState;
+
 public class EmployeeInfo implements Serializable {
 
 	private static final long serialVersionUID = 5562566076910871536L;
@@ -12,6 +14,7 @@ public class EmployeeInfo implements Serializable {
 	private int companyId;
 	private String mobile;
 	private String identity;
+	private EmployeeState state;
 	private int created;
 
 	public long getId() {
@@ -69,4 +72,13 @@ public class EmployeeInfo implements Serializable {
 	public void setCreated(int created) {
 		this.created = created;
 	}
+
+	public EmployeeState getState() {
+		return state;
+	}
+
+	public void setState(EmployeeState state) {
+		this.state = state;
+	}
+	
 }

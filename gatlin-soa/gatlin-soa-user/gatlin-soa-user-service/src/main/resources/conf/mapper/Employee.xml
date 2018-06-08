@@ -7,6 +7,7 @@
 			a.id,
 			a.created,
 			a.company_id,
+			a.state,
 			b.realname name,
 			b.mobile,
 			b.identity,
@@ -25,16 +26,16 @@
 				AND a.company_id=#{companyId}
 			</if>
 			<if test="null != name">
-				AND `b.realname` LIKE concat(concat('%',#{name}),'%')
+				AND b.`realname` LIKE concat(concat('%',#{name}),'%')
 			</if>
 			<if test="null != mobile">
-				AND `b.mobile` LIKE concat(concat('%',#{mobile}),'%')
+				AND b.`mobile` LIKE concat(concat('%',#{mobile}),'%')
 			</if>
 			<if test="null != identity">
-				AND `b.identity` LIKE concat(concat('%',#{identity}),'%')
+				AND b.`identity` LIKE concat(concat('%',#{identity}),'%')
 			</if>
 			<if test="null != companyName">
-				AND `c.name` LIKE concat(concat('%',#{companyName}),'%')
+				AND c.`name` LIKE concat(concat('%',#{companyName}),'%')
 			</if>
 		</where>
 	</select>
