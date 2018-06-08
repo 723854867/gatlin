@@ -47,7 +47,7 @@ public class UserSecuritiesParam extends SoaParam {
 	public void verify() {
 		super.verify();
 		if (null != uid)
-			this.query.eq("ud", uid);
+			this.query.eq("uid", uid);
 		if (null != name)
 			this.query.like("realname", name);
 		if (null != mobile)
