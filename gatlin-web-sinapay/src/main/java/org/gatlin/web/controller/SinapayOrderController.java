@@ -97,7 +97,7 @@ public class SinapayOrderController {
 	
 	// 个人托管提现代付
 	@ResponseBody
-	@RequestMapping("withdraw/deposit/pay/user")
+	@RequestMapping("withdraw/deposit/pay")
 	public Object depositWithdrawPay(@RequestBody @Valid WithdrawParam param) {
 		return sinapayOrderService.withdrawPay(param);
 	}

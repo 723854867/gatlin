@@ -35,6 +35,11 @@ public class RedisLock {
 		return redis.set(lock, lockId, NXXX.NX, EXPX.PX, lockTimeout) ? lockId : null;
 	}
 	
+	public String tryLock(String lock, int lockTimeout) {
+		String lockId = KeyUtil.uuid();
+		return redis.set(lock, lockId, NXXX.NX, EXPX.PX, lockTimeout) ? lockId : null;
+	}
+	
 	/**
 	 * 分布式锁：获取指定资源的锁，直到超时，成功则返回锁id，失败或者超时返回null,使用默认的超时时间
 	 * 
