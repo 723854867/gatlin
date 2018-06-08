@@ -35,6 +35,7 @@ import org.gatlin.util.bean.enums.DeviceType;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.serial.SerializeUtil;
 import org.gatlin.web.WebConsts;
+import org.gatlin.web.util.GatewayHook;
 import org.gatlin.web.util.WebCode;
 import org.gatlin.web.util.WebUtil;
 import org.slf4j.Logger;
@@ -56,6 +57,8 @@ public class GatewayInterceptor {
 	private UserService userService;
 	@Autowired(required = false)
 	private AuthService authService;
+	@Autowired(required = false)
+	private GatewayHook gatewayHook;
 	@Resource
 	private ConfigService configService;
 
@@ -104,6 +107,8 @@ public class GatewayInterceptor {
 					Assert.isTrue(UserCode.DEVICE_UNSUPPORT, (api.getDeviceMod() & deviceType.mark()) == deviceType.mark());
 				}
 			}
+			if (null != gatewayHook)
+				gatewayHook.filter(user, params);
 			Object result = point.proceed();
 			Object response = null;
 			if (null != result) {

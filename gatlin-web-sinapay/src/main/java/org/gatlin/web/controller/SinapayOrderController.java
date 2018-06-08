@@ -61,7 +61,7 @@ public class SinapayOrderController {
 		sinapayChecker.checkWithhold(MemberType.PERSONAL, param.getUser().getId());			
 		sinapayChecker.checkCardBind(MemberType.PERSONAL, param.getUser().getId());
 		int timeout = configService.config(SoaConsts.RECHARGE_TIMEOUT);
-		Recharge recharge = AccountUtil.newRecharge(param, PlatType.SINAPAY, 1, AccountType.BASIC, param.getAmount(), timeout);
+		Recharge recharge = AccountUtil.newRecharge(param, PlatType.SINAPAY, 1, AccountType.BASIC.mark(), param.getAmount(), timeout);
 		return sinapayOrderService.depositRecharge(recharge, param);
 	}
 	

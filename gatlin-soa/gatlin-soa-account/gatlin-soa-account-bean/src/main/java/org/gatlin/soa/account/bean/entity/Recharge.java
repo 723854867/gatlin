@@ -117,7 +117,7 @@ public class Recharge implements Identifiable<String> {
 	public void setFee(BigDecimal fee) {
 		this.fee = fee;
 	}
-
+	
 	public BigDecimal getAmount() {
 		return amount;
 	}

@@ -91,7 +91,7 @@ public class DepositRechargeRequest extends OrderRequest<DepositRechargeResponse
 		// 支付方式：必须
 		public Builder payMethod(PayMethod payMethod, BigDecimal amount) {
 			this.params.put("amount", amount.toString());
-			this.params.put("pay_method", MessageFormat.format(payMethod.toString(), amount));
+			this.params.put("pay_method", MessageFormat.format(payMethod.toString(), amount.toString()));
 			return this;
 		}
 		
