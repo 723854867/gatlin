@@ -22,6 +22,8 @@ public interface SinapayOrderService {
 	// 托管充值
 	String depositRecharge(Recharge recharge, SoaParam param);
 	
+	void depositRechargeTimeout(String id);
+	
 	SinaRecharge noticeDepositRecharge(DepositRechargeNotice notice);
 	
 	SinaCollect rechargeCollect(String id, DepositRechargeNotice notice);
@@ -34,9 +36,11 @@ public interface SinapayOrderService {
 	
 	String withdraw(SoaSidParam param);
 	
+	void withdrawTimeout(String id);
+	
 	SinaWithdraw withdrawNotice(WithdrawNotice notice);
 	
-	void withdrawCollect(String id, WithdrawNotice notice);
+	void withdrawFailure(String id, WithdrawNotice notice);
 	
 	void bidCreate(BidInfo info);
 	

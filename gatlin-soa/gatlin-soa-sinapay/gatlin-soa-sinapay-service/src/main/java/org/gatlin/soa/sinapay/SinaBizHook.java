@@ -1,6 +1,8 @@
 package org.gatlin.soa.sinapay;
 
+import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
+import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.entity.SinaBid;
 import org.gatlin.soa.sinapay.bean.entity.SinaLoanout;
 import org.gatlin.soa.sinapay.bean.param.WithdrawParam;
@@ -48,9 +50,32 @@ public interface SinaBizHook {
 	void loanoutNotice(SinaBid bid, SinaLoanout loanout);
 	
 	/**
+	 * 充值
+	 * 
+	 * @param recharge
+	 */
+	void recharge(Recharge recharge);
+	
+	/**
+	 * 充值回调
+	 * 
+	 * @param id
+	 * @param update
+	 */
+	void rechargeNotice(String id, RechargeState update);
+	
+	/**
 	 * 提现
 	 * 
 	 * @return
 	 */
 	Withdraw withdraw(WithdrawParam param);
+	
+	/**
+	 * 提现回调
+	 * 
+	 * @param id
+	 * @param success
+	 */
+	void withdrawNotice(String id, boolean success);
 }

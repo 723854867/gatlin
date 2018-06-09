@@ -3,7 +3,6 @@ package org.gatlin.web.controller;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.model.message.WrapResponse;
 import org.gatlin.sdk.sinapay.notice.BidNotice;
 import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
@@ -17,6 +16,9 @@ import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaWithdraw;
 import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.enums.SinaWithdrawState;
+import org.gatlin.util.serial.SerializeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -31,6 +33,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("sinapay/notice")
 public class SinapayNoticeController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(SinapayNoticeController.class);
 	
 	@Resource
 	private SinapayOrderService sinapayOrderService;
@@ -47,12 +51,11 @@ public class SinapayNoticeController {
 	@RequestMapping("recharge/deposit")
 	public Object rechargeDeposit(@Valid DepositRechargeNotice notice) {
 		SinaRecharge recharge = sinapayOrderService.noticeDepositRecharge(notice);
-		RechargeState state = RechargeState.valueOf(recharge.getState());
-		if (state == RechargeState.WAIT_RECALL) {				// 发起待收
+		if (recharge.getState() == RechargeState.WAIT_RECALL) {				// 发起待收
 			try {
 				sinapayOrderService.rechargeCollect(recharge.getId(), notice);
 			} catch (Exception e) {
-				throw new CodeException(e);
+				logger.error("充值 - {} 成功待收失败！充值成功回调 -{}", notice.getOuter_trade_no(), SerializeUtil.GSON.toJson(notice), e);
 			}
 		}
 		return new WrapResponse(SinaNotice.RESPONSE_OK);
@@ -81,9 +84,9 @@ public class SinapayNoticeController {
 		SinaWithdraw withdraw = sinapayOrderService.withdrawNotice(notice);
 		if (withdraw.getState() == SinaWithdrawState.FAILED) {			// 提现失败：发起待收
 			try {
-				sinapayOrderService.withdrawCollect(withdraw.getId(), notice);
+				sinapayOrderService.withdrawFailure(withdraw.getId(), notice);
 			} catch (Exception e) {
-				throw new CodeException(e);
+				logger.error("新浪提现订单 - {} 提现失败撤回失败！提现回调请求 - {}", notice.getOuter_trade_no(), SerializeUtil.GSON.toJson(notice), e);
 			}
 		}
 		return new WrapResponse(SinaNotice.RESPONSE_OK);

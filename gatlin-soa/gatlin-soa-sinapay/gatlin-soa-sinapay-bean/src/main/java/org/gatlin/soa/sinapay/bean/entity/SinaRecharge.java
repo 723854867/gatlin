@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import javax.persistence.Id;
 
 import org.gatlin.soa.bean.enums.TargetType;
+import org.gatlin.soa.sinapay.bean.enums.RechargeState;
 import org.gatlin.util.bean.Identifiable;
 
 public class SinaRecharge implements Identifiable<String> {
@@ -13,11 +14,11 @@ public class SinaRecharge implements Identifiable<String> {
 	
 	@Id
 	private String id;
-	private String state;
 	private String rechargee;
 	private String recharger;
 	// 已经去掉了 user_fee 了，即这里的金额就是实际到账金额
 	private BigDecimal amount;
+	private RechargeState state;
 	private TargetType rechargeeType;
 	private TargetType rechargerType;
 	private int created;
@@ -31,11 +32,11 @@ public class SinaRecharge implements Identifiable<String> {
 		this.id = id;
 	}
 	
-	public String getState() {
+	public RechargeState getState() {
 		return state;
 	}
 	
-	public void setState(String state) {
+	public void setState(RechargeState state) {
 		this.state = state;
 	}
 	

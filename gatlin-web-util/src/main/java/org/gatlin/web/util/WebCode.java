@@ -11,4 +11,5 @@ public interface WebCode {
 	final Code UPLOAD_FAILURE		 			= new Code("code.upload.failure", "资源上传失败");
 
 	final Code SERVER_WARNING 					= new Code("code.warning", "服务器预警");
+	final Code LOG_REQUEST_UNSUPPORT 			= new Code("code.log.request.unsupport", "未开启访问日志服务");
 }

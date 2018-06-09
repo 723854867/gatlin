@@ -34,6 +34,11 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 	}
 	
 	@Override
+	public void depositRechargeTimeout(String id) {
+		sinaOrderManager.depositRechargeTimeout(id);
+	}
+	
+	@Override
 	public SinaRecharge noticeDepositRecharge(DepositRechargeNotice notice) {
 		return sinaOrderManager.noticeDepositRecharge(notice);
 	}
@@ -64,13 +69,18 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 	}
 	
 	@Override
+	public void withdrawTimeout(String id) {
+		sinaOrderManager.withdrawTimeout(id);
+	}
+	
+	@Override
 	public SinaWithdraw withdrawNotice(WithdrawNotice notice) {
 		return sinaOrderManager.withdrawNotice(notice);
 	}
 	
 	@Override
-	public void withdrawCollect(String id, WithdrawNotice notice) {
-		sinaOrderManager.withdrawCollect(id, notice);
+	public void withdrawFailure(String id, WithdrawNotice notice) {
+		sinaOrderManager.withdrawFailure(id, notice);
 	}
 	
 	@Override

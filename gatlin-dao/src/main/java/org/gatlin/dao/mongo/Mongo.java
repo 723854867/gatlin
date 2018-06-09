@@ -53,7 +53,7 @@ public class Mongo {
 	@PostConstruct
 	public void init() {
 		String db = GatlinConfigration.get(Options.MONGO_DB);
-		String username = GatlinConfigration.get(Options.MONGO_DB);
+		String username = GatlinConfigration.get(Options.MONGO_USERNAME);
 		String password = GatlinConfigration.get(Options.MONGO_PASSWORD);
 		if (StringUtil.hasText(username) && StringUtil.hasText(password)) {
 			MongoCredential credential = MongoCredential.createCredential(username, db, password.toCharArray());

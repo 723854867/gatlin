@@ -39,7 +39,6 @@ import org.gatlin.sdk.sinapay.response.DepositRechargeResponse;
 import org.gatlin.sdk.sinapay.response.DepositResponse;
 import org.gatlin.sdk.sinapay.response.DepositWithdrawResponse;
 import org.gatlin.sdk.sinapay.response.PayToCardResponse;
-import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.bean.User;
@@ -100,8 +99,6 @@ public class SinaOrderManager {
 	@Resource
 	private SinaLoanoutDao sinaLoanoutDao;
 	@Resource
-	private AccountService accountService;
-	@Resource
 	private SinaCollectDao sinaCollectDao;
 	@Resource
 	private SinaWithdrawDao sinaWithdrawDao;
@@ -111,14 +108,13 @@ public class SinaOrderManager {
 	private SinaMemberManager sinaMemberManager;
 	
 	// ********************* 充值  *********************
-
 	@Transactional
 	public String depositRecharge(Recharge recharge, SoaParam param) {
 		TargetType rechargerType = recharge.getRechargerType();
 		AccountType accountType = rechargerType == TargetType.COMPANY ? AccountType.BASIC : AccountType.SAVING_POT;
 		SinaUser recharger = sinaMemberManager.user(rechargerType == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRecharger());
 		SinaUser rechargee = sinaMemberManager.user(recharge.getRechargeeType() == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRechargee());
-		accountService.recharge(recharge);
+		sinaBizHook.recharge(recharge);
 		sinaRechargeDao.insert(EntityGenerator.newSinaRecharge(recharge, recharger.getSinaId(), rechargee.getSinaId()));
 		DepositRechargeRequest.Builder builder = new DepositRechargeRequest.Builder();
 		builder.outTradeNo(recharge.getId());
@@ -144,19 +140,30 @@ public class SinaOrderManager {
 		return response.getRedirectUrl();
 	}
 	
+	@Transactional
+	public SinaRecharge depositRechargeTimeout(String id) {
+		SinaRecharge recharge = sinaRechargeDao.queryUnique(new Query().eq("id", id).forUpdate());
+		Assert.notNull(SinaCode.RECHARGE_NOT_EXIST, recharge);
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, recharge.getState() == RechargeState.PROCESSING);
+		recharge.setState(RechargeState.FAILED);
+		recharge.setUpdated(DateUtil.current());
+		sinaBizHook.rechargeNotice(id, org.gatlin.soa.account.bean.enums.RechargeState.TIMEOUT);
+		sinaRechargeDao.update(recharge);
+		return recharge;
+	}
+	
 	// 充值成功之后执行代收到中间户
 	@Transactional
 	public SinaRecharge noticeDepositRecharge(DepositRechargeNotice notice) {
 		SinaRecharge recharge = sinaRechargeDao.queryUnique(new Query().eq("id", notice.getOuter_trade_no()).forUpdate());
 		Assert.notNull(SinaCode.RECHARGE_NOT_EXIST, recharge);
-		RechargeState state = RechargeState.valueOf(recharge.getState());
 		DepositRechargeState cstate = DepositRechargeState.valueOf(notice.getDeposit_status());
-		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == RechargeState.PROCESSING);
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, recharge.getState() == RechargeState.PROCESSING);
 		Assert.isTrue(SinaCode.UNRECOGNIZE_DATA, cstate == DepositRechargeState.FAILED || cstate == DepositRechargeState.SUCCESS);
-		recharge.setState(_rechargeState(cstate).name());
+		recharge.setState(_rechargeState(cstate));
 		recharge.setUpdated(DateUtil.current());
 		if (cstate == DepositRechargeState.FAILED) 		// 充值失败同步通知应用充值失败
-			accountService.rechargeNotice(recharge.getId(), org.gatlin.soa.account.bean.enums.RechargeState.CLOSE);
+			sinaBizHook.rechargeNotice(recharge.getId(), org.gatlin.soa.account.bean.enums.RechargeState.CLOSE);
 		sinaRechargeDao.update(recharge);
 		return recharge;
 	}
@@ -168,9 +175,8 @@ public class SinaOrderManager {
 	public SinaCollect rechargeCollect(String id, DepositRechargeNotice notice) {
 		SinaRecharge recharge = sinaRechargeDao.queryUnique(new Query().eq("id", id).forUpdate());
 		Assert.notNull(SinaCode.RECHARGE_NOT_EXIST, recharge);
-		RechargeState state = RechargeState.valueOf(recharge.getState());
-		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, state == RechargeState.WAIT_RECALL);
-		recharge.setState(RechargeState.RECALLING.name());
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, recharge.getState() == RechargeState.WAIT_RECALL);
+		recharge.setState(RechargeState.RECALLING);
 		recharge.setUpdated(DateUtil.current());
 		sinaRechargeDao.update(recharge);
 		SinaCollect collect = EntityGenerator.newSinaCollect(CollectType.RECHARGE, recharge.getId());
@@ -215,15 +221,15 @@ public class SinaOrderManager {
 			switch (notice.getTrade_status()) {
 			case TRADE_FAILED:
 			case TRADE_CLOSED:
-				recharge.setState(RechargeState.WAIT_RECALL.name());
+				recharge.setState(RechargeState.WAIT_RECALL);
 				recharge.setUpdated(DateUtil.current());
 				sinaRechargeDao.update(recharge);
 				break;
 			case TRADE_FINISHED:
-				recharge.setState(RechargeState.SUCCESS.name());
+				recharge.setState(RechargeState.SUCCESS);
 				recharge.setUpdated(DateUtil.current());
 				sinaRechargeDao.update(recharge);
-				accountService.rechargeNotice(recharge.getId(), org.gatlin.soa.account.bean.enums.RechargeState.SUCCESS);
+				sinaBizHook.rechargeNotice(recharge.getId(), org.gatlin.soa.account.bean.enums.RechargeState.SUCCESS);
 				break;
 			default:
 				break;
@@ -242,7 +248,26 @@ public class SinaOrderManager {
 				withdraw.setState(SinaWithdrawState.RECALLED);
 				withdraw.setUpdated(DateUtil.current());
 				sinaWithdrawDao.update(withdraw);
-				accountService.withdrawNotice(withdraw.getId(), false);
+				sinaBizHook.withdrawNotice(withdraw.getId(), false);
+				break;
+			default:
+				break;
+			}
+			break;
+		case WITHDRAW_TIMEOUT:
+			withdraw = sinaWithdrawDao.queryUnique(query);
+			switch (notice.getTrade_status()) {
+			case TRADE_FAILED:
+			case TRADE_CLOSED:
+				withdraw.setState(SinaWithdrawState.PAYED);
+				withdraw.setUpdated(DateUtil.current());
+				sinaWithdrawDao.update(withdraw);
+				break;
+			case TRADE_FINISHED:
+				withdraw.setState(SinaWithdrawState.RECALLED);
+				withdraw.setUpdated(DateUtil.current());
+				sinaWithdrawDao.update(withdraw);
+				sinaBizHook.withdrawNotice(withdraw.getId(), false);
 				break;
 			default:
 				break;
@@ -265,7 +290,6 @@ public class SinaOrderManager {
 		SinaUser user = sinaMemberManager.user(MemberType.PERSONAL, param.getUser().getId());
 		Assert.isTrue(SinaCode.MEMBER_NOT_EXIST, null != user);
 		Withdraw withdraw = sinaBizHook.withdraw(param);
-		accountService.withdraw(withdraw);
 		SinaPay pay = EntityGenerator.newSinaPay(withdraw);
 		sinaPayDao.insert(pay);
 		sinaWithdrawDao.insert(EntityGenerator.newSinaWithdraw(withdraw, user, AccountType.SAVING_POT));
@@ -364,7 +388,7 @@ public class SinaOrderManager {
 		case SUCCESS:
 			withdraw.setState(SinaWithdrawState.SUCCESS);
 			withdraw.setUpdated(DateUtil.current());
-			accountService.withdrawNotice(withdraw.getId(), true);
+			sinaBizHook.withdrawNotice(withdraw.getId(), true);
 			break;
 		case FAILED:
 			withdraw.setState(SinaWithdrawState.FAILED);
@@ -382,19 +406,31 @@ public class SinaOrderManager {
 	}
 	
 	@Transactional
-	public void withdrawCollect(String id, WithdrawNotice notice) {
+	public void withdrawTimeout(String id) {
+		SinaWithdraw withdraw = sinaWithdrawDao.queryUnique(new Query().eq("id", id).forUpdate());
+		Assert.notNull(SinaCode.WITHDRAW_NOT_EXIST, withdraw);
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, withdraw.getState() == SinaWithdrawState.PAYED);
+		_withdrawCollect(withdraw, CollectType.WITHDRAW_TIMEOUT, "127.0.0.1");
+	}
+	
+	@Transactional
+	public void withdrawFailure(String id, WithdrawNotice notice) {
 		SinaWithdraw withdraw = sinaWithdrawDao.queryUnique(new Query().eq("id", id).forUpdate());
 		Assert.notNull(SinaCode.WITHDRAW_NOT_EXIST, withdraw);
 		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, withdraw.getState() == SinaWithdrawState.FAILED);
+		_withdrawCollect(withdraw, CollectType.WITHDRAW_FAILED, notice.meta().getIp());
+	}
+	
+	private void _withdrawCollect(SinaWithdraw withdraw, CollectType collectType, String ip) {
 		withdraw.setState(SinaWithdrawState.RECALLING);
 		withdraw.setUpdated(DateUtil.current());
 		sinaWithdrawDao.update(withdraw);
-		SinaCollect collect = EntityGenerator.newSinaCollect(CollectType.WITHDRAW_FAILED, withdraw.getId());
+		SinaCollect collect = EntityGenerator.newSinaCollect(collectType, withdraw.getId());
 		sinaCollectDao.insert(collect);
 		DepositCollectRequest.Builder builder = new DepositCollectRequest.Builder();
 		builder.payerId(withdraw.getWithdrawee());
-		builder.payerIp(notice.meta().getIp());
-		builder.summary("提现待收");
+		builder.payerIp(ip);
+		builder.summary(collectType.describe());
 		builder.outTradeNo(collect.getId());
 		builder.outTradeCode(OutTradeCode.COLLECT_INVEST);
 		BalancePay balancePay = new BalancePay();
@@ -402,9 +438,9 @@ public class SinaOrderManager {
 		builder.paymethod(balancePay, withdraw.getAmount());
 		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_COLLECT_SINA));
 		DepositCollectRequest request = builder.build();
-		logger.info("新浪提现待收请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		logger.info("新浪{}请求：{}", collectType.describe(), SerializeUtil.GSON.toJson(request.params()));
 		DepositResponse response = request.sync();
-		logger.info("新浪提现待收响应：{}", SerializeUtil.GSON.toJson(response));
+		logger.info("新浪{}响应：{}", collectType.describe(), SerializeUtil.GSON.toJson(response));
 	}
 	
 	@Transactional
