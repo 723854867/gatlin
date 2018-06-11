@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.gatlin.core.CoreCode;
+import org.gatlin.core.Gatlin;
 import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.util.Assert;
@@ -47,6 +48,8 @@ public class SinapayResourceController {
 	};
 	
 	@Resource
+	private Gatlin gatlin;
+	@Resource
 	private CompanyService companyService;
 	@Resource
 	private SinapayMemberService sinapayMemberService;
@@ -74,7 +77,8 @@ public class SinapayResourceController {
 			connection.setHost(GatlinConfigration.get("sinapay.sftp.host"));
 			connection.setPort(GatlinConfigration.get("sinapay.sftp.port", Integer.class));
 			connection.setUsername(GatlinConfigration.get("sinapay.sftp.username"));
-			connection.setPriKeyFile(SinapayResourceController.class.getResource("/conf/sinapay_sftp.key").getFile());
+			String sftpFile = "/conf/sinapay_sftp_" + gatlin.env().name().toLowerCase() + ".key";
+			connection.setPriKeyFile(SinapayResourceController.class.getResource(sftpFile).getFile());
 			connection.init();
 			connection.upload(GatlinConfigration.get("sinapay.sftp.company.directory"), prefix + ".zip", in);
 		} finally {
