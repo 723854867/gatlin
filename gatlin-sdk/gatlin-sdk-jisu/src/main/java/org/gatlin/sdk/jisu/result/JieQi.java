@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.gatlin.sdk.jisu.bean.model.JieQiNow;
 import org.gatlin.sdk.jisu.bean.model.JieQiTips;
+import org.gatlin.util.DateUtil;
 
 public class JieQi implements Serializable {
 
@@ -24,5 +25,11 @@ public class JieQi implements Serializable {
 	
 	public List<JieQiTips> getList() {
 		return list;
+	}
+	
+	public void timeConvert() {
+		this.now.setDay(Integer.valueOf(DateUtil.convert(now.getTime(), DateUtil.YYYY_MM_DD_HH_MM_SS, DateUtil.yyyyMMdd)));
+		list.forEach(item -> item.timeConvert());
+		list.sort((o1, o2) -> o1.getDay() - o2.getDay());
 	}
 }

@@ -18,7 +18,7 @@ public interface CourierConsts {
 	final IntegerOption CAPTCHA_COUNT_LIFE_TIME = new IntegerOption("captcha_count_life_time", 12 * 3600000);
 	// 验证码次数生命周期(超过该时间没有获取验证码，则验证码次数 key 会被删除，也就是说验证码次数会被清零)，单位毫秒
 	final BoolOption SMS_ENABLE = new BoolOption("sms_enable", false);
-	final BoolOption CHUANGLAN_EMABLE = new BoolOption("chuanglan.enable", false);
+	final BoolOption CHUANGLAN_ENABLE = new BoolOption("chuanglan.enable", false);
 	final IntegerOption SMS_PLAT = new IntegerOption("sms_plat", 3);
 	final StrOption SMS_CAPTCHA = new StrOption("sms_captcha", "您好，您的验证码是{0}");
 }

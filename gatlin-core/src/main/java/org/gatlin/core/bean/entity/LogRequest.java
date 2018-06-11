@@ -2,6 +2,8 @@ package org.gatlin.core.bean.entity;
 
 import org.gatlin.util.bean.Identifiable;
 
+import com.google.gson.JsonObject;
+
 /**
  * 请求日志
  * 
@@ -29,12 +31,12 @@ public class LogRequest implements Identifiable<String> {
 	private String query;
 	// 请求类方法：类全名.方法名
 	private String method;
-	// 请求参数(包括了 body 和 表单等参数，只包括了可序列化且不是io流的参数)
-	private String param;
 	// 响应结果
 	private String response;
 	// 是否成功
 	private boolean success;
+	// 请求参数(包括了 body 和 表单等参数，只包括了可序列化且不是io流的参数)
+	private JsonObject param;
 	// 创建时间10位unix戳(用于排序)
 	private int created;
 
@@ -110,11 +112,11 @@ public class LogRequest implements Identifiable<String> {
 		this.method = method;
 	}
 
-	public String getParam() {
+	public JsonObject getParam() {
 		return param;
 	}
 	
-	public void setParam(String param) {
+	public void setParam(JsonObject param) {
 		this.param = param;
 	}
 	

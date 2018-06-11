@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User lock(String token, long timeout) {
 		UserDevice device = userManager.device(token);
-		Assert.notNull(UserCode.INVITOR_NOT_EXIST, device);
+		Assert.notNull(UserCode.USER_UNLOGIN, device);
 		String lockId = 0 == timeout ? threadsafeInvoker.tryLock(device.getUid()) : threadsafeInvoker.lock(device.getUid(), timeout);
 		User user = _user(userManager.user(device.getUid()), device);
 		user.setLockId(lockId);

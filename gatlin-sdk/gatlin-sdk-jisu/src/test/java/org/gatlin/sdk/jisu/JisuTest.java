@@ -22,7 +22,9 @@ public class JisuTest {
 	public void testJieQi() {
 		JieQiRequest request = new JieQiRequest();
 		JisuResponse<JieQi> response = request.sync();
-		System.out.println(SerializeUtil.GSON.toJson(response));
+		JieQi jieQi = response.getResult();
+		jieQi.timeConvert();
+		System.out.println(SerializeUtil.GSON.toJson(jieQi));
 	}
 	
 	@Test

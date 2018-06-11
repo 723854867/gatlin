@@ -52,9 +52,13 @@ public class AuthManager {
 	private AuthMappingDao authMappingDao;
 	
 	public int apiAdd(ApiAddParam param) {
-		CfgApi api = EntityGenerator.newCfgApi(param);
-		cfgApiDao.insert(api);
-		return api.getId();
+		try {
+			CfgApi api = EntityGenerator.newCfgApi(param);
+			cfgApiDao.insert(api);
+			return api.getId();
+		} catch (DuplicateKeyException e) {
+			throw new CodeException(AuthCode.API_EXIST);
+		}
 	}
 	
 	public void apiModify(ApiModifyParam param) {

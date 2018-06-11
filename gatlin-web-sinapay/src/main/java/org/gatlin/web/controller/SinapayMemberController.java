@@ -7,6 +7,7 @@ import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
@@ -23,6 +24,7 @@ import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.gatlin.util.lang.StringUtil;
+import org.gatlin.web.SinapayChecker;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +44,8 @@ public class SinapayMemberController {
 	@Resource
 	private ConfigService configService;
 	@Resource
+	private SinapayChecker sinapayChecker;
+	@Resource
 	private SinapayMemberService sinapayMemberService;
 
 	@ResponseBody
@@ -59,6 +63,7 @@ public class SinapayMemberController {
 	@ResponseBody
 	@RequestMapping("bank/card/bind")
 	public Object bankCardBind(@RequestBody @Valid BankCardBindParam param) {
+		sinapayChecker.checkWithhold(MemberType.PERSONAL, param.getUser().getId());
 		CfgBank bank = configService.bank(param.getBankId());
 		Assert.isTrue(ConfigCode.BANK_UNSUPPORT, null != bank && bank.isValid());
 		Geo geo = configService.geo(param.getCity(), false);
@@ -69,18 +74,21 @@ public class SinapayMemberController {
 	@ResponseBody
 	@RequestMapping("bank/card/bind/confirm")
 	public Object bankCardBindConfirm(@RequestBody @Valid BankCardConfirmParam param) {
+		sinapayChecker.checkWithhold(MemberType.PERSONAL, param.getUser().getId());
 		return sinapayMemberService.bankCardBindConfirm(param);
 	}
 
 	@ResponseBody
 	@RequestMapping("bank/card/unbind")
 	public Object bankCardUnbind(@RequestBody @Valid SoaSidParam param) {
+		sinapayChecker.checkWithhold(MemberType.PERSONAL, param.getUser().getId());
 		return sinapayMemberService.bankCardUnbind(param);
 	}
 
 	@ResponseBody
 	@RequestMapping("bank/card/unbind/confirm")
 	public Object bankCardUnbindConfirm(@RequestBody @Valid BankCardConfirmParam param) {
+		sinapayChecker.checkWithhold(MemberType.PERSONAL, param.getUser().getId());
 		sinapayMemberService.bankCardUnbindConfirm(param);
 		return Response.ok();
 	}
@@ -116,6 +124,7 @@ public class SinapayMemberController {
 	@ResponseBody
 	@RequestMapping("pwd/reset")
 	public Object pwdReset(@RequestBody @Valid SoaParam param) { 
+		sinapayChecker.checkWithhold(MemberType.PERSONAL, param.getUser().getId());
 		return sinapayMemberService.pwdReset(param);
 	}
 }
