@@ -80,6 +80,8 @@ public class GatewayInterceptor {
 		CfgApi api = null != authService ? authService.api(new Query().eq("path", request.getServletPath())) : null;
 		int apiSecurityLevel = null == api ? 1 : api.getSecurityLevel();
 		Assert.isTrue(WebCode.SERVER_WARNING, apiSecurityLevel > serverState);
+		if (null != api)
+			log.setDesc(api.getDesc());
 		// 用户数据处理
 		User user = null;
 		String token = request.getHeader("Token");
