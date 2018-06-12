@@ -1,8 +1,8 @@
 package org.gatlin.soa.user.bean.param;
 
-import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaLidParam;
 
-public class EEmployeesParam extends SoaIdParam {
+public class EEmployeesParam extends SoaLidParam {
 
 	private static final long serialVersionUID = -1860389065422961687L;
 

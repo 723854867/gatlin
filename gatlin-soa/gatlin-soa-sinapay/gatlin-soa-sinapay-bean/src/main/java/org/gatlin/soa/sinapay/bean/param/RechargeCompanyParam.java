@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
-import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaLidParam;
 
-public class RechargeCompanyParam extends SoaIdParam {
+public class RechargeCompanyParam extends SoaLidParam {
 
 	private static final long serialVersionUID = -4153003202832703710L;
 

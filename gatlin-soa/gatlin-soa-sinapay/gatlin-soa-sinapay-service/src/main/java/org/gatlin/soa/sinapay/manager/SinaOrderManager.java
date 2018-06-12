@@ -113,7 +113,11 @@ public class SinaOrderManager {
 		TargetType rechargerType = recharge.getRechargerType();
 		AccountType accountType = rechargerType == TargetType.COMPANY ? AccountType.BASIC : AccountType.SAVING_POT;
 		SinaUser recharger = sinaMemberManager.user(rechargerType == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRecharger());
-		SinaUser rechargee = sinaMemberManager.user(recharge.getRechargeeType() == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRechargee());
+		SinaUser rechargee = null;
+		if (recharge.getRechargeeType() == rechargerType && recharge.getRechargee() == recharge.getRecharger())
+			rechargee = recharger;
+		else
+			sinaMemberManager.user(recharge.getRechargeeType() == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRechargee());
 		sinaBizHook.recharge(recharge);
 		sinaRechargeDao.insert(EntityGenerator.newSinaRecharge(recharge, recharger.getSinaId(), rechargee.getSinaId()));
 		DepositRechargeRequest.Builder builder = new DepositRechargeRequest.Builder();
