@@ -207,7 +207,7 @@ public class AuthManager {
 			return CollectionUtil.emptyList();
 		set.clear();
 		l.forEach(item -> set.add(item.getTid()));
-		return cfgModularDao.queryList(new Query().in("id", set));
+		return cfgModularDao.queryList(new Query().in("id", set).orderByAsc("priority"));
 	}
 	
 	public List<CfgRole> userRoles(long uid) {
@@ -217,7 +217,7 @@ public class AuthManager {
 	
 	public List<CfgModular> roleModulars(int roleId) {
 		Set<Long> set = authMappingDao.tids(AuthMappingType.ROLE_MODULAR.mark(), roleId);
-		return CollectionUtil.isEmpty(set) ? CollectionUtil.emptyList() : cfgModularDao.queryList(new Query().in("id", set));
+		return CollectionUtil.isEmpty(set) ? CollectionUtil.emptyList() : cfgModularDao.queryList(new Query().in("id", set).orderByAsc("priority"));
 	}
 	
 	public CfgApi api(Query query) {
@@ -233,6 +233,7 @@ public class AuthManager {
 	}
 	
 	public List<CfgModular> modulars() {
-		return cfgModularDao.getAllList();
+		Query query = new Query().orderByAsc("priority");
+		return cfgModularDao.queryList(query);
 	}
 }

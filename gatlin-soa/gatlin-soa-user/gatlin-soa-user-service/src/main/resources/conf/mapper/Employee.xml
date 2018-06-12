@@ -5,6 +5,7 @@
 	<select id="list" parameterType="org.gatlin.soa.user.bean.param.EmployeesParam" resultType="org.gatlin.soa.user.bean.model.EmployeeInfo">
 		SELECT 
 			a.id,
+			a.uid,
 			a.created,
 			a.company_id,
 			a.state,
@@ -22,8 +23,14 @@
 			<if test="null != id">
 				id=#{id}
 			</if>
+			<if test="null != uid">
+				a.uid=#{uid}
+			</if>
 			<if test="null != companyId">
 				AND a.company_id=#{companyId}
+			</if>
+			<if test="null != state">
+				AND a.state=#{state}
 			</if>
 			<if test="null != name">
 				AND b.`realname` LIKE concat(concat('%',#{name}),'%')

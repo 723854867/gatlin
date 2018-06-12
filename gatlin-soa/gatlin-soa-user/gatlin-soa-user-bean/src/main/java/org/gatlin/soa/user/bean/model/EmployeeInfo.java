@@ -9,6 +9,7 @@ public class EmployeeInfo implements Serializable {
 	private static final long serialVersionUID = 5562566076910871536L;
 
 	private long id;
+	private long uid;
 	private String name;
 	private String cname;
 	private int companyId;
@@ -23,6 +24,14 @@ public class EmployeeInfo implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public long getUid() {
+		return uid;
+	}
+	
+	public void setUid(long uid) {
+		this.uid = uid;
 	}
 
 	public String getName() {

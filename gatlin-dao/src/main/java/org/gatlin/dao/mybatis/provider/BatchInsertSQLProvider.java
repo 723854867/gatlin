@@ -28,7 +28,7 @@ public class BatchInsertSQLProvider extends SQLProvider<String> {
         sql.append(insertIntoTable(entityClass, tableName(entityClass)));
         sql.append(insertColumns(entityClass));
         sql.append(" VALUES ");
-        sql.append("<foreach collection=\"list\" item=\"record\" separator=\",\" >");
+        sql.append("<foreach collection=\"collection\" item=\"record\" separator=\",\" >");
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
         for (EntityColumn column : columnList) {

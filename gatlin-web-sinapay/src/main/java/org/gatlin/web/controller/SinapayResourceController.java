@@ -64,7 +64,7 @@ public class SinapayResourceController {
 		ZipWriter writer = new ZipWriter();
 		String prefix = IDWorker.INSTANCE.nextSid();
 		Assert.isTrue(CoreCode.PARAM_ERR, files.length >= 6);
-		for (MultipartFile file : files){
+		for (MultipartFile file : files) {
 			Assert.isTrue(CoreCode.PARAM_ERR, COMPANY_FILE_NAMES.contains(file.getOriginalFilename()));
 			writer.wrap(prefix + "/" + file.getOriginalFilename(), file.getInputStream());
 		}

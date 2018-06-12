@@ -1,17 +1,20 @@
 package org.gatlin.soa.user.bean.param;
 
 import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.soa.user.bean.enums.EmployeeState;
 
 public class EmployeesParam extends SoaParam {
 
 	private static final long serialVersionUID = 277292290545550414L;
 
 	private Long id;
+	private Long uid;
 	private String name;
 	private String mobile;
 	private String identity;
 	private Integer companyId;
 	private String companyName;
+	private EmployeeState state;
 
 	public Long getId() {
 		return id;
@@ -19,6 +22,14 @@ public class EmployeesParam extends SoaParam {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public Long getUid() {
+		return uid;
+	}
+	
+	public void setUid(Long uid) {
+		this.uid = uid;
 	}
 
 	public String getName() {
@@ -59,5 +70,13 @@ public class EmployeesParam extends SoaParam {
 
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
+	}
+	
+	public EmployeeState getState() {
+		return state;
+	}
+	
+	public void setState(EmployeeState state) {
+		this.state = state;
 	}
 }

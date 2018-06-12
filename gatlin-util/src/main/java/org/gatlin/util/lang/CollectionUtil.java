@@ -41,6 +41,16 @@ public class CollectionUtil {
 		return set;
 	}
 	
+	public static final Set<Long> splitIntoLongSet(String value, String regex) {
+		Set<Long> set = new HashSet<Long>();
+		if (StringUtil.hasText(value)) {
+			String[] arr = value.split(regex);
+			for (String string : arr)
+				set.add(Long.valueOf(string));
+		}
+		return set;
+	}
+	
 	public static final Set<String> splitIntoStringSet(String value, String regex) {
 		Set<String> set = new HashSet<String>();
 		if (StringUtil.hasText(value)) {
