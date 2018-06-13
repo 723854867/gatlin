@@ -173,6 +173,10 @@ public class AccountManager {
 		return account(query);
 	}
 	
+	public Recharge recharge(Query query) {
+		return rechargeDao.queryUnique(query);
+	}
+	
 	public Account account(Query query) {
 		return accountDao.queryUnique(query);
 	}

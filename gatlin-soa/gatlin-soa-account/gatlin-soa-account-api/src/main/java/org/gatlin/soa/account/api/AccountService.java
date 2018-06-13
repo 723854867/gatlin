@@ -30,6 +30,8 @@ public interface AccountService {
 	
 	void rechargeNotice(String id, RechargeState update);
 	
+	Recharge recharge(Query query);
+	
 	Pager<Recharge> recharges(Query query);
 	
 	void withdraw(Withdraw withdraw);

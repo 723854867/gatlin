@@ -1,5 +1,8 @@
 package org.gatlin.soa.account.bean.enums;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.gatlin.util.bean.IEnum;
 
 public enum RechargeState implements IEnum {
@@ -26,5 +29,12 @@ public enum RechargeState implements IEnum {
 	@Override
 	public int mark() {
 		return mark;
+	}
+	
+	public static Set<Integer> repaying() {
+		Set<Integer> set = new HashSet<Integer>();
+		set.add(INIT.mark);
+		set.add(WAIT_PAY.mark);
+		return set;
 	}
 }

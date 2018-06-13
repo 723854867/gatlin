@@ -71,6 +71,11 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	@Override
+	public Recharge recharge(Query query) {
+		return accountManager.recharge(query);
+	}
+	
+	@Override
 	public Pager<Recharge> recharges(Query query) {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());

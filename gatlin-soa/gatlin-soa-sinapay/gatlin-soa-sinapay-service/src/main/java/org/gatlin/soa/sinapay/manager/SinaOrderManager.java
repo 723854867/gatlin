@@ -113,11 +113,13 @@ public class SinaOrderManager {
 		TargetType rechargerType = recharge.getRechargerType();
 		AccountType accountType = rechargerType == TargetType.COMPANY ? AccountType.BASIC : AccountType.SAVING_POT;
 		SinaUser recharger = sinaMemberManager.user(rechargerType == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRecharger());
+		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, recharger);
 		SinaUser rechargee = null;
 		if (recharge.getRechargeeType() == rechargerType && recharge.getRechargee() == recharge.getRecharger())
 			rechargee = recharger;
 		else
 			sinaMemberManager.user(recharge.getRechargeeType() == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRechargee());
+		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, rechargee);
 		sinaBizHook.recharge(recharge);
 		sinaRechargeDao.insert(EntityGenerator.newSinaRecharge(recharge, recharger.getSinaId(), rechargee.getSinaId()));
 		DepositRechargeRequest.Builder builder = new DepositRechargeRequest.Builder();
@@ -156,7 +158,6 @@ public class SinaOrderManager {
 		return recharge;
 	}
 	
-	// 充值成功之后执行代收到中间户
 	@Transactional
 	public SinaRecharge noticeDepositRecharge(DepositRechargeNotice notice) {
 		SinaRecharge recharge = sinaRechargeDao.queryUnique(new Query().eq("id", notice.getOuter_trade_no()).forUpdate());
@@ -452,6 +453,7 @@ public class SinaOrderManager {
 		MemberType type = info.getBtype() == TargetType.USER ? MemberType.PERSONAL : MemberType.ENTERPRISE;
 		SinaUser user = sinaMemberManager.user(type, info.getBorrower());
 		SinaUser company = type == MemberType.ENTERPRISE ? user : sinaMemberManager.user(MemberType.ENTERPRISE, info.getCompanyId());
+		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, user, company);
 		SinaBid bid = EntityGenerator.newSinaBid(user, company, info);
 		sinaBidDao.insert(bid);
 		BidCreateRequest.Builder builder = new BidCreateRequest.Builder();
