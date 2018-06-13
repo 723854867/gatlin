@@ -1,7 +1,5 @@
 package org.gatlin.soa.sinapay.api;
 
-import java.math.BigDecimal;
-
 import org.gatlin.sdk.sinapay.notice.BidNotice;
 import org.gatlin.sdk.sinapay.notice.DepositRechargeNotice;
 import org.gatlin.sdk.sinapay.notice.TradeNotice;
@@ -11,6 +9,7 @@ import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.sinapay.bean.entity.SinaBid;
 import org.gatlin.soa.sinapay.bean.entity.SinaCollect;
+import org.gatlin.soa.sinapay.bean.entity.SinaLoanout;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaWithdraw;
 import org.gatlin.soa.sinapay.bean.enums.BidPurpose;
@@ -42,11 +41,13 @@ public interface SinapayOrderService {
 	
 	void withdrawFailure(String id, WithdrawNotice notice);
 	
+	SinaBid bid(BidPurpose purpose, String bizId);
+	
 	void bidCreate(BidInfo info);
 	
 	SinaBid bidNotice(BidNotice notice);
 	
-	void loanout(String ip, BidPurpose purpose, Object bizId, BigDecimal amount);
+	void loanout(SinaLoanout loanout);
 	
 	void loanoutNotice(WithdrawNotice notice);
 }

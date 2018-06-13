@@ -23,4 +23,5 @@ public interface UserCode {
 	final Code BANK_CARD_ALREADY_BIND		= new Code("code.user.bank.card.alread.bind", "银行卡已绑定");
 	final Code EMPLOYEE_EXIST				= new Code("code.user.employee.exist", "用户已经是该企业雇员");
 	final Code EMPLOYEE_NO_EXIST			= new Code("code.user.employee.not.exist", "雇员不存在");
+	final Code EMPLOYEE_STATE_ERROR			= new Code("code.user.employee.state.error", "当前雇员已被禁");
 }

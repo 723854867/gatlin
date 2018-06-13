@@ -1,5 +1,7 @@
 package org.gatlin.soa.sinapay.bean.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Id;
 
 import org.gatlin.sdk.sinapay.bean.enums.BidState;
@@ -14,7 +16,9 @@ public class SinaBid implements Identifiable<String> {
 	private String id;
 	private String bizId;
 	private BidState state;
+	private String company;
 	private String borrower;
+	private BigDecimal amount;
 	private BidPurpose purpose;
 	private int created;
 	private int updated;
@@ -42,6 +46,14 @@ public class SinaBid implements Identifiable<String> {
 	public void setState(BidState state) {
 		this.state = state;
 	}
+	
+	public String getCompany() {
+		return company;
+	}
+	
+	public void setCompany(String company) {
+		this.company = company;
+	}
 
 	public String getBorrower() {
 		return borrower;
@@ -50,7 +62,15 @@ public class SinaBid implements Identifiable<String> {
 	public void setBorrower(String borrower) {
 		this.borrower = borrower;
 	}
-
+	
+	public BigDecimal getAmount() {
+		return amount;
+	}
+	
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+	
 	public BidPurpose getPurpose() {
 		return purpose;
 	}

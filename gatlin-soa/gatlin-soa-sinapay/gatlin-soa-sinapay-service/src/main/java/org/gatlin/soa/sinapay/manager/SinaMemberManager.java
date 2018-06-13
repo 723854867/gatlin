@@ -376,6 +376,10 @@ public class SinaMemberManager {
 		}
 	}
 	
+	public SinaUser member(String id) {
+		return sinaUserDao.getByKey(id);
+	}
+	
 	public SinaUser user(Query query) {
 		return sinaUserDao.queryUnique(query);
 	}

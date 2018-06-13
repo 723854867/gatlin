@@ -451,7 +451,8 @@ public class SinaOrderManager {
 	public void bidCreate(BidInfo info) { 
 		MemberType type = info.getBtype() == TargetType.USER ? MemberType.PERSONAL : MemberType.ENTERPRISE;
 		SinaUser user = sinaMemberManager.user(type, info.getBorrower());
-		SinaBid bid = EntityGenerator.newSinaBid(user, info);
+		SinaUser company = type == MemberType.ENTERPRISE ? user : sinaMemberManager.user(MemberType.ENTERPRISE, info.getCompanyId());
+		SinaBid bid = EntityGenerator.newSinaBid(user, company, info);
 		sinaBidDao.insert(bid);
 		BidCreateRequest.Builder builder = new BidCreateRequest.Builder();
 		builder.outBidNo(bid.getId());
@@ -490,16 +491,13 @@ public class SinaOrderManager {
 			throw new CodeException(CoreCode.DATA_STATE_CHANGED);
 		}
 		sinaBidDao.update(bid);
-		sinaBizHook.audit(bid);
+		sinaBizHook.bidNotice(bid);
 		return bid;
 	}
 	
 	@Transactional
-	public void loanout(String ip, BidPurpose purpose, Object bizId, BigDecimal amount) {
-		Query query = new Query().eq("purpose", purpose.name()).eq("biz_id", bizId);
-		SinaBid bid = sinaBidDao.queryUnique(query);
-		Assert.notNull(SinaCode.BID_NOT_EXIST, bid);
-		query = new Query().eq("owner", bid.getBorrower()).eq("state", BankCardState.BINDED.name());
+	public void loanout(SinaLoanout loanout) {
+		Query query = new Query().eq("owner", loanout.getMemberId()).eq("state", BankCardState.BINDED.name());
 		List<SinaBankCard> cards = sinaMemberManager.bankCards(query);
 		Iterator<SinaBankCard> iterator = cards.iterator();
 		SinaBankCard card = null;
@@ -511,19 +509,18 @@ public class SinaOrderManager {
 			}
 		}
 		Assert.notNull(SinaCode.BANK_CARD_ID_NOT_RESET, card);
-		SinaLoanout loanout = EntityGenerator.newSinaLoanout(bid, amount);
 		sinaLoanoutDao.insert(loanout);
 		PayToCardRequest.Builder builder = new PayToCardRequest.Builder();
 		builder.outTradeNo(loanout.getId());
 		BindingCardPay pay = new BindingCardPay();
 		pay.setCardId(card.getSinaCardId());
-		pay.setSinaId(bid.getBorrower());
+		pay.setSinaId(loanout.getMemberId());
 		builder.collectMethod(pay);
-		builder.amount(amount);
-		builder.summary(purpose == BidPurpose.ASSET ? "放款" : "保证金归回");
-		builder.goodsId(bid.getId());
+		builder.amount(loanout.getAmount());
+		builder.summary(loanout.getDesc());
+		builder.goodsId(loanout.getBidId());
 		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_LOANOUT));
-		builder.userIp(ip);
+		builder.userIp(loanout.getIp());
 		PayToCardRequest request = builder.build();
 		logger.info("新浪放款请求：{}", SerializeUtil.GSON.toJson(request.params()));
 		PayToCardResponse response = request.sync();
@@ -583,5 +580,9 @@ public class SinaOrderManager {
 		default:
 			throw new CodeException();
 		}
+	}
+	
+	public SinaBid bid(BidPurpose purpose, String bizId) {
+		return sinaBidDao.queryUnique(new Query().eq("purpose", purpose).eq("biz_id", bizId).forUpdate());
 	}
 }

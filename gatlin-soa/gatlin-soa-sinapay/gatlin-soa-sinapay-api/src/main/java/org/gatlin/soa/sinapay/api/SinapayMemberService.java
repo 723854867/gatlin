@@ -52,6 +52,8 @@ public interface SinapayMemberService {
 
 	Pager<SinaBankCard> bankCards(Query query);
 	
+	SinaUser member(String id);
+	
 	SinaUser user(Object tid, MemberType type);
 	
 	boolean isWithhold(MemberType type, Object tid);

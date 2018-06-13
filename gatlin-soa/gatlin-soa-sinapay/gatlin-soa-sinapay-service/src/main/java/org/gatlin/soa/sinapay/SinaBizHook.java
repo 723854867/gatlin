@@ -39,7 +39,7 @@ public interface SinaBizHook {
 	 * 
 	 * @param bid 标的
 	 */
-	void audit(SinaBid bid);
+	void bidNotice(SinaBid bid);
 	
 	/**
 	 * 新浪放款回调

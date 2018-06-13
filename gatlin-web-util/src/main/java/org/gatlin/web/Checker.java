@@ -21,7 +21,7 @@ public class Checker {
 		Employee employee = companyService.employee(param.getId());
 		Assert.notNull(UserCode.EMPLOYEE_NO_EXIST, employee);
 		Assert.isTrue(CoreCode.FORBID, employee.getUid() == param.getUser().getId());
-		Assert.isTrue(CoreCode.FORBID, employee.getState() == EmployeeState.NORMAL);
+		Assert.isTrue(UserCode.EMPLOYEE_STATE_ERROR, employee.getState() == EmployeeState.NORMAL);
 		return employee;
 	}
 }

@@ -1,7 +1,5 @@
 package org.gatlin.soa.sinapay.service;
 
-import java.math.BigDecimal;
-
 import javax.annotation.Resource;
 
 import org.gatlin.sdk.sinapay.notice.BidNotice;
@@ -14,6 +12,7 @@ import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.sinapay.api.SinapayOrderService;
 import org.gatlin.soa.sinapay.bean.entity.SinaBid;
 import org.gatlin.soa.sinapay.bean.entity.SinaCollect;
+import org.gatlin.soa.sinapay.bean.entity.SinaLoanout;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaWithdraw;
 import org.gatlin.soa.sinapay.bean.enums.BidPurpose;
@@ -84,6 +83,11 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 	}
 	
 	@Override
+	public SinaBid bid(BidPurpose purpose, String bizId) {
+		return sinaOrderManager.bid(purpose, bizId);
+	}
+	
+	@Override
 	public void bidCreate(BidInfo info) {
 		sinaOrderManager.bidCreate(info);
 	}
@@ -94,8 +98,8 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 	}
 	
 	@Override
-	public void loanout(String ip, BidPurpose purpose, Object bizId, BigDecimal amount) {
-		sinaOrderManager.loanout(ip, purpose, bizId, amount);
+	public void loanout(SinaLoanout loanout) {
+		sinaOrderManager.loanout(loanout);
 	}
 	
 	@Override

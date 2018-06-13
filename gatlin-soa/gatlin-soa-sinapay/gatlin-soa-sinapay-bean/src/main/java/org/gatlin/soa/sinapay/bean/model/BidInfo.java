@@ -14,6 +14,7 @@ public class BidInfo implements Serializable {
 	private int duration;
 	private String bizId;
 	private long borrower;
+	private int companyId;
 	private String mobile;
 	private BigDecimal rate;
 	private TargetType btype;
@@ -45,6 +46,14 @@ public class BidInfo implements Serializable {
 	
 	public void setBorrower(long borrower) {
 		this.borrower = borrower;
+	}
+	
+	public int getCompanyId() {
+		return companyId;
+	}
+	
+	public void setCompanyId(int companyId) {
+		this.companyId = companyId;
 	}
 	
 	public String getMobile() {

@@ -13,7 +13,13 @@ public class SinaLoanout implements Identifiable<String> {
 
 	@Id
 	private String id;
+	private String ip;
+	private String desc;
 	private String bidId;
+	// 会员编号
+	private String memberId;
+	// 企业编号
+	private String companyId;
 	private BigDecimal amount;
 	private WithdrawState state;
 	private int created;
@@ -26,6 +32,22 @@ public class SinaLoanout implements Identifiable<String> {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	public String getIp() {
+		return ip;
+	}
+	
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	
+	public String getDesc() {
+		return desc;
+	}
+	
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
 
 	public String getBidId() {
 		return bidId;
@@ -33,6 +55,22 @@ public class SinaLoanout implements Identifiable<String> {
 
 	public void setBidId(String bidId) {
 		this.bidId = bidId;
+	}
+	
+	public String getMemberId() {
+		return memberId;
+	}
+	
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
+	
+	public String getCompanyId() {
+		return companyId;
+	}
+	
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
 	}
 
 	public BigDecimal getAmount() {

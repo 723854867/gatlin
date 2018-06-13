@@ -119,27 +119,27 @@ public class AccountDetail implements Serializable {
 		return tips;
 	}
 	
-	public AccountTips companyUsableIncr(long uid, AccountType type, BigDecimal amount) {
+	public AccountTips companyUsableIncr(long companyId, AccountType type, BigDecimal amount) {
 		AccountTips tips = new AccountTips(type, AccountField.USABLE).incr(amount);
-		_wrap(uid, TargetType.COMPANY, tips);
+		_wrap(companyId, TargetType.COMPANY, tips);
 		return tips;
 	}
 	
-	public AccountTips companyFrozenIncr(long uid, AccountType type, BigDecimal amount) {
+	public AccountTips companyFrozenIncr(long companyId, AccountType type, BigDecimal amount) {
 		AccountTips tips = new AccountTips(type, AccountField.FROZEN).incr(amount);
-		_wrap(uid, TargetType.COMPANY, tips);
+		_wrap(companyId, TargetType.COMPANY, tips);
 		return tips;
 	}
 
-	public AccountTips companyUsableDecr(long uid, AccountType type, BigDecimal amount) {
+	public AccountTips companyUsableDecr(long companyId, AccountType type, BigDecimal amount) {
 		AccountTips tips = new AccountTips(type, AccountField.USABLE).decr(amount);
-		_wrap(uid, TargetType.COMPANY, tips);
+		_wrap(companyId, TargetType.COMPANY, tips);
 		return tips;
 	}
 	
-	public AccountTips companyFrozenDecr(long uid, AccountType type, BigDecimal amount) {
+	public AccountTips companyFrozenDecr(long companyId, AccountType type, BigDecimal amount) {
 		AccountTips tips = new AccountTips(type, AccountField.FROZEN).decr(amount);
-		_wrap(uid, TargetType.COMPANY, tips);
+		_wrap(companyId, TargetType.COMPANY, tips);
 		return tips;
 	}
 	

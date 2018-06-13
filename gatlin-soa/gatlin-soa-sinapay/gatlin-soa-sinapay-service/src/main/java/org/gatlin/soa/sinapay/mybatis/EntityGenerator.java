@@ -1,13 +1,10 @@
 package org.gatlin.soa.sinapay.mybatis;
 
-import java.math.BigDecimal;
-
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
 import org.gatlin.sdk.sinapay.bean.enums.BidState;
 import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.bean.enums.TradeState;
-import org.gatlin.sdk.sinapay.bean.enums.WithdrawState;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.bean.enums.TargetType;
@@ -17,7 +14,6 @@ import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
 import org.gatlin.soa.sinapay.bean.entity.SinaBid;
 import org.gatlin.soa.sinapay.bean.entity.SinaCollect;
 import org.gatlin.soa.sinapay.bean.entity.SinaCompanyAudit;
-import org.gatlin.soa.sinapay.bean.entity.SinaLoanout;
 import org.gatlin.soa.sinapay.bean.entity.SinaPay;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
@@ -189,25 +185,15 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final SinaBid newSinaBid(SinaUser user, BidInfo info) {
+	public static final SinaBid newSinaBid(SinaUser user, SinaUser company, BidInfo info) {
 		SinaBid instance = new SinaBid();
 		instance.setId(IDWorker.INSTANCE.nextSid());
 		instance.setPurpose(info.getPurpose());
 		instance.setBizId(info.getBizId());
 		instance.setBorrower(user.getSinaId());
 		instance.setState(BidState.INIT);
-		int time = DateUtil.current();
-		instance.setCreated(time);
-		instance.setUpdated(time);
-		return instance;
-	}
-	
-	public static final SinaLoanout newSinaLoanout(SinaBid bid, BigDecimal amount) {
-		SinaLoanout instance = new SinaLoanout();
-		instance.setId(IDWorker.INSTANCE.nextSid());
-		instance.setBidId(bid.getId());
-		instance.setAmount(amount);
-		instance.setState(WithdrawState.INIT);
+		instance.setAmount(info.getAmount());
+		instance.setCompany(company.getSinaId());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

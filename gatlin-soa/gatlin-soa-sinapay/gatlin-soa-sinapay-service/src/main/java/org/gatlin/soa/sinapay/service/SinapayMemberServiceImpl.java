@@ -85,6 +85,11 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	}
 	
 	@Override
+	public SinaUser member(String id) {
+		return sinaMemberManager.member(id);
+	}
+	
+	@Override
 	public SinaUser user(Object tid, MemberType type) {
 		return sinaMemberManager.user(type, tid);
 	}
