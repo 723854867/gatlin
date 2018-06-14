@@ -1,7 +1,5 @@
 package org.gatlin.web.controller;
 
-import java.math.BigDecimal;
-
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
@@ -10,8 +8,10 @@ import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
@@ -26,11 +26,13 @@ import org.gatlin.soa.sinapay.bean.param.CompanyBankCardModifyParam;
 import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
 import org.gatlin.soa.user.api.BankCardService;
 import org.gatlin.soa.user.api.UserService;
+import org.gatlin.soa.user.bean.entity.Employee;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
 import org.gatlin.util.lang.StringUtil;
+import org.gatlin.web.Checker;
 import org.gatlin.web.SinapayChecker;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +48,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("sinapay/member")
 public class SinapayMemberController {
 
+	@Resource
+	private Checker checker;
 	@Resource
 	private UserService userService;
 	@Resource
@@ -111,10 +115,11 @@ public class SinapayMemberController {
 	@ResponseBody
 	@RequestMapping("query/balance")
 	public Object queryBalance(@RequestBody @Valid QueryBalanceParam param) {
-		if (null != param.getUid()) {
-			SinaUser user = sinapayMemberService.user(param.getUid(), MemberType.PERSONAL);
+		if (null != param.getOwner()) {
+			MemberType type = param.getOwnerType() == TargetType.USER ? MemberType.PERSONAL : MemberType.ENTERPRISE;
+			SinaUser user = sinapayMemberService.user(param.getOwner(), type);
 			if (null == user)
-				return BigDecimal.ZERO;
+				return null;
 			param.setIdentity(user.getSinaId());
 		}
 		return sinapayMemberService.queryBalance(param);
@@ -163,5 +168,13 @@ public class SinapayMemberController {
 	@RequestMapping("company/audit")
 	public Object companyAudit(@RequestBody @Valid SoaIdParam param) {
 		return sinapayMemberService.companyAudit(param.getId());
+	}
+	
+	// 企业设置支付密码：仅联调环境使用
+	@ResponseBody
+	@RequestMapping("company/pwd/set")
+	public Object companyPwdSet(@RequestBody @Valid SoaLidParam param) {
+		Employee employee = checker.employeeVerify(param);
+		return sinapayMemberService.pwdSet(param, MemberType.ENTERPRISE, employee.getCompanyId());
 	}
 }

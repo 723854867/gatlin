@@ -7,13 +7,17 @@ public class QueryPwdSetResponse extends SinapayResponse {
 	private static final long serialVersionUID = -8435311600538290737L;
 
 	@SerializedName("is_set_paypass")
-	private boolean setPwd;
+	private String setPwd;
 	
-	public boolean isSetPwd() {
+	public String getSetPwd() {
 		return setPwd;
 	}
 	
-	public void setSetPwd(boolean setPwd) {
+	public void setSetPwd(String setPwd) {
 		this.setPwd = setPwd;
+	}
+	
+	public boolean isPwdSet() {
+		return setPwd.equals("Y");
 	}
 }

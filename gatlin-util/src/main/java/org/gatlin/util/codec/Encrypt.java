@@ -11,6 +11,7 @@ import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -26,6 +27,16 @@ public class Encrypt {
 	 * RSA最大加密明文大小
 	 */
 	private static final int MAX_ENCRYPT_BLOCK = 117;
+	
+	public static byte[] HmacSHA256(String data, String secretKey) {
+		try {
+			Mac mac = Mac.getInstance("HmacSHA256");
+			mac.init(new SecretKeySpec(secretKey.getBytes(Consts.UTF_8.displayName()), "HmacSHA256"));
+			return mac.doFinal(data.getBytes(Consts.UTF_8.displayName()));
+		} catch (Exception e) {
+			throw new CryptException("HmacSHA256加密失败", e);
+		} 
+	}
 
 	/**
 	 * AES对称加密

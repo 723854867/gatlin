@@ -7,25 +7,27 @@ import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
 import org.gatlin.sdk.sinapay.bean.enums.MemberIdentityType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaParam;
 
 public class QueryBalanceParam extends SoaParam {
 
 	private static final long serialVersionUID = -7239123443864951554L;
 
-	private Long uid;
+	private Long owner;
 	@Null
 	private String identity;
+	private TargetType ownerType;
 	private AccountType accountType;
 	@NotNull
 	private MemberIdentityType identityType;
 	
-	public Long getUid() {
-		return uid;
+	public Long getOwner() {
+		return owner;
 	}
 	
-	public void setUid(Long uid) {
-		this.uid = uid;
+	public void setOwner(Long owner) {
+		this.owner = owner;
 	}
 	
 	public String getIdentity() {
@@ -34,6 +36,14 @@ public class QueryBalanceParam extends SoaParam {
 	
 	public void setIdentity(String identity) {
 		this.identity = identity;
+	}
+	
+	public TargetType getOwnerType() {
+		return ownerType;
+	}
+	
+	public void setOwnerType(TargetType ownerType) {
+		this.ownerType = ownerType;
 	}
 	
 	public AccountType getAccountType() {
@@ -55,9 +65,9 @@ public class QueryBalanceParam extends SoaParam {
 	@Override
 	public void verify() {
 		super.verify();
+		if (identityType == MemberIdentityType.UID) 
+			Assert.notNull(CoreCode.PARAM_ERR, owner, ownerType);
 		if (null == accountType)
-			accountType = AccountType.BASIC;
-		if (identityType == MemberIdentityType.UID)
-			Assert.notNull(CoreCode.PARAM_ERR, uid);
+			accountType = ownerType == TargetType.COMPANY ? AccountType.BASIC : AccountType.SAVING_POT;
 	}
 }

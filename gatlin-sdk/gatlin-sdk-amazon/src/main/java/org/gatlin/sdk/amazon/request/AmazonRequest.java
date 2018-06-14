@@ -8,6 +8,8 @@ public class AmazonRequest<REQUEST extends AmazonRequest<REQUEST>> extends HttpP
 
 	public AmazonRequest(String host, int port, String path) {
 		super(host, port, path);
+		signatureVersion("2");
+		signatureMethod("HmacSHA256");
 	}
 	
 	// 亚马逊MWS账户访问密钥标识
@@ -57,7 +59,7 @@ public class AmazonRequest<REQUEST extends AmazonRequest<REQUEST>> extends HttpP
 		return (REQUEST) this;
 	}
 	
-	// 每个请求都必须包含请求的时间戳。根据您使用的 API 操作，您可以提供该请求的到期日期和时间，而不是时间戳。格式为 ISO 8601。
+	// 当前的日期和时间或请求的到期日期和时间，格式为 ISO 8601。
 	public REQUEST timestamp(String timestamp) {
 		this.params.put("Timestamp ", timestamp);
 		return (REQUEST) this;

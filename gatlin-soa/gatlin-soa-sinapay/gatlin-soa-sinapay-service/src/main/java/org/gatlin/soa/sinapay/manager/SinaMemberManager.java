@@ -12,6 +12,7 @@ import org.gatlin.core.bean.model.message.SchedulerMessage;
 import org.gatlin.core.service.MessageSender;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.sdk.sinapay.bean.enums.CashdeskAddrCategory;
 import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
@@ -24,12 +25,15 @@ import org.gatlin.sdk.sinapay.request.member.CompanyApplyRequest;
 import org.gatlin.sdk.sinapay.request.member.ModifyBankCardMobileConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.ModifyBankCardMobileRequest;
 import org.gatlin.sdk.sinapay.request.member.PwdResetRequest;
+import org.gatlin.sdk.sinapay.request.member.PwdSetRequest;
+import org.gatlin.sdk.sinapay.request.member.QueryPwdSetRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryWithholdRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
 import org.gatlin.sdk.sinapay.request.member.WithholdRequest;
 import org.gatlin.sdk.sinapay.response.BankCardBindConfirmResponse;
 import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
 import org.gatlin.sdk.sinapay.response.BankCardUnbindResponse;
+import org.gatlin.sdk.sinapay.response.QueryPwdSetResponse;
 import org.gatlin.sdk.sinapay.response.QueryWithholdResponse;
 import org.gatlin.sdk.sinapay.response.RedirectResponse;
 import org.gatlin.sdk.sinapay.response.SinapayResponse;
@@ -372,6 +376,28 @@ public class SinaMemberManager {
 		PwdResetRequest request = builder.build();
 		RedirectResponse response = request.sync();
 		return response.getRedirectUrl();
+	}
+	
+	public String pwdSet(SoaParam param, MemberType type, Object tid) { 
+		SinaUser user = user(type, param.getUser().getId());
+		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, user);
+		PwdSetRequest.Builder builder = new PwdSetRequest.Builder();
+		builder.identityId(user.getSinaId());
+		if (param.getUser().getDeviceType() == DeviceType.MOBILE)
+			builder.cashdeskAddrCategory(CashdeskAddrCategory.MOBILE);
+		builder.returnUrl(_returnUrl(param.getUser()));
+		PwdSetRequest request = builder.build();
+		RedirectResponse response = request.sync();
+		return response.getRedirectUrl();
+	}
+	
+	public boolean isPwdSet(MemberType type, Object tid) { 
+		SinaUser user = user(type, tid);
+		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, user);
+		QueryPwdSetRequest.Builder builder = new QueryPwdSetRequest.Builder();
+		builder.identityId(user.getSinaId());
+		QueryPwdSetResponse response = builder.build().sync();
+		return response.isPwdSet();
 	}
 	
 	public SinaUser tryActivate(Object tid, MemberType type, String ip) {

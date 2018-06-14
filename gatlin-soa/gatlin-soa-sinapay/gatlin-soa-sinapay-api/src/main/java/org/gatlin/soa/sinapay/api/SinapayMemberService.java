@@ -80,4 +80,8 @@ public interface SinapayMemberService {
 	void bankCardMobileModifyConfirm(BankCardMobileModifyConfirmParam param);
 	
 	SinaCompanyAudit companyAudit(int companyId);
+	
+	String pwdSet(SoaParam param, MemberType type, Object tid);
+	
+	boolean queryPwdSet(MemberType type, Object tid);
 }

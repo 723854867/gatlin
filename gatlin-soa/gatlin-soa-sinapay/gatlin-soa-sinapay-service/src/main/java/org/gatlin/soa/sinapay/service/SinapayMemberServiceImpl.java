@@ -177,4 +177,14 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 		SinaUser member = sinaMemberManager.user(MemberType.ENTERPRISE, companyId);
 		return null == member ? null : sinaMemberManager.companyAudit(member.getSinaId());
 	}
+	
+	@Override
+	public String pwdSet(SoaParam param, MemberType type, Object tid) {
+		return sinaMemberManager.pwdSet(param, type, tid);
+	}
+	
+	@Override
+	public boolean queryPwdSet(MemberType type, Object tid) {
+		return sinaMemberManager.isPwdSet(type, tid);
+	}
 }
