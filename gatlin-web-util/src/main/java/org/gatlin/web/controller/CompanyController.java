@@ -25,6 +25,7 @@ public class CompanyController {
 	
 	@Resource
 	private CompanyService companyService;
+	@Resource
 	private AccountService accountService;
 
 	@ResponseBody

@@ -74,7 +74,7 @@ public class SinapayOrderController {
 		sinapayChecker.checkCardBind(MemberType.PERSONAL, param.getUser().getId());
 		int timeout = configService.config(SoaConsts.RECHARGE_TIMEOUT);
 		Recharge recharge = AccountUtil.newRecharge(param, PlatType.SINAPAY, 1, AccountType.DEPOSIT.mark(), param.getAmount(), timeout);
-		recharge.setRechargerType(TargetType.COMPANY);
+		recharge.setRechargeeType(TargetType.COMPANY);
 		recharge.setRechargee(employee.getCompanyId());
 		return sinapayOrderService.depositRecharge(recharge, param);
 	}
@@ -99,6 +99,8 @@ public class SinapayOrderController {
 	@ResponseBody
 	@RequestMapping("withdraw/deposit/pay")
 	public Object depositWithdrawPay(@RequestBody @Valid WithdrawParam param) {
+		sinapayChecker.checkWithhold(MemberType.PERSONAL, param.getUser().getId());		
+		sinapayChecker.checkCardBind(MemberType.PERSONAL, param.getUser().getId());
 		return sinapayOrderService.withdrawPay(param);
 	}
 	

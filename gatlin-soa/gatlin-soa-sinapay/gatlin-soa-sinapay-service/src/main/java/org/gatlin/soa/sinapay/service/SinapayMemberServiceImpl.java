@@ -21,9 +21,12 @@ import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.SinaCode;
 import org.gatlin.soa.sinapay.bean.entity.SinaBank;
 import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
+import org.gatlin.soa.sinapay.bean.entity.SinaCompanyAudit;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.model.BalanceInfo;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.BankCardMobileModifyConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.BankCardMobileModifyParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyBankCardModifyParam;
 import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
@@ -49,7 +52,8 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 
 	@Override
 	public UserSecurity realname(RealnameParam param) {
-		return sinaMemberManager.realname(param);
+		SinaUser user = sinaMemberManager.tryActivate(param.getUser().getId(), MemberType.PERSONAL, param.meta().getIp());
+		return sinaMemberManager.realname(user, param);
 	}
 	
 	@Override
@@ -132,7 +136,8 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 		Geo geo = configService.geo(param.getCity(), false);
 		Assert.hasText(CoreCode.PARAM_ERR, geo.getCity());
 		Assert.hasText(CoreCode.PARAM_ERR, geo.getProvince());
-		sinaMemberManager.companyApply(param, company, bank, geo);
+		SinaUser user = sinaMemberManager.tryActivate(company.getId(), MemberType.ENTERPRISE, param.meta().getIp());
+		sinaMemberManager.companyApply(user, param, company, bank, geo);
 	}
 	
 	@Override
@@ -148,5 +153,21 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	@Override
 	public String pwdReset(SoaParam param) {
 		return sinaMemberManager.pwdReset(param);
+	}
+	
+	@Override
+	public String bankCardMobileModify(BankCardMobileModifyParam param) {
+		return sinaMemberManager.bankCardMobileModify(param);
+	}
+	
+	@Override
+	public void bankCardMobileModifyConfirm(BankCardMobileModifyConfirmParam param) {
+		sinaMemberManager.bankCardMobileModifyConfirm(param);
+	}
+	
+	@Override
+	public SinaCompanyAudit companyAudit(int companyId) {
+		SinaUser member = sinaMemberManager.user(MemberType.ENTERPRISE, companyId);
+		return null == member ? null : sinaMemberManager.companyAudit(member.getSinaId());
 	}
 }

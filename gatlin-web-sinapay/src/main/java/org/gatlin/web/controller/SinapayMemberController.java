@@ -9,6 +9,7 @@ import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.soa.bean.model.Geo;
+import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
@@ -16,8 +17,11 @@ import org.gatlin.soa.config.bean.ConfigCode;
 import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.BankCardMobileModifyConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.BankCardMobileModifyParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyBankCardModifyParam;
 import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
+import org.gatlin.soa.user.api.BankCardService;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
@@ -45,6 +49,8 @@ public class SinapayMemberController {
 	private ConfigService configService;
 	@Resource
 	private SinapayChecker sinapayChecker;
+	@Resource
+	private BankCardService bankCardService;
 	@Resource
 	private SinapayMemberService sinapayMemberService;
 
@@ -126,5 +132,27 @@ public class SinapayMemberController {
 	public Object pwdReset(@RequestBody @Valid SoaParam param) { 
 		sinapayChecker.checkWithhold(MemberType.PERSONAL, param.getUser().getId());
 		return sinapayMemberService.pwdReset(param);
+	}
+	
+	// 修改银行卡预留手机号
+	@ResponseBody
+	@RequestMapping("bank/card/mobile/modify")
+	public Object bankCardMobileModify(@RequestBody @Valid BankCardMobileModifyParam param) { 
+		return sinapayMemberService.bankCardMobileModify(param);
+	}
+	
+	// 确认修改银行预留手机号
+	@ResponseBody
+	@RequestMapping("bank/card/mobile/modify/confirm")
+	public Object bankCardMobileModifyConfirm(@RequestBody @Valid BankCardMobileModifyConfirmParam param) { 
+		sinapayMemberService.bankCardBindConfirm(param);
+		return Response.ok();
+	}
+	
+	// 获取资方审核信息
+	@ResponseBody
+	@RequestMapping("company/audit")
+	public Object companyAudit(@RequestBody @Valid SoaIdParam param) {
+		return sinapayMemberService.companyAudit(param.getId());
 	}
 }

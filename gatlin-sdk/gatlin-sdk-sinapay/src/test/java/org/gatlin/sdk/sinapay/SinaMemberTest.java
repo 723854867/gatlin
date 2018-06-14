@@ -12,7 +12,10 @@ import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindRequest;
 import org.gatlin.sdk.sinapay.request.member.CompanyApplyRequest;
+import org.gatlin.sdk.sinapay.request.member.ModifyBankCardMobileConfirmRequest;
+import org.gatlin.sdk.sinapay.request.member.ModifyBankCardMobileRequest;
 import org.gatlin.sdk.sinapay.request.member.PwdResetRequest;
+import org.gatlin.sdk.sinapay.request.member.PwdSetRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryBalanceRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryBankCardRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryMiddleBalanceRequest;
@@ -169,7 +172,7 @@ public class SinaMemberTest extends SinaTest {
 	@Test
 	public void testQueryBankCard() { 
 		QueryBankCardRequest.Builder builder = new QueryBankCardRequest.Builder();
-		builder.identityId("442989039625175040");
+		builder.identityId("455666703926296576");
 		QueryBankCardRequest request = builder.build();
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		QueryBankCardResponse response = request.sync();
@@ -227,6 +230,40 @@ public class SinaMemberTest extends SinaTest {
 		PwdResetRequest.Builder builder = new PwdResetRequest.Builder();
 		builder.identityId("453951420639477760");
 		PwdResetRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		RedirectResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testModifyBankCardMobile() {
+		ModifyBankCardMobileRequest.Builder builder = new ModifyBankCardMobileRequest.Builder();
+		builder.cardId("237465");
+		builder.phoneNo("15257166511");
+		builder.identityId("455666703926296576");
+		ModifyBankCardMobileRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		BankCardBindResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+		System.out.println(response.getTicket());
+	}
+	
+	@Test
+	public void testModifyBankCardMobileConfirm() {
+		ModifyBankCardMobileConfirmRequest.Builder builder = new ModifyBankCardMobileConfirmRequest.Builder();
+		builder.validCode("532753");
+		builder.ticket("24a16249088d481eae84d7117e4e2dc6");
+		ModifyBankCardMobileConfirmRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
+		BankCardBindConfirmResponse response = request.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testPwdSet() {
+		PwdSetRequest.Builder builder = new PwdSetRequest.Builder();
+		builder.identityId("455666703926296576");
+		PwdSetRequest request = builder.build();
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		RedirectResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));

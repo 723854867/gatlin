@@ -21,6 +21,8 @@ import org.gatlin.sdk.sinapay.request.member.BankCardBindRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.BankCardUnbindRequest;
 import org.gatlin.sdk.sinapay.request.member.CompanyApplyRequest;
+import org.gatlin.sdk.sinapay.request.member.ModifyBankCardMobileConfirmRequest;
+import org.gatlin.sdk.sinapay.request.member.ModifyBankCardMobileRequest;
 import org.gatlin.sdk.sinapay.request.member.PwdResetRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryWithholdRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
@@ -45,6 +47,8 @@ import org.gatlin.soa.sinapay.bean.entity.SinaCompanyAudit;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.enums.BankCardState;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.BankCardMobileModifyConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.BankCardMobileModifyParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyBankCardModifyParam;
 import org.gatlin.soa.sinapay.mybatis.EntityGenerator;
@@ -89,8 +93,7 @@ public class SinaMemberManager {
 	private SinaCompanyAuditDao sinaCompanyAuditDao;
 	
 	@Transactional
-	public UserSecurity realname(RealnameParam param) {
-		SinaUser user = _tryActivate(param.getUser().getId(), MemberType.PERSONAL, param.meta().getIp());
+	public UserSecurity realname(SinaUser user, RealnameParam param) {
 		Assert.isTrue(SinaCode.MEMBER_ALREADY_REALNAME, !user.isRealname());
 		user.setRealname(true);
 		user.setUpdated(DateUtil.current());
@@ -234,12 +237,47 @@ public class SinaMemberManager {
 		logger.info("新浪确认解绑银行卡响应：{}", SerializeUtil.GSON.toJson(response));
 	}
 	
+	@Transactional
+	public String bankCardMobileModify(BankCardMobileModifyParam param) { 
+		SinaBankCard bankCard = sinaBankCardDao.queryUnique(new Query().eq("card_id", param.getCardId()));
+		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, bankCard);
+		Assert.isTrue(SinaCode.BANK_CARD_BIND_NOT_EXIST, bankCard.getState() == BankCardState.BINDED);
+		ModifyBankCardMobileRequest.Builder builder = new ModifyBankCardMobileRequest.Builder();
+		builder.identityId(bankCard.getOwner());
+		builder.cardId(bankCard.getSinaCardId());
+		builder.phoneNo(String.valueOf(PhoneUtil.getNationalNumber(param.getMobile())));
+		ModifyBankCardMobileRequest request = builder.build();
+		logger.info("新浪修改银行预留手机号请求：{}", SerializeUtil.GSON.toJson(request.params()));		
+		BankCardBindResponse response = request.sync();
+		logger.info("新浪修改银行预留手机号响应：{}", SerializeUtil.GSON.toJson(response));
+		bankCard.setTicket(response.getTicket());
+		sinaBankCardDao.update(bankCard);
+		return bankCard.getId();
+	}
+	
+	// 此处需要客户端配合再次传mobile：有点小瑕疵，不过一般问题不大。
+	@Transactional
+	public void bankCardMobileModifyConfirm(BankCardMobileModifyConfirmParam param) {
+		SinaBankCard bankCard = sinaBankCardDao.getByKey(param.getId());
+		Assert.notNull(SinaCode.BANK_CARD_BIND_NOT_EXIST, bankCard);
+		ModifyBankCardMobileConfirmRequest.Builder builder = new ModifyBankCardMobileConfirmRequest.Builder();
+		builder.validCode(param.getCaptcha());
+		builder.ticket(bankCard.getTicket());
+		ModifyBankCardMobileConfirmRequest request = builder.build();
+		logger.info("新浪确认修改银行预留手机号请求：{}", SerializeUtil.GSON.toJson(request.params()));		
+		BankCardBindConfirmResponse response = request.sync();
+		logger.info("新浪确认修改银行预留手机号响应：{}", SerializeUtil.GSON.toJson(response));
+		bankCard.setSinaCardId(response.getCardId());
+		bankCard.setMobile(param.getMobile());
+		sinaBankCardDao.update(bankCard);
+	}
+	
 	public boolean isWithhold(SinaUser user) {
 		QueryWithholdRequest.Builder builder = new QueryWithholdRequest.Builder();
 		builder.identityId(user.getSinaId());
 		QueryWithholdRequest request = builder.build();
 		QueryWithholdResponse response = request.sync();
-		if (response.isWithholdAuthority()) {
+		if (response.isWithholdAuthority() && user.getType() == MemberType.PERSONAL) {
 			user.setWithhold(true);
 			user.setUpdated(DateUtil.current());
 			sinaUserDao.update(user);
@@ -259,15 +297,12 @@ public class SinaMemberManager {
 	}
 	
 	@Transactional
-	public void companyApply(CompanyApplyParam param, Company company, SinaBank bank, Geo geo) {
-		SinaUser user = _tryActivate(param.getId(), MemberType.ENTERPRISE, param.meta().getIp());
-		Assert.isTrue(SinaCode.MEMBER_ALREADY_REALNAME, !user.isRealname());
-		Set<String> set = new HashSet<String>();
-		set.add(CompanyAuditState.SUCCESS.name());
-		set.add(CompanyAuditState.PROCESSING.name());
-		Query query = new Query().eq("sina_uid", user.getSinaId()).in("state", set).forUpdate();
-		SinaCompanyAudit companyAudit = sinaCompanyAuditDao.queryUnique(query);
+	public void companyApply(SinaUser user, CompanyApplyParam param, Company company, SinaBank bank, Geo geo) {
+		SinaCompanyAudit companyAudit = companyAudit(user.getSinaId());
 		Assert.isNull(SinaCode.COMPANY_ALREADY_APPLY, companyAudit);
+		user.setRealname(true);
+		user.setUpdated(DateUtil.current());
+		sinaUserDao.update(user);
 		companyAudit = EntityGenerator.newSinaCompanyAudit(user, param, geo);
 		sinaCompanyAuditDao.insert(companyAudit);
 		CompanyApplyRequest.Builder builder = new CompanyApplyRequest.Builder();
@@ -339,7 +374,7 @@ public class SinaMemberManager {
 		return response.getRedirectUrl();
 	}
 	
-	private SinaUser _tryActivate(Object tid, MemberType type, String ip) {
+	public SinaUser tryActivate(Object tid, MemberType type, String ip) {
 		Query query = new Query().eq("type", type.mark()).eq("tid", tid.toString()).forUpdate();
 		SinaUser user = user(query);
 		if (null == user) {
@@ -391,5 +426,13 @@ public class SinaMemberManager {
 	
 	public List<SinaBankCard> bankCards(Query query) {
 		return sinaBankCardDao.queryList(query);
+	}
+	
+	public SinaCompanyAudit companyAudit(String sinaId) {
+		Set<String> set = new HashSet<String>();
+		set.add(CompanyAuditState.SUCCESS.name());
+		set.add(CompanyAuditState.PROCESSING.name());
+		Query query = new Query().eq("sina_uid", sinaId).in("state", set).forUpdate();
+		return sinaCompanyAuditDao.queryUnique(query);
 	}
 }

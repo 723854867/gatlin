@@ -2,11 +2,11 @@ package org.gatlin.soa.sinapay.bean.param;
 
 import javax.validation.constraints.NotEmpty;
 
-import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.validate.Mobile;
 
-public class CompanyApplyParam extends SoaIdParam {
+public class CompanyApplyParam extends SoaLidParam {
 
 	private static final long serialVersionUID = -2406361969638389390L;
 

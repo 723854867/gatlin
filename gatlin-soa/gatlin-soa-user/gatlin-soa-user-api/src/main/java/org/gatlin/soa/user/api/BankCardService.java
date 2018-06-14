@@ -7,6 +7,8 @@ import org.gatlin.soa.user.bean.param.BankCardsParam;
 
 public interface BankCardService {
 
+	BankCard card(String id);
+	
 	void cardBind(BankCard card);
 	
 	void cardUnbind(String cardId);

@@ -19,6 +19,11 @@ public class BankCardServiceImpl implements BankCardService {
 	private BankCardManager bankCardManager;
 	
 	@Override
+	public BankCard card(String id) {
+		return bankCardManager.card(id);
+	}
+	
+	@Override
 	public void cardBind(BankCard card) {
 		bankCardManager.cardBind(card);
 	}

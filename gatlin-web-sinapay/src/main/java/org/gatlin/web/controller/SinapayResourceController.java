@@ -19,9 +19,11 @@ import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
 import org.gatlin.soa.user.api.CompanyService;
 import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.soa.user.bean.entity.Company;
+import org.gatlin.soa.user.bean.entity.Employee;
 import org.gatlin.util.IDWorker;
 import org.gatlin.util.io.SFTPConnection;
 import org.gatlin.util.io.ZipWriter;
+import org.gatlin.web.Checker;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,6 +52,8 @@ public class SinapayResourceController {
 	@Resource
 	private Gatlin gatlin;
 	@Resource
+	private Checker checker;
+	@Resource
 	private CompanyService companyService;
 	@Resource
 	private SinapayMemberService sinapayMemberService;
@@ -58,8 +62,9 @@ public class SinapayResourceController {
 	@Valid
 	@ResponseBody
 	@RequestMapping("company/apply")
-	public Object companyApply(@Valid CompanyApplyParam param,  @RequestParam(name = "files") MultipartFile[] files) throws Exception {
-		Company company = companyService.company(param.getId());
+	public Object companyApply(@Valid CompanyApplyParam param, @RequestParam(name = "files") MultipartFile[] files) throws Exception {
+		Employee employee = checker.employeeVerify(param);
+		Company company = companyService.company(employee.getCompanyId());
 		Assert.notNull(UserCode.COMPANY_NOT_EIXST, company);
 		ZipWriter writer = new ZipWriter();
 		String prefix = IDWorker.INSTANCE.nextSid();

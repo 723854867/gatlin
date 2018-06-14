@@ -11,9 +11,12 @@ import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
+import org.gatlin.soa.sinapay.bean.entity.SinaCompanyAudit;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.model.BalanceInfo;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.BankCardMobileModifyConfirmParam;
+import org.gatlin.soa.sinapay.bean.param.BankCardMobileModifyParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyApplyParam;
 import org.gatlin.soa.sinapay.bean.param.CompanyBankCardModifyParam;
 import org.gatlin.soa.sinapay.bean.param.QueryBalanceParam;
@@ -71,4 +74,10 @@ public interface SinapayMemberService {
 	void companyBankCardModify(CompanyBankCardModifyParam param); 
 	
 	String pwdReset(SoaParam param);
+	
+	String bankCardMobileModify(BankCardMobileModifyParam param);
+	
+	void bankCardMobileModifyConfirm(BankCardMobileModifyConfirmParam param);
+	
+	SinaCompanyAudit companyAudit(int companyId);
 }

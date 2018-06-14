@@ -31,6 +31,10 @@ public class BankCardManager {
 		bankCardDao.deleteByKey(cardId);
 	}
 	
+	public BankCard card(String key) {
+		return bankCardDao.getByKey(key);
+	}
+	
 	public List<BankCardInfo> cards(BankCardsParam param) {
 		return bankCardDao.list(param);
 	}

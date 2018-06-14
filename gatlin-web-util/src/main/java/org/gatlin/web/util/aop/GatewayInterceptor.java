@@ -45,7 +45,6 @@ import org.springframework.core.io.InputStreamSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 @Aspect
@@ -125,7 +124,7 @@ public class GatewayInterceptor {
 					response = result;
 			} else
 				response = Response.ok();
-			log.setResponse(SerializeUtil.GSON.toJson(response));
+			log.setResponse(new JsonParser().parse(SerializeUtil.GSON.toJson(response)));
 			log.setSuccess(true);
 			log.setRtime(DateUtil.getDate(DateUtil.YYYY_MM_DD_HH_MM_SS_SSS));
 			return response;
@@ -175,9 +174,8 @@ public class GatewayInterceptor {
 			if(params[i] instanceof Serializable) 
 				list.add(params[i]);
 		}
-		Object param = list.size() == 1 ? list.iterator().next() : list.toArray(new Object[] {});
-		JsonObject object = new JsonParser().parse(SerializeUtil.GSON.toJson(param)).getAsJsonObject();
-		meta.setParam(object);
+		Object object = list.size() == 1 ? list.iterator().next() : list.toArray(new Object[] {});
+		meta.setParam(new JsonParser().parse(SerializeUtil.GSON.toJson(object)));
 		String method = point.getTarget().getClass().getName() + "." + point.getSignature().getName();
 		meta.setMethod(method);
 		meta.setCreated(DateUtil.current());

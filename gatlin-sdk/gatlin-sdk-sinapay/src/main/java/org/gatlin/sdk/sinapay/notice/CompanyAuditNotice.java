@@ -1,6 +1,7 @@
 package org.gatlin.sdk.sinapay.notice;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
 
@@ -12,7 +13,7 @@ public class CompanyAuditNotice extends SinaNotice {
 	private String audit_order_no;
 	private String inner_order_no;
 	private String audit_message;
-	@NotEmpty
+	@NotNull
 	private CompanyAuditState audit_status;
 
 	public String getAudit_order_no() {
