@@ -494,7 +494,7 @@ public class SinaOrderManager {
 			throw new CodeException(CoreCode.DATA_STATE_CHANGED);
 		}
 		sinaBidDao.update(bid);
-		sinaBizHook.bidNotice(bid);
+		sinaBizHook.bidNotice(bid, notice);
 		return bid;
 	}
 	

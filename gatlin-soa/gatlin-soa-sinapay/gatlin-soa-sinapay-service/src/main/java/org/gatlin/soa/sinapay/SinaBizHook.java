@@ -1,5 +1,6 @@
 package org.gatlin.soa.sinapay;
 
+import org.gatlin.sdk.sinapay.notice.BidNotice;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.account.bean.enums.RechargeState;
@@ -39,7 +40,7 @@ public interface SinaBizHook {
 	 * 
 	 * @param bid 标的
 	 */
-	void bidNotice(SinaBid bid);
+	void bidNotice(SinaBid bid, BidNotice notice);
 	
 	/**
 	 * 新浪放款回调
