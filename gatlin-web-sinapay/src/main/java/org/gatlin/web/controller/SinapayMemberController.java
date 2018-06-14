@@ -1,5 +1,7 @@
 package org.gatlin.web.controller;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
@@ -16,6 +18,7 @@ import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.ConfigCode;
 import org.gatlin.soa.config.bean.entity.CfgBank;
 import org.gatlin.soa.sinapay.api.SinapayMemberService;
+import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.param.BankCardConfirmParam;
 import org.gatlin.soa.sinapay.bean.param.BankCardMobileModifyConfirmParam;
 import org.gatlin.soa.sinapay.bean.param.BankCardMobileModifyParam;
@@ -108,6 +111,12 @@ public class SinapayMemberController {
 	@ResponseBody
 	@RequestMapping("query/balance")
 	public Object queryBalance(@RequestBody @Valid QueryBalanceParam param) {
+		if (null != param.getUid()) {
+			SinaUser user = sinapayMemberService.user(param.getUid(), MemberType.PERSONAL);
+			if (null == user)
+				return BigDecimal.ZERO;
+			param.setIdentity(user.getSinaId());
+		}
 		return sinapayMemberService.queryBalance(param);
 	}
 

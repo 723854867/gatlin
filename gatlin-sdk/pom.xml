@@ -29,5 +29,6 @@
 		<module>gatlin-sdk-sinapay</module>
     <module>gatlin-sdk-juhe</module>
     <module>gatlin-sdk-jisu</module>
+    <module>gatlin-sdk-amazon</module>
   </modules>
 </project>

@@ -8,6 +8,9 @@ import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.sdk.sinapay.SinapayConfig;
+import org.gatlin.sdk.sinapay.bean.enums.AccountType;
+import org.gatlin.sdk.sinapay.bean.enums.MemberIdentityType;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.bean.model.AccountMiddleTips;
 import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
@@ -118,6 +121,10 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 		builder.identityId(param.getIdentity());
 		builder.accountType(param.getAccountType());
 		builder.identityType(param.getIdentityType());
+		if (param.getIdentityType() == MemberIdentityType.MEMBER_ID) {
+			builder.accountType(AccountType.BASIC);
+			builder.identityId(SinapayConfig.partnerId());
+		}
 		QueryBalanceRequest request = builder.build();
 		return new BalanceInfo(request.sync());
 	}
