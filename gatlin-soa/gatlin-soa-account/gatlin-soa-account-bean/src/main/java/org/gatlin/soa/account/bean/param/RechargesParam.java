@@ -2,6 +2,7 @@ package org.gatlin.soa.account.bean.param;
 
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.bean.enums.PlatType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.util.bean.enums.OS;
 import org.gatlin.util.lang.StringUtil;
@@ -20,6 +21,8 @@ public class RechargesParam extends SoaParam {
 	private Integer timeStop;
 	private Integer timeStart;
 	private RechargeState state;
+	private TargetType rechargeeType;
+	private TargetType rechargerType;
 
 	public OS getOs() {
 		return os;
@@ -100,6 +103,22 @@ public class RechargesParam extends SoaParam {
 	public void setState(RechargeState state) {
 		this.state = state;
 	}
+	
+	public TargetType getRechargeeType() {
+		return rechargeeType;
+	}
+	
+	public void setRechargeeType(TargetType rechargeeType) {
+		this.rechargeeType = rechargeeType;
+	}
+	
+	public TargetType getRechargerType() {
+		return rechargerType;
+	}
+	
+	public void setRechargerType(TargetType rechargerType) {
+		this.rechargerType = rechargerType;
+	}
 
 	@Override
 	public void verify() {
@@ -124,6 +143,10 @@ public class RechargesParam extends SoaParam {
 			this.query.lte("created", timeStop);
 		if (null != timeStart)
 			this.query.gte("created", timeStart);
+		if (null != rechargeeType)
+			this.query.eq("rechargee_type", rechargeeType);
+		if (null != rechargerType)
+			this.query.eq("recharger_type", rechargerType);
 		this.query.orderByDesc("created");
 	}
 }
