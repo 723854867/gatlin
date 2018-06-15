@@ -53,10 +53,10 @@ public class SinapayNoticeController {
 		SinaRecharge recharge = sinapayOrderService.noticeDepositRecharge(notice);
 		if (recharge.getState() == RechargeState.WAIT_RECALL) {				// 发起待收
 			try {
-				sinapayOrderService.rechargeCollect(recharge.getId(), notice);
+				sinapayOrderService.rechargeCollect(recharge.getId(), notice.meta().getIp());
 			} catch (Exception e) {
 				logger.error("充值 - {} 成功待收失败！充值成功回调 -{}", notice.getOuter_trade_no(), SerializeUtil.GSON.toJson(notice), e);
-			}
+			} 
 		}
 		return new WrapResponse(SinaNotice.RESPONSE_OK);
 	}
@@ -87,7 +87,7 @@ public class SinapayNoticeController {
 				sinapayOrderService.withdrawFailure(withdraw.getId(), notice);
 			} catch (Exception e) {
 				logger.error("新浪提现订单 - {} 提现失败撤回失败！提现回调请求 - {}", notice.getOuter_trade_no(), SerializeUtil.GSON.toJson(notice), e);
-			}
+			} 
 		}
 		return new WrapResponse(SinaNotice.RESPONSE_OK);
 	}

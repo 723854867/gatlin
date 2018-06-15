@@ -178,7 +178,7 @@ public class SinaOrderManager {
 	 * 充值待收
 	 */
 	@Transactional
-	public SinaCollect rechargeCollect(String id, DepositRechargeNotice notice) {
+	public SinaCollect rechargeCollect(String id, String ip) {
 		SinaRecharge recharge = sinaRechargeDao.queryUnique(new Query().eq("id", id).forUpdate());
 		Assert.notNull(SinaCode.RECHARGE_NOT_EXIST, recharge);
 		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, recharge.getState() == RechargeState.WAIT_RECALL);
@@ -189,12 +189,12 @@ public class SinaOrderManager {
 		sinaCollectDao.insert(collect);
 		DepositCollectRequest.Builder builder = new DepositCollectRequest.Builder();
 		builder.payerId(recharge.getRecharger());
-		builder.payerIp(notice.meta().getIp());
+		builder.payerIp(ip);
 		builder.summary("充值待收");
 		builder.outTradeNo(collect.getId());
 		builder.outTradeCode(OutTradeCode.COLLECT_INVEST);
 		BalancePay balancePay = new BalancePay();
-		balancePay.setAccountType(AccountType.SAVING_POT);
+		balancePay.setAccountType(recharge.getRechargerType() == TargetType.USER ? AccountType.SAVING_POT : AccountType.BASIC);
 		builder.paymethod(balancePay, recharge.getAmount());
 		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_COLLECT_SINA));
 		DepositCollectRequest request = builder.build();

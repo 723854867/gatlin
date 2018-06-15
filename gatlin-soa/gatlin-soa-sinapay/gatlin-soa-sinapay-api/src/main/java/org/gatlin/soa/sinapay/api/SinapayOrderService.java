@@ -25,7 +25,7 @@ public interface SinapayOrderService {
 	
 	SinaRecharge noticeDepositRecharge(DepositRechargeNotice notice);
 	
-	SinaCollect rechargeCollect(String id, DepositRechargeNotice notice);
+	SinaCollect rechargeCollect(String id, String ip);
 	
 	SinaCollect collectNotice(TradeNotice notice);
 	

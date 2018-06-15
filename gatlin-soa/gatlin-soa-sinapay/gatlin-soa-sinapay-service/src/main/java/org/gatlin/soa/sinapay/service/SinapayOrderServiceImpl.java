@@ -43,8 +43,8 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 	}
 	
 	@Override
-	public SinaCollect rechargeCollect(String id, DepositRechargeNotice notice) {
-		return sinaOrderManager.rechargeCollect(id, notice);
+	public SinaCollect rechargeCollect(String id, String ip) {
+		return sinaOrderManager.rechargeCollect(id, ip);
 	}
 	
 	@Override

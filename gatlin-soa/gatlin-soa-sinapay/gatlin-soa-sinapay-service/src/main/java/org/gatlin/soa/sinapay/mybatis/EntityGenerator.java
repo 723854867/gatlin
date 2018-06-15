@@ -105,7 +105,7 @@ public class EntityGenerator {
 		instance.setRecharger(recharger);
 		instance.setRechargerType(recharge.getRechargerType());
 		instance.setRechargeeType(recharge.getRechargeeType());
-		instance.setAmount(recharge.getAmount());
+		instance.setAmount(recharge.getAmount().subtract(recharge.getFee()));
 		instance.setState(RechargeState.PROCESSING);
 		int time = DateUtil.current();
 		instance.setCreated(time);

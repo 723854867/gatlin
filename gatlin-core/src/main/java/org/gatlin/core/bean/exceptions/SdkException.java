@@ -8,6 +8,7 @@ public abstract class SdkException extends GatlinRuntimeException {
 	protected String desc;
 	
 	public SdkException(String code, String desc) {
+		super("[" + code + " - " + desc + "]");
 		this.code = code;
 		this.desc = desc;
 	}

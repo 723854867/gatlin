@@ -25,7 +25,7 @@ public class SinapayChecker {
 	private SinapayMemberService sinapayMemberService;
 
 	public void checkWithhold(MemberType type, Object tid) {
-		Assert.isTrue(SinaCode.USER_UNWITHHOLD, sinapayMemberService.isWithhold(type, tid));
+		Assert.isTrue(type == MemberType.ENTERPRISE ? SinaCode.COMPANY_UNWITHHOLD : SinaCode.USER_UNWITHHOLD, sinapayMemberService.isWithhold(type, tid));
 	}
 	
 	public void checkCardBind(MemberType type, Object tid) {
@@ -38,10 +38,10 @@ public class SinapayChecker {
 		else {
 			Assert.isTrue(SinaCode.BANK_CARD_BIND_NOT_EXIST, !CollectionUtil.isEmpty(pager.getList()));
 			List<SinaBankCard> list = pager.getList();
-			list.forEach(card -> {
+			for (SinaBankCard card : list) {
 				if (StringUtil.hasText(card.getSinaCardId()))
 					return;
-			});
+			}
 			throw new CodeException(SinaCode.BANK_CARD_ID_NOT_RESET);
 		}
 	}

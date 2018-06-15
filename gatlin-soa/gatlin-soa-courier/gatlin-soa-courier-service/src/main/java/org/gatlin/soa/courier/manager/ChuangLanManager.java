@@ -16,7 +16,7 @@ public class ChuangLanManager {
 	public void sendSms(String content, String mobile) {
 		SmsRequest.Builder builder = new SmsRequest.Builder();
 		builder.msg(content);
-		builder.phone(String.valueOf(PhoneUtil.getNationalNumber(mobile)));
+		builder.phone(mobile);
 		SmsRequest request = builder.build();
 		request.sync();
 	}

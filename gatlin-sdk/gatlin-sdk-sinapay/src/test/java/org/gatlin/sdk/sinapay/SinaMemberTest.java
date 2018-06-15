@@ -174,7 +174,7 @@ public class SinaMemberTest extends SinaTest {
 	@Test
 	public void testQueryBankCard() { 
 		QueryBankCardRequest.Builder builder = new QueryBankCardRequest.Builder();
-		builder.identityId("455666703926296576");
+		builder.identityId("457120909174505472");
 		QueryBankCardRequest request = builder.build();
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		QueryBankCardResponse response = request.sync();
@@ -264,7 +264,7 @@ public class SinaMemberTest extends SinaTest {
 	@Test
 	public void testPwdSet() {
 		PwdSetRequest.Builder builder = new PwdSetRequest.Builder();
-		builder.identityId("455666703926296576");
+		builder.identityId("442989041755881472");
 		PwdSetRequest request = builder.build();
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		RedirectResponse response = request.sync();

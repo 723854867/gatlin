@@ -379,10 +379,12 @@ public class SinaMemberManager {
 	}
 	
 	public String pwdSet(SoaParam param, MemberType type, Object tid) { 
-		SinaUser user = user(type, param.getUser().getId());
+		SinaUser user = user(type, tid);
 		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, user);
 		PwdSetRequest.Builder builder = new PwdSetRequest.Builder();
 		builder.identityId(user.getSinaId());
+		String withhold = "withhold_auth_type^ALL,ACCOUNT|is_check^Y";
+		builder.withholdParam(withhold);
 		if (param.getUser().getDeviceType() == DeviceType.MOBILE)
 			builder.cashdeskAddrCategory(CashdeskAddrCategory.MOBILE);
 		builder.returnUrl(_returnUrl(param.getUser()));
