@@ -28,6 +28,8 @@ public interface UserService {
 	
 	User user(UsernameType type, String username);
 	
+	User lock(long uid, long timeout);
+	
 	// 通过 token 获取用户锁
 	User lock(String token, long timeout);
 	

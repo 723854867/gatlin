@@ -31,7 +31,7 @@ public class Uploader {
 	private ConfigService configService;
 	
 	public <T> T upload(MultipartFile file, String category, Callback<Resource, T> callback) {
-		String path = _path();
+		String path = path();
 		String suffix = _save(file, path, category, IDWorker.INSTANCE.nextSid());
 		String filePath = path + File.separator + suffix;
 		try {
@@ -51,7 +51,7 @@ public class Uploader {
 		}
 	}
 	
-	private String _path() {
+	public String path() {
 		Env env = gatlin.env();
 		switch (env) {
 		case LOCAL:
