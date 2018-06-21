@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.courier.CourierConsts;
+import org.gatlin.util.PhoneUtil;
 import org.gatlin.util.lang.EnumUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class SmsRouteManager {
 		switch (plat) {
 		case CHUANGLAN:
 			if (null != chuangLanManager)
-				chuangLanManager.sendSms(content, mobile);
+				chuangLanManager.sendSms(content, String.valueOf(PhoneUtil.getNationalNumber(mobile)));
 			break;
 		default:
 			break;
