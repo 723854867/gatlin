@@ -91,7 +91,8 @@ public class GatewayInterceptor {
 				user = null != userService ? userService.user(token) : null;
 		}
 		try {
-			log.setOperator(new JsonParser().parse(SerializeUtil.GSON.toJson(user)));
+			if (null != user)
+				log.setOperator(new JsonParser().parse(SerializeUtil.GSON.toJson(user)));
 			Object[] params = point.getArgs();
 			for (Object param : params) {
 				if (param instanceof Request) {
