@@ -35,6 +35,8 @@ public class LogRequest implements Identifiable<String> {
 	private boolean success;
 	// 请求参数(包括了 body 和 表单等参数，只包括了可序列化且不是io流的参数)
 	private Object param;
+	// 操作者
+	private Object operator;
 	// 创建时间10位unix戳(用于排序)
 	private int created;
 
@@ -116,6 +118,14 @@ public class LogRequest implements Identifiable<String> {
 	
 	public void setParam(Object param) {
 		this.param = param;
+	}
+	
+	public Object getOperator() {
+		return operator;
+	}
+	
+	public void setOperator(Object operator) {
+		this.operator = operator;
 	}
 	
 	public Object getResponse() {

@@ -91,6 +91,7 @@ public class GatewayInterceptor {
 				user = null != userService ? userService.user(token) : null;
 		}
 		try {
+			log.setOperator(user);
 			Object[] params = point.getArgs();
 			for (Object param : params) {
 				if (param instanceof Request) {
