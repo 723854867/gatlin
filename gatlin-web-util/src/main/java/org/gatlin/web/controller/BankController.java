@@ -52,6 +52,7 @@ public class BankController {
 		List<CfgBank> list = configService.banks(new Query().in("id", set)).getList();
 		pager.getList().forEach(card -> {
 			card.setIcon(map.get(card.getId()));
+			card.setBankNo(StringUtil.mask(card.getBankNo(), 0, 4));
 			card.setMobile(StringUtil.mask(card.getMobile(), 6, 4));
 			card.setOwnerName(StringUtil.mask(card.getOwnerName(), 1, 0));
 			card.setOwnerPhone(StringUtil.mask(card.getOwnerPhone(), 3, 4));
