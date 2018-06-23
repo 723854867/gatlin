@@ -10,6 +10,6 @@ public interface WebCode {
 	final Code UPLOAD_COUNT_EXCEEDED 			= new Code("code.upload.count.exceeded", "上传文件数量超过限制");
 	final Code UPLOAD_FAILURE		 			= new Code("code.upload.failure", "资源上传失败");
 
-	final Code SERVER_WARNING 					= new Code("code.warning", "服务器预警");
+	final Code API_MAINTENANCE 					= new Code("code.api.maintenance", "接口维护中");
 	final Code LOG_REQUEST_UNSUPPORT 			= new Code("code.log.request.unsupport", "未开启访问日志服务");
 }

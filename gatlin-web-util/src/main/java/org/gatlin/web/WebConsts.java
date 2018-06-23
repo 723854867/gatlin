@@ -8,7 +8,7 @@ import org.gatlin.core.bean.model.option.StrOption;
 public interface WebConsts {
 
 	interface Options {
-		final IntegerOption SERVER_STATE							= new IntegerOption("server.state", 0);
+		final IntegerOption SERVER_STATE							= new IntegerOption("server_state", 0);
 		final BoolOption UPLOAD_ENABLE								= new BoolOption("upload.enable", false);
 		final LongOption RAPID_MAX_UPLOAD_SIZE						= new LongOption("upload.maxUploadSize", 5242880l);
 		final IntegerOption RAPID_MAX_IN_MEMORY_SIZE				= new IntegerOption("upload.maxInMemorySize", 51200);
