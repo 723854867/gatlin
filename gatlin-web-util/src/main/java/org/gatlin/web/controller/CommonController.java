@@ -172,6 +172,8 @@ public class CommonController {
 	public Object heartbeat(@RequestBody @Valid SoaParam param) {
 		Query query = new Query().eq("cfg_id", ResourceType.AVATAR_DEFAULT.mark());
 		ResourceInfo avatar = resourceService.resource(query);
-		return new Heartbeat(avatar);
+		query = new Query().eq("cfg_id", ResourceType.MAINTENANCE.mark());
+		ResourceInfo maintenance = resourceService.resource(query);
+		return new Heartbeat(avatar, maintenance);
 	}
 }

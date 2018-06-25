@@ -10,11 +10,13 @@ public class Heartbeat implements Serializable {
 
 	private int timestamp;
 	private ResourceInfo avatar;
+	private ResourceInfo maintenance;
 	
 	public Heartbeat() {}
 	
-	public Heartbeat(ResourceInfo avatar) {
+	public Heartbeat(ResourceInfo avatar, ResourceInfo maintenance) {
 		this.avatar = avatar;
+		this.maintenance = maintenance;
 		this.timestamp = DateUtil.current();
 	}
 	
@@ -32,5 +34,13 @@ public class Heartbeat implements Serializable {
 	
 	public void setAvatar(ResourceInfo avatar) {
 		this.avatar = avatar;
+	}
+	
+	public ResourceInfo getMaintenance() {
+		return maintenance;
+	}
+	
+	public void setMaintenance(ResourceInfo maintenance) {
+		this.maintenance = maintenance;
 	}
 }
