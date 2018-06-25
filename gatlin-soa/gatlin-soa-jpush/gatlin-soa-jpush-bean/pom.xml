@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.gatlin</groupId>
 		<artifactId>gatlin-soa-jpush</artifactId>
-		<version>1.0</version>
+		<version>1.1</version>
 	</parent>
 	
 	<artifactId>gatlin-soa-jpush-bean</artifactId>
