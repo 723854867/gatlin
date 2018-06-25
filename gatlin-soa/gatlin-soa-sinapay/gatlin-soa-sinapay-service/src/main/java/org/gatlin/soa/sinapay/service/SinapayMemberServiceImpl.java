@@ -16,6 +16,7 @@ import org.gatlin.sdk.sinapay.bean.model.AccountMiddleTips;
 import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
 import org.gatlin.sdk.sinapay.request.member.QueryBalanceRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryMiddleBalanceRequest;
+import org.gatlin.sdk.sinapay.response.QueryBalanceResponse;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
@@ -39,12 +40,17 @@ import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.BankCardBindParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
+import org.gatlin.util.serial.SerializeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 
 @Service("sinapayMemberService")
 public class SinapayMemberServiceImpl implements SinapayMemberService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(SinapayMemberServiceImpl.class);
 	
 	@Resource
 	private SinaManager sinaManager;
@@ -126,7 +132,10 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 			builder.identityId(SinapayConfig.partnerId());
 		}
 		QueryBalanceRequest request = builder.build();
-		return new BalanceInfo(request.sync());
+		logger.info("新浪查询用户余额请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		QueryBalanceResponse response = request.sync();
+		logger.info("新浪查询用户余额响应：{}", SerializeUtil.GSON.toJson(response));
+		return new BalanceInfo(response);
 	}
 	
 	@Override
