@@ -11,9 +11,9 @@ public class WithdrawsParam extends SoaParam {
 	private static final long serialVersionUID = -2951701921579464535L;
 
 	private OS os;
+	private Long uid;
 	private String id;
 	private PlatType plat;
-	private Long withdrawer;
 	private Integer timeStop;
 	private Integer timeStart;
 	private WithdrawState state;
@@ -43,12 +43,12 @@ public class WithdrawsParam extends SoaParam {
 		this.plat = plat;
 	}
 
-	public Long getWithdrawer() {
-		return withdrawer;
+	public Long getUid() {
+		return uid;
 	}
-
-	public void setWithdrawer(Long withdrawer) {
-		this.withdrawer = withdrawer;
+	
+	public void setUid(Long uid) {
+		this.uid = uid;
 	}
 
 	public Integer getTimeStop() {
@@ -92,8 +92,8 @@ public class WithdrawsParam extends SoaParam {
 			this.query.eq("id", id);
 		if (null != plat)
 			this.query.eq("plat", plat);
-		if (null != withdrawer)
-			this.query.eq("withdrawer", withdrawer);
+		if (null != uid)
+			this.query.eq("uid", uid);
 		if (null != state)
 			this.query.eq("state", state);
 		if (null != withdrawerType)

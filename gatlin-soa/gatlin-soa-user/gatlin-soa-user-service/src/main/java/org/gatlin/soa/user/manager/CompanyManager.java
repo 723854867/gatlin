@@ -1,6 +1,7 @@
 package org.gatlin.soa.user.manager;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -69,6 +70,10 @@ public class CompanyManager {
 	
 	public Employee employee(long employeeId) {
 		return employeeDao.getByKey(employeeId);
+	}
+	
+	public Map<Integer, Company> companies() {
+		return companyDao.getAll();
 	}
 	
 	public List<Company> companies(Query query) {

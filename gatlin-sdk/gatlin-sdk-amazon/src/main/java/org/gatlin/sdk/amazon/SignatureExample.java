@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import org.apache.commons.codec.binary.Base64;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.util.Consts;
+import org.gatlin.util.DateUtil;
 import org.gatlin.util.codec.Encrypt;
 import org.gatlin.util.lang.StringUtil;
 
@@ -33,6 +34,8 @@ public class SignatureExample {
 		String signature = sign(formattedParameters, secretKey);
 		parameters.put("Signature", urlEncode(signature));
 		System.out.println(calculateStringToSignV2(parameters, serviceUrl));
+		System.out.println(DateUtil.iso8601UTCDate());
+
 	}
 
 	private static String calculateStringToSignV2(TreeMap<String, String> parameters, String serviceUrl) throws Exception {

@@ -1,5 +1,7 @@
 package org.gatlin.soa.user.service;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.gatlin.core.bean.info.Pager;
@@ -37,6 +39,11 @@ public class CompanyServiceImpl implements CompanyService {
 	@Override
 	public Company company(int companyId) {
 		return companyManager.company(companyId);
+	}
+	
+	@Override
+	public Map<Integer, Company> companies() {
+		return companyManager.companies();
 	}
 	
 	@Override
