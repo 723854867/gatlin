@@ -98,5 +98,6 @@ public class WithdrawsParam extends SoaParam {
 			this.query.eq("state", state);
 		if (null != withdrawerType)
 			this.query.eq("withdrawer_type", withdrawerType);
+		this.query.orderByDesc("created");
 	}
 }
