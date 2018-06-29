@@ -1,12 +1,17 @@
 package org.gatlin.sdk.amazon.request.order;
 
-import java.math.BigDecimal;
-
+import org.gatlin.sdk.amazon.AmazonUtil;
 import org.gatlin.sdk.amazon.bean.enums.FulfillmentAction;
 import org.gatlin.sdk.amazon.bean.enums.FulfillmentPolicy;
 import org.gatlin.sdk.amazon.bean.enums.ShippingSpeedCategory;
-import org.gatlin.sdk.amazon.request.AmazonRequest;
+import org.gatlin.sdk.amazon.bean.model.AmazonList;
+import org.gatlin.sdk.amazon.bean.model.CODSettings;
+import org.gatlin.sdk.amazon.bean.model.CreateFulfillmentOrderItem;
+import org.gatlin.sdk.amazon.bean.model.DeliveryWindow;
+import org.gatlin.sdk.amazon.bean.model.FulfillmentAddress;
+import org.gatlin.sdk.amazon.request.SellerRequest;
 import org.gatlin.sdk.amazon.response.order.CreateFulfillmentOrderResponse;
+import org.gatlin.util.DateUtil;
 
 /**
  * 请求亚马逊将商品从卖家的 亚马逊物流 库存中配送至目的地地址。
@@ -24,14 +29,16 @@ import org.gatlin.sdk.amazon.response.order.CreateFulfillmentOrderResponse;
  * 
  * @author lynn
  */
-public class CreateFulfillmentOrderRequest extends AmazonRequest<CreateFulfillmentOrderResponse, CreateFulfillmentOrderRequest> {
+public class CreateFulfillmentOrderRequest extends SellerRequest<CreateFulfillmentOrderResponse, CreateFulfillmentOrderRequest> {
 
 	public CreateFulfillmentOrderRequest() {
-		super("CreateFulfillmentOrder", "2010-10-01", "FulfillmentOutboundShipment/2010-10-01");
+		super("CreateFulfillmentOrder", "2010-10-01", "/FulfillmentOutboundShipment/2010-10-01");
+		displayableOrderDateTime(DateUtil.iso8601UTCMillisDate());
 	}
 	
 	// 订单编号
 	public CreateFulfillmentOrderRequest orderId(String orderId) {
+		displayableOrderId(orderId);
 		return _addParam("SellerFulfillmentOrderId", orderId);
 	}
 	
@@ -61,8 +68,8 @@ public class CreateFulfillmentOrderRequest extends AmazonRequest<CreateFulfillme
 	}
 	
 	// 订单配送目的地地址
-	public CreateFulfillmentOrderRequest destinationAddress(String address) {
-		return _addParam("DestinationAddress", address);
+	public CreateFulfillmentOrderRequest destinationAddress(FulfillmentAddress address) {
+		return _addParams(AmazonUtil.wrap("DestinationAddress", address));
 	}
 	
 	// 指明应该如何处理配送订单中无法配送的商品(可选)
@@ -76,16 +83,20 @@ public class CreateFulfillmentOrderRequest extends AmazonRequest<CreateFulfillme
 	}
 	
 	// 货到付款(COD)配送订单的货到付款金额(可选 - 只适用于中国 (CN) 和日本 (JP)。如果在其他商城中指定 CODSettings 参数，系统将返回错误。)
-	public CreateFulfillmentOrderRequest CODmoney(BigDecimal CODmoney) {
-		return _addParam("CODSettings", CODmoney.toString());
+	public CreateFulfillmentOrderRequest CODSettings(CODSettings CODSettings) {
+		return _addParams(AmazonUtil.wrap("CODSettings", CODSettings));
 	}
 	
 	// 要包含在配送订单预览中的商品列表，包含数量
-	public CreateFulfillmentOrderRequest items(BigDecimal CODmoney) {
-		return _addParam("Items", CODmoney.toString());
+	public CreateFulfillmentOrderRequest items(AmazonList<CreateFulfillmentOrderItem> items) {
+		return _addParams(items.params("Items"));
 	}
 	
-	public CreateFulfillmentOrderRequest DeliveryWindow(BigDecimal CODmoney) {
-		return _addParam("DeliveryWindow", CODmoney.toString());
+	// 1、DeliveryWindow 请求参数的 StartDateTime 和 EndDateTime 值必须是您之前通过调用 GetFulfillmentPreview 操作返回的值。 
+	// 如果您指定的 StartDateTime 和 EndDateTime 值不是 GetFulfillmentPreview 操作返回的值，服务返回错误
+	// 2、您调用 GetFulfillmentPreview 操作时的可用配送时间范围有可能在稍后调用 CreateFulfillmentOrder 操作时变为不可用。如果此情况发生，
+	// 服务将返回错误。这时，您需要重新调用 GetFulfillmentPreview 操作，获取当前可用的配送时间范围
+	public CreateFulfillmentOrderRequest DeliveryWindow(DeliveryWindow window) {
+		return _addParams(AmazonUtil.wrap("DeliveryWindow", window));
 	}
 }

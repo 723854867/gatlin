@@ -22,11 +22,15 @@ public class AmazonUtil {
 		return map;
 	}
 	
-	public static String stringToSign(TreeMap<String, String> parameters) {
+	public static String stringToSign(String path, TreeMap<String, String> parameters) {
 		StringBuilder data = new StringBuilder();
 		data.append("POST\n");
 		data.append(AmazonConfig.host());
-		data.append("\n/");
+		data.append("\n");
+		if (StringUtil.hasText(path))
+			data.append(path);
+		else
+			data.append("/");
 		data.append("\n");
 		Iterator<Entry<String, String>> pairs = parameters.entrySet().iterator();
 		while (pairs.hasNext()) {

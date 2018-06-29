@@ -2,6 +2,8 @@ package org.gatlin.sdk.amazon.bean.model;
 
 import java.util.HashMap;
 
+import org.gatlin.sdk.amazon.AmazonUtil;
+
 public class CreateFulfillmentOrderItem extends HashMap<String, String> {
 
 	private static final long serialVersionUID = 31077772232637558L;
@@ -25,9 +27,39 @@ public class CreateFulfillmentOrderItem extends HashMap<String, String> {
 		return this;
 	}
 	
-	// 给礼物收件人的消息
+	// 给礼物收件人的消息(可选)
 	public CreateFulfillmentOrderItem giftMessage(String giftMessage) {
 		this.put("GiftMessage", giftMessage);
+		return this;
+	}
+	
+	// 面向收件人的商品详情文本(可选)
+	public CreateFulfillmentOrderItem displayableComment(String displayableComment) {
+		this.put("DisplayableComment", displayableComment);
+		return this;
+	}
+	
+	// 商品的亚马逊配送网络 SKU(可选)
+	public CreateFulfillmentOrderItem fulfillmentNetworkSKU(String fulfillmentNetworkSKU) {
+		this.put("FulfillmentNetworkSKU", fulfillmentNetworkSKU);
+		return this;
+	}
+	
+	// 卖家为此商品指定的价格(可选)
+	public CreateFulfillmentOrderItem perUnitDeclaredValue(Currency currency) {
+		this.putAll(AmazonUtil.wrap("PerUnitDeclaredValue", currency));
+		return this;
+	}
+	
+	// 买家需要对货到付款 (COD) 订单中的此商品支付的金额(可选)
+	public CreateFulfillmentOrderItem perUnitPrice(Currency currency) {
+		this.putAll(AmazonUtil.wrap("PerUnitPrice", currency));
+		return this;
+	}
+	
+	// 买家需要对货到付款 (COD) 订单中的此商品支付的金额的税费(可选)
+	public CreateFulfillmentOrderItem perUnitTax(Currency currency) {
+		this.putAll(AmazonUtil.wrap("PerUnitTax", currency));
 		return this;
 	}
 }

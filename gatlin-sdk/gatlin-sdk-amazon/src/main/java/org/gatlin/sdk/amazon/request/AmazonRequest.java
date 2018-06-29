@@ -10,6 +10,7 @@ import org.gatlin.core.service.http.HttpPost;
 import org.gatlin.sdk.amazon.AmazonConfig;
 import org.gatlin.sdk.amazon.AmazonUtil;
 import org.gatlin.sdk.amazon.response.AmazonResponse;
+import org.gatlin.sdk.amazon.response.ErrorResponse;
 import org.gatlin.util.Consts;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.bean.enums.Protocol;
@@ -29,7 +30,6 @@ public class AmazonRequest<RESPONSE extends AmazonResponse, REQUEST extends Amaz
 		version(version);
 		signatureVersion("2");
 		signatureMethod("HmacSHA256");
-		merchant(AmazonConfig.sellerId());
 		AWSAccessKeyId(AmazonConfig.AWSAccessKeyId());
 		timestamp(DateUtil.iso8601UTCMillisDate());
 		this.protocol = Protocol.HTTPS;
@@ -48,16 +48,6 @@ public class AmazonRequest<RESPONSE extends AmazonResponse, REQUEST extends Amaz
 	// 标识亚马逊卖家对某个开发商的授权：仅适用于网页应用和第三方开发商授权
 	public REQUEST MWSAuthToken(String MWSAuthToken) {
 		return _addParam("MWSAuthToken", MWSAuthToken);
-	}
-	
-	// 卖家编号
-	public REQUEST sellerId(String sellerId ) {
-		return _addParam("SellerId", sellerId );
-	}
-	
-	// 卖家编号
-	public REQUEST merchant(String merchant) {
-		return _addParam("Merchant", merchant);
 	}
 	
 	public REQUEST signature(String signature) {
@@ -89,13 +79,10 @@ public class AmazonRequest<RESPONSE extends AmazonResponse, REQUEST extends Amaz
 		HttpUrl.Builder builder = new HttpUrl.Builder().scheme(protocol.name());
 		builder.host(host).port(port).addPathSegments(path);
 		TreeMap<String, String> parameters = new TreeMap<String, String>(this.params);
-		String strToSign = AmazonUtil.stringToSign(parameters);
+		String strToSign = AmazonUtil.stringToSign(path, parameters);
 		String signature = AmazonUtil.sign(strToSign);
 		this.params.put("Signature", signature);
 		parameters.put("Signature", signature);
-//		for (Entry<String, String> entry : parameters.entrySet())
-//			builder.addEncodedQueryParameter(AmazonUtil.urlEncode(entry.getKey()), AmazonUtil.urlEncode(entry.getValue()));
-		System.out.println(builder.build());
 		return builder.build();
 	}
 	
@@ -105,6 +92,19 @@ public class AmazonRequest<RESPONSE extends AmazonResponse, REQUEST extends Amaz
 		for (Entry<String, String> entry : params.entrySet())
 			fb.addEncoded(AmazonUtil.urlEncode(entry.getKey()), AmazonUtil.urlEncode(entry.getValue()));
 		return fb.build();
+	}
+	
+	@Override
+	protected void requestFailure(Response response) {
+		String errorContent = null;
+		try {
+			errorContent = response.body().string();
+		} catch (Exception e) {
+			super.requestFailure(response);
+			return;
+		}
+		ErrorResponse err = SerializeUtil.XmlUtil.xmlToBean(errorContent, ErrorResponse.class);
+		err.verify();
 	}
 	
 	protected RESPONSE response(Response response) {
@@ -125,7 +125,7 @@ public class AmazonRequest<RESPONSE extends AmazonResponse, REQUEST extends Amaz
 	}
 	
 	protected REQUEST _addParams(Map<String, String> params) {
-		params.entrySet().forEach(item -> _addParam(item.getKey(), AmazonUtil.urlEncode(item.getValue())));
+		this.params.putAll(params);
 		return (REQUEST) this;
 	}
 }

@@ -20,9 +20,4 @@ public abstract class SdkException extends GatlinRuntimeException {
 	public String desc() {
 		return desc;
 	}
-	
-	@Override
-	public String toString() {
-		return super.toString() + "[" + code + " - " + desc + "]";
-	}
 }

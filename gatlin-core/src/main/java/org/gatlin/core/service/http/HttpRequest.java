@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.gatlin.core.bean.exceptions.RequestFailException;
 import org.gatlin.core.util.SpringContextUtil;
 import org.gatlin.util.bean.enums.Protocol;
+import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.serial.SerializeUtil;
 
 import okhttp3.HttpUrl;
@@ -47,7 +48,20 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 	
 	public RESPONSE sync() {
 		Response response = this.httpService.sync(request());
+		if (!response.isSuccessful())
+			requestFailure(response);
 		return response(response);
+	}
+	
+	protected void requestFailure(Response response) {
+		String errorContent = null;
+		try {
+			errorContent = response.body().string();
+		} catch (Exception e) {}
+		String error = response.message();
+		if (StringUtil.hasText(errorContent))
+			error += " - [" + errorContent + "]";
+		throw new RequestFailException(response.code(), error);
 	}
 	
 	protected Request request() {
