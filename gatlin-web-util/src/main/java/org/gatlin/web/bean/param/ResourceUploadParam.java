@@ -21,9 +21,12 @@ public class ResourceUploadParam extends SoaParam {
 	@NotNull
 	private MultipartFile source;
 	
-	@SuppressWarnings("unchecked")
-	public <T> T owner() {
-		return (T)owner;
+	public int intOnwer() {
+		return Integer.valueOf(owner);
+	}
+	
+	public Long longOnwer() {
+		return Long.valueOf(owner);
 	}
 	
 	public String getOwner() {

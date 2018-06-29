@@ -18,4 +18,16 @@ public class CreateFulfillmentOrderItem extends HashMap<String, String> {
 		this.put("SellerFulfillmentOrderItemId", OrderItemId);
 		return this;
 	}
+	
+	// 商品数量
+	public CreateFulfillmentOrderItem quantity(int quantity) {
+		this.put("Quantity", String.valueOf(quantity));
+		return this;
+	}
+	
+	// 给礼物收件人的消息
+	public CreateFulfillmentOrderItem giftMessage(String giftMessage) {
+		this.put("GiftMessage", giftMessage);
+		return this;
+	}
 }
