@@ -14,9 +14,7 @@ import org.gatlin.sdk.amazon.response.CreateInboundShipmentPlanResponse;
 public class CreateInboundShipmentPlanRequest extends AmazonRequest<CreateInboundShipmentPlanResponse, CreateInboundShipmentPlanRequest> {
 	
 	public CreateInboundShipmentPlanRequest() {
-		super("FulfillmentInboundShipment/2010-10-01/");
-		version("2010-10-01");
-		action("CreateInboundShipmentPlan");
+		super("CreateInboundShipmentPlan", "2010-10-01", "FulfillmentInboundShipment/2010-10-01");
 	}
 
 	/**

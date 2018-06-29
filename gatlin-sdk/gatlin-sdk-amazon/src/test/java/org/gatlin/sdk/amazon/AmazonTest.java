@@ -1,12 +1,16 @@
 package org.gatlin.sdk.amazon;
 
 import org.gatlin.core.Bootstrap;
+import org.gatlin.sdk.amazon.bean.enums.ReportType;
+import org.gatlin.sdk.amazon.bean.enums.Schedule;
 import org.gatlin.sdk.amazon.bean.model.Address;
 import org.gatlin.sdk.amazon.bean.model.InboundShipmentPlanRequestItem;
 import org.gatlin.sdk.amazon.request.CreateInboundShipmentPlanRequest;
 import org.gatlin.sdk.amazon.request.GetServiceStatusRequest;
+import org.gatlin.sdk.amazon.request.report.ManageReportScheduleRequest;
 import org.gatlin.sdk.amazon.response.CreateInboundShipmentPlanResponse;
 import org.gatlin.sdk.amazon.response.GetServiceStatusResponse;
+import org.gatlin.sdk.amazon.response.report.ManageReportScheduleResponse;
 import org.gatlin.util.serial.SerializeUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +45,15 @@ public class AmazonTest {
 	public void testGetServceStatus() {
 		GetServiceStatusRequest req = new GetServiceStatusRequest();
 		GetServiceStatusResponse response = req.sync();
+		System.out.println(SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Test
+	public void testManageReportSchedule() { 
+		ManageReportScheduleRequest request = new ManageReportScheduleRequest();
+		request.reportType(ReportType._GET_FLAT_FILE_ORDERS_DATA_);
+		request.schedule(Schedule._12_HOURS_);
+		ManageReportScheduleResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));
 	}
 }

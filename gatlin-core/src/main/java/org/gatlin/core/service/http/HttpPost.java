@@ -44,10 +44,10 @@ public class HttpPost<RESPONSE extends HttpResponse, REQUEST extends HttpPost<RE
 		Request.Builder rb = new Request.Builder().url(url());
 		for (Entry<String, String> entry : headers.entrySet())
 			rb.addHeader(entry.getKey(), entry.getValue());
-		return rb.post(_requestBody()).build();
+		return rb.post(requestBody()).build();
 	}
 	
-	private RequestBody _requestBody() {
+	protected RequestBody requestBody() {
 		switch (contentType) {
 		case APPLICATION_FORM_URLENCODED_UTF_8:
 			FormBody.Builder fb = new FormBody.Builder(Consts.UTF_8);

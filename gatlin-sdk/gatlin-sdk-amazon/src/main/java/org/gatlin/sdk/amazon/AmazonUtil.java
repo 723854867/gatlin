@@ -32,7 +32,7 @@ public class AmazonUtil {
 		while (pairs.hasNext()) {
 			Map.Entry<String, String> pair = pairs.next();
 			if (pair.getValue() != null) 
-				data.append(pair.getKey() + "=" + pair.getValue());
+				data.append(urlEncode(pair.getKey()) + "=" + urlEncode(pair.getValue()));
 			else 
 				data.append(pair.getKey() + "=");
 			if (pairs.hasNext())
