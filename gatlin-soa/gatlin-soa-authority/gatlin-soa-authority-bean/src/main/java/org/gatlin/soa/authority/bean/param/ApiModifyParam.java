@@ -21,7 +21,7 @@ public class ApiModifyParam extends SoaIdParam {
 	private boolean serial;
 	@Min(0)
 	private int lockTimeout;
-	@Min(1)
+	@Min(0)
 	private int securityLevel;
 	@NotNull
 	private StorageType storageType;
