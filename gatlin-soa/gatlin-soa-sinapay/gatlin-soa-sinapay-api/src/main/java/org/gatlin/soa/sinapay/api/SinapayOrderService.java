@@ -19,7 +19,7 @@ import org.gatlin.soa.sinapay.bean.param.WithdrawParam;
 public interface SinapayOrderService {
 
 	// 托管充值
-	String depositRecharge(Recharge recharge, SoaParam param);
+	String depositRecharge(Recharge recharge, SoaParam param, String summary);
 	
 	void depositRechargeTimeout(String id);
 	

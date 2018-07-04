@@ -28,8 +28,8 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 	private SinaOrderManager sinaOrderManager;
 
 	@Override
-	public String depositRecharge(Recharge recharge, SoaParam param) {
-		return sinaOrderManager.depositRecharge(recharge, param);
+	public String depositRecharge(Recharge recharge, SoaParam param, String summary) {
+		return sinaOrderManager.depositRecharge(recharge, param, summary);
 	}
 	
 	@Override

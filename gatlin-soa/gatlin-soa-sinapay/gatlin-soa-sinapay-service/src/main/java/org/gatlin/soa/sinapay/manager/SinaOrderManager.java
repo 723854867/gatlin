@@ -109,7 +109,7 @@ public class SinaOrderManager {
 	
 	// ********************* 充值  *********************
 	@Transactional
-	public String depositRecharge(Recharge recharge, SoaParam param) {
+	public String depositRecharge(Recharge recharge, SoaParam param, String summary) {
 		TargetType rechargerType = recharge.getRechargerType();
 		AccountType accountType = rechargerType == TargetType.COMPANY ? AccountType.BASIC : AccountType.SAVING_POT;
 		SinaUser recharger = sinaMemberManager.user(rechargerType == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRecharger());
@@ -129,6 +129,7 @@ public class SinaOrderManager {
 		OnlineBankPay pay = new OnlineBankPay();
 		if (rechargerType == TargetType.COMPANY)			// 对公充值则卡属性为对公
 			pay.setCardAttribute(CardAttribute.B);
+		builder.summary(summary);
 		builder.payMethod(pay, recharge.getAmount());
 		builder.payerIp(recharge.getIp());
 		builder.identityId(recharger.getSinaId());

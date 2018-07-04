@@ -62,7 +62,7 @@ public class SinapayOrderController {
 		sinapayChecker.checkCardBind(MemberType.PERSONAL, param.getUser().getId());
 		int timeout = configService.config(SoaConsts.RECHARGE_TIMEOUT);
 		Recharge recharge = AccountUtil.newRecharge(param, PlatType.SINAPAY, 1, AccountType.BASIC.mark(), param.getAmount(), timeout);
-		return sinapayOrderService.depositRecharge(recharge, param);
+		return sinapayOrderService.depositRecharge(recharge, param, "用户充值");
 	}
 	
 	// 托管充值(企业充值对私-使用雇员自己的账号充值)
@@ -76,7 +76,7 @@ public class SinapayOrderController {
 		Recharge recharge = AccountUtil.newRecharge(param, PlatType.SINAPAY, 1, AccountType.DEPOSIT.mark(), param.getAmount(), timeout);
 		recharge.setRechargeeType(TargetType.COMPANY);
 		recharge.setRechargee(employee.getCompanyId());
-		return sinapayOrderService.depositRecharge(recharge, param);
+		return sinapayOrderService.depositRecharge(recharge, param, "企业充值");
 	}
 	
 	// 托管充值(企业充值对公-使用企业账户充值)
@@ -92,7 +92,7 @@ public class SinapayOrderController {
 		recharge.setRechargeeType(TargetType.COMPANY);
 		recharge.setRecharger(employee.getCompanyId());
 		recharge.setRechargerType(TargetType.COMPANY);
-		return sinapayOrderService.depositRecharge(recharge, param);
+		return sinapayOrderService.depositRecharge(recharge, param, "企业充值");
 	}
 	
 	// 个人托管提现代付
