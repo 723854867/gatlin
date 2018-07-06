@@ -14,6 +14,7 @@ public class SinaRecharge implements Identifiable<String> {
 	
 	@Id
 	private String id;
+	private String summary;
 	private String rechargee;
 	private String recharger;
 	// 已经去掉了 user_fee 了，即这里的金额就是实际到账金额
@@ -30,6 +31,14 @@ public class SinaRecharge implements Identifiable<String> {
 	
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String getSummary() {
+		return summary;
+	}
+	
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 	
 	public RechargeState getState() {

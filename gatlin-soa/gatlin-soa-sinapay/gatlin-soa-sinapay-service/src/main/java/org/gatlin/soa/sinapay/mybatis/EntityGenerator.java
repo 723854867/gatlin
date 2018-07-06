@@ -98,9 +98,10 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final SinaRecharge newSinaRecharge(Recharge recharge, String recharger, String rechargee) {
+	public static final SinaRecharge newSinaRecharge(Recharge recharge, String recharger, String rechargee, String summary) {
 		SinaRecharge instance = new SinaRecharge();
 		instance.setId(recharge.getId());
+		instance.setSummary(summary);
 		instance.setRechargee(rechargee);
 		instance.setRecharger(recharger);
 		instance.setRechargerType(recharge.getRechargerType());

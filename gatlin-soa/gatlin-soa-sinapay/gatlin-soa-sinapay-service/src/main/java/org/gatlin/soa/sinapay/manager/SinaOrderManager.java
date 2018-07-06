@@ -122,7 +122,7 @@ public class SinaOrderManager {
 			rechargee = sinaMemberManager.user(recharge.getRechargeeType() == TargetType.COMPANY ? MemberType.ENTERPRISE : MemberType.PERSONAL, recharge.getRechargee());
 		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, rechargee);
 		sinaBizHook.recharge(recharge);
-		sinaRechargeDao.insert(EntityGenerator.newSinaRecharge(recharge, recharger.getSinaId(), rechargee.getSinaId()));
+		sinaRechargeDao.insert(EntityGenerator.newSinaRecharge(recharge, recharger.getSinaId(), rechargee.getSinaId(), summary));
 		DepositRechargeRequest.Builder builder = new DepositRechargeRequest.Builder();
 		builder.outTradeNo(recharge.getId());
 		builder.accountType(accountType);
@@ -142,9 +142,9 @@ public class SinaOrderManager {
 		if (device == DeviceType.MOBILE)
 			builder.cashdeskAddrCategory(CashdeskAddrCategory.MOBILE);
 		DepositRechargeRequest request = builder.build();
-		logger.info("新浪托管充值请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		logger.info("新浪{}请求：{}", summary, SerializeUtil.GSON.toJson(request.params()));
 		DepositRechargeResponse response = request.sync();
-		logger.info("新浪托管充值响应：{}", SerializeUtil.GSON.toJson(response));
+		logger.info("新浪{}响应：{}", summary, SerializeUtil.GSON.toJson(response));
 		return response.getRedirectUrl();
 	}
 	
@@ -188,10 +188,11 @@ public class SinaOrderManager {
 		sinaRechargeDao.update(recharge);
 		SinaCollect collect = EntityGenerator.newSinaCollect(CollectType.RECHARGE, recharge.getId());
 		sinaCollectDao.insert(collect);
+		String summary = recharge.getSummary() + "待收";
 		DepositCollectRequest.Builder builder = new DepositCollectRequest.Builder();
 		builder.payerId(recharge.getRecharger());
 		builder.payerIp(ip);
-		builder.summary("充值待收");
+		builder.summary(summary);
 		builder.outTradeNo(collect.getId());
 		builder.outTradeCode(OutTradeCode.COLLECT_INVEST);
 		BalancePay balancePay = new BalancePay();
@@ -199,9 +200,9 @@ public class SinaOrderManager {
 		builder.paymethod(balancePay, recharge.getAmount());
 		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_COLLECT_SINA));
 		DepositCollectRequest request = builder.build();
-		logger.info("新浪充值待收请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		logger.info("新浪{}请求：{}", summary, SerializeUtil.GSON.toJson(request.params()));
 		DepositResponse response = request.sync();
-		logger.info("新浪充值待收响应：{}", SerializeUtil.GSON.toJson(response));
+		logger.info("新浪{}响应：{}", summary, SerializeUtil.GSON.toJson(response));
 		return collect;
 	}
 	
