@@ -1,6 +1,7 @@
 package org.gatlin.soa.sinapay.manager;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -475,7 +476,7 @@ public class SinaOrderManager {
 		builder.bidName(StringUtil.uuid());
 		builder.bidType(BidType.CREDIT);
 		builder.bidAmount(info.getAmount());
-		builder.bidYearRate(info.getRate());
+		builder.bidYearRate(info.getRate().multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP));
 		builder.bidDuration(info.getDuration());
 		builder.repayType(info.getRepayType());
 		builder.beginDate(info.getBeginDate());

@@ -53,6 +53,6 @@ public class DaoConfig {
 		// 驼峰转下划线大写形式
 		camelhumpAndUppercase,
 		// 驼峰转下划线小写形式
-		camelhumpAndLowercase,
+		camelhumpAndLowercase;
 	}
 }
