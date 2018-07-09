@@ -449,6 +449,8 @@ public class SinaOrderManager {
 		builder.summary(collectType.describe());
 		builder.outTradeNo(collect.getId());
 		builder.outTradeCode(OutTradeCode.COLLECT_INVEST);
+		if (gatlin.env() != Env.ONLINE) 
+			builder.tradeRelatedNo(configService.config(SinaConsts.SINA_TRADE_RELATIVE_NO));
 		BalancePay balancePay = new BalancePay();
 		balancePay.setAccountType(AccountType.SAVING_POT);
 		builder.paymethod(balancePay, withdraw.getAmount());
