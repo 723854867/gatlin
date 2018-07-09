@@ -66,6 +66,12 @@ public class DepositPayRequest extends OrderRequest<DepositResponse, DepositPayR
 			this.params.put("goods_id", goodsId);
 			return this;
 		}
+		
+		// 交易关联号
+		public Builder tradeRelatedNo(String tradeRelatedNo) {
+			this.params.put("trade_related_no", tradeRelatedNo);
+			return this;
+		}
 
 		// 用户IP地址：必须
 		public Builder userIp(String userIp) {

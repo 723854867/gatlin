@@ -8,6 +8,8 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.gatlin.core.CoreCode;
+import org.gatlin.core.Gatlin;
+import org.gatlin.core.bean.enums.Env;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
@@ -88,6 +90,8 @@ public class SinaOrderManager {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SinaOrderManager.class);
 	
+	@Resource
+	private Gatlin gatlin;
 	@Resource
 	private SinaPayDao sinaPayDao;
 	@Resource
@@ -194,6 +198,8 @@ public class SinaOrderManager {
 		builder.payerIp(ip);
 		builder.summary(summary);
 		builder.outTradeNo(collect.getId());
+		if (gatlin.env() != Env.ONLINE) 
+			builder.tradeRelatedNo(configService.config(SinaConsts.SINA_TRADE_RELATIVE_NO));
 		builder.outTradeCode(OutTradeCode.COLLECT_INVEST);
 		BalancePay balancePay = new BalancePay();
 		balancePay.setAccountType(recharge.getRechargerType() == TargetType.USER ? AccountType.SAVING_POT : AccountType.BASIC);
@@ -307,6 +313,8 @@ public class SinaOrderManager {
 		builder.payeeIdentityId(user.getSinaId());
 		builder.amount(param.getAmount());
 		builder.summary("个人提现代付");
+		if (gatlin.env() != Env.ONLINE)
+			builder.tradeRelatedNo(configService.config(SinaConsts.SINA_TRADE_RELATIVE_NO));
 		builder.userIp(param.meta().getIp());
 		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_WITHDRAW_PAY_SINA));
 		DepositPayRequest request = builder.build();
@@ -523,6 +531,8 @@ public class SinaOrderManager {
 		builder.collectMethod(pay);
 		builder.amount(loanout.getAmount());
 		builder.summary(loanout.getDesc());
+		if (gatlin.env() != Env.ONLINE)
+			builder.tradeRelatedNo(configService.config(SinaConsts.SINA_TRADE_RELATIVE_NO));
 		builder.goodsId(loanout.getBidId());
 		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_LOANOUT));
 		builder.userIp(loanout.getIp());
