@@ -25,7 +25,7 @@
 				AND cfg_resource.type=#{type}
 			</if>
 			<if test="null != name">
-				AND `resource.name` LIKE concat(concat('%',#{name}),'%')
+				AND resource.name LIKE concat(concat('%',#{name}),'%')
 			</if>
 			<if test="null != owners and owners.size > 0">
 				AND resource.owner IN
