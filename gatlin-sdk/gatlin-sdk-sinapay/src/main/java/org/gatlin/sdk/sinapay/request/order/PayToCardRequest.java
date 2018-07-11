@@ -60,6 +60,12 @@ public class PayToCardRequest extends OrderRequest<PayToCardResponse, PayToCardR
 			return this;
 		}
 		
+		// 交易关联号
+		public Builder tradeRelatedNo(String tradeRelatedNo) {
+			this.params.put("trade_related_no", tradeRelatedNo);
+			return this;
+		}
+		
 		// 扩展参数：可空
 		public Builder extendParam(String extendParam) {
 			this.params.put("extend_param", extendParam);

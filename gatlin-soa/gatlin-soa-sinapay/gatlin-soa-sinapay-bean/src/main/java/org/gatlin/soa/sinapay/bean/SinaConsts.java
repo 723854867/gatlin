@@ -29,6 +29,8 @@ public interface SinaConsts {
 	final StrOption URL_RETURN_BROWSER_WAP							= new StrOption("url_return_browser_wap");
 	// 企业审核回调地址
 	final StrOption URL_NOTICE_COMPANY_AUDIT						= new StrOption("url_notice_company_audit_sina");
+	// 新浪交易关联号
+	final StrOption SINA_TRADE_RELATIVE_NO							= new StrOption("sina_trade_relative_no");
 	
 	final String MESSAGE_SINA_CARD_BIND_TIMEOUT						= "timeout_sina_card_bind";
 }

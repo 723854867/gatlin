@@ -67,6 +67,12 @@ public class DepositCollectRequest extends OrderRequest<DepositResponse, Deposit
 			return this;
 		}
 		
+		// 交易关联号
+		public Builder tradeRelatedNo(String tradeRelatedNo) {
+			this.params.put("trade_related_no", tradeRelatedNo);
+			return this;
+		}
+		
 		// 付款用户编号：必须
 		public Builder payerId(String payerId) {
 			this.params.put("payer_id", payerId);

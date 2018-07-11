@@ -174,7 +174,7 @@ public class SinaMemberTest extends SinaTest {
 	@Test
 	public void testQueryBankCard() { 
 		QueryBankCardRequest.Builder builder = new QueryBankCardRequest.Builder();
-		builder.identityId("457120909174505472");
+		builder.identityId("461841719575445504");
 		QueryBankCardRequest request = builder.build();
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		QueryBankCardResponse response = request.sync();
