@@ -17,6 +17,7 @@ import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
 import org.gatlin.sdk.sinapay.request.member.QueryBalanceRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryMiddleBalanceRequest;
 import org.gatlin.sdk.sinapay.response.QueryBalanceResponse;
+import org.gatlin.sdk.sinapay.response.QueryTradeRelatedResponse;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
@@ -195,5 +196,10 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	@Override
 	public boolean queryPwdSet(MemberType type, Object tid) {
 		return sinaMemberManager.isPwdSet(type, tid);
+	}
+	
+	@Override
+	public QueryTradeRelatedResponse queryRelative(String id) {
+		return sinaMemberManager.queryTradeResponse(id);
 	}
 }

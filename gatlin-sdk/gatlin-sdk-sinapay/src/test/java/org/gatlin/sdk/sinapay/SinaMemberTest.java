@@ -20,6 +20,7 @@ import org.gatlin.sdk.sinapay.request.member.QueryBalanceRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryBankCardRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryMiddleBalanceRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryPwdSetRequest;
+import org.gatlin.sdk.sinapay.request.member.QueryTradeRelatedRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryWithholdRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
 import org.gatlin.sdk.sinapay.request.member.WithholdRequest;
@@ -46,11 +47,12 @@ public class SinaMemberTest extends SinaTest {
 	public void testActivate() {
 		ActivateRequest.Builder builder = new ActivateRequest.Builder();
 		builder.clientIp("127.0.0.1");
-		builder.memberType(MemberType.ENTERPRISE);
+		builder.memberType(MemberType.PERSONAL);
 		String id = IDWorker.INSTANCE.nextSid();
 		System.out.println(id);
 		builder.identityId(id);
 		ActivateRequest request = builder.build();
+		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		SinapayResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response));
 	}
@@ -279,5 +281,12 @@ public class SinaMemberTest extends SinaTest {
 		System.out.println(SerializeUtil.GSON.toJson(request.params()));
 		QueryPwdSetResponse response = request.sync();
 		System.out.println(SerializeUtil.GSON.toJson(response.isPwdSet()));
+	}
+	
+	@Test
+	public void testQueryRelated() { 
+		QueryTradeRelatedRequest.Builder builder = new QueryTradeRelatedRequest.Builder();
+		builder.tradeRelatedNo("465811106628108288");
+		System.out.println(SerializeUtil.GSON.toJson(builder.build().sync()));
 	}
 }

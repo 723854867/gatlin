@@ -1,15 +1,17 @@
 package org.gatlin.soa.sinapay;
 
+import java.math.BigDecimal;
+
 import org.gatlin.sdk.sinapay.notice.BidNotice;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.sinapay.bean.entity.SinaBid;
-import org.gatlin.soa.sinapay.bean.entity.SinaLoanout;
 import org.gatlin.soa.sinapay.bean.param.WithdrawParam;
 import org.gatlin.soa.user.bean.entity.BankCard;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.param.RealnameParam;
+import org.gatlin.util.bean.model.Pair;
 
 public interface SinaBizHook {
 	
@@ -44,11 +46,8 @@ public interface SinaBizHook {
 	
 	/**
 	 * 新浪放款回调
-	 * 
-	 * @param bid 标的
-	 * @param loanout 放款记录
 	 */
-	void loanoutNotice(SinaBid bid, SinaLoanout loanout);
+	void loanoutNotice(SinaBid bid, String companyId, boolean success);
 	
 	/**
 	 * 充值
@@ -79,4 +78,10 @@ public interface SinaBizHook {
 	 * @param success
 	 */
 	void withdrawNotice(String id, boolean success);
+	
+	String relativeIncome(BigDecimal amount);
+	
+	Pair<String, BigDecimal> relativeOutcome(BigDecimal amount);
+	
+	void relativeOutcomeNotice(String id, BigDecimal amount, boolean success);
 }

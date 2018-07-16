@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="${logback.scan}" scanPeriod="${logback.scan.period}" debug="${logback.debug}">
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>[%-5level] %d{HH:mm:ss.SSS} [%thread] %logger - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="root" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${logback.path}/root.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${logback.path}/%d{yyyy-MM-dd}/root-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+			<!-- 单个日志文件最多 100MB, 60天的日志周期，最大不能超过20GB -->
+			<maxFileSize>100MB</maxFileSize>
+			<maxHistory>60</maxHistory>
+			<totalSizeCap>20GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="gatlin" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${logback.path}/biz.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${logback.path}/%d{yyyy-MM-dd}/rapid-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+			<!-- 单个日志文件最多 100MB, 60天的日志周期，最大不能超过20GB -->
+			<maxFileSize>100MB</maxFileSize>
+			<maxHistory>60</maxHistory>
+			<totalSizeCap>20GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="tiange" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${logback.path}/biz.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${logback.path}/%d{yyyy-MM-dd}/biz-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+			<!-- 单个日志文件最多 100MB, 60天的日志周期，最大不能超过20GB -->
+			<maxFileSize>100MB</maxFileSize>
+			<maxHistory>60</maxHistory>
+			<totalSizeCap>20GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<root level="${logback.root.level}">
+		<if condition='"${logback.console.open}".equals("true")'>
+			<then>
+				<appender-ref ref="console" />
+				<appender-ref ref="root" />
+			</then>
+			<else>
+				<appender-ref ref="root" />
+			</else>
+		</if>
+	</root>
+	
+	<logger name="org.gatlin" additivity="false">
+		<level value="${logback.gatlin.level}" />
+		<if condition='"${logback.console.open}".equals("true")'>
+			<then>
+				<appender-ref ref="console" />
+				<appender-ref ref="gatlin" />
+			</then>
+			<else>
+				<appender-ref ref="gatlin" />
+			</else>
+		</if>
+	</logger>
+	
+	<logger name="org.tiange" additivity="false">
+		<level value="${logback.weiqianjin.level}" />
+		<if condition='"${logback.console.open}".equals("true")'>
+			<then>
+				<appender-ref ref="console" />
+				<appender-ref ref="tiange" />
+			</then>
+			<else>
+				<appender-ref ref="tiange" />
+			</else>
+		</if>
+	</logger>
+</configuration>

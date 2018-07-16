@@ -3,14 +3,12 @@ package org.gatlin.soa.sinapay.manager;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.Gatlin;
-import org.gatlin.core.bean.enums.Env;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
@@ -60,7 +58,6 @@ import org.gatlin.soa.sinapay.bean.entity.SinaPay;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
 import org.gatlin.soa.sinapay.bean.entity.SinaWithdraw;
-import org.gatlin.soa.sinapay.bean.enums.BankCardState;
 import org.gatlin.soa.sinapay.bean.enums.BidPurpose;
 import org.gatlin.soa.sinapay.bean.enums.CollectType;
 import org.gatlin.soa.sinapay.bean.enums.RechargeState;
@@ -75,15 +72,18 @@ import org.gatlin.soa.sinapay.mybatis.dao.SinaPayDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaRechargeDao;
 import org.gatlin.soa.sinapay.mybatis.dao.SinaWithdrawDao;
 import org.gatlin.util.DateUtil;
+import org.gatlin.util.IDWorker;
 import org.gatlin.util.PhoneUtil;
 import org.gatlin.util.bean.enums.Client;
 import org.gatlin.util.bean.enums.DeviceType;
+import org.gatlin.util.bean.model.Pair;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.serial.SerializeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
@@ -191,7 +191,9 @@ public class SinaOrderManager {
 		recharge.setState(RechargeState.RECALLING);
 		recharge.setUpdated(DateUtil.current());
 		sinaRechargeDao.update(recharge);
+		String relativeNo = sinaBizHook.relativeIncome(recharge.getAmount());
 		SinaCollect collect = EntityGenerator.newSinaCollect(CollectType.RECHARGE, recharge.getId());
+		collect.setRelativeNo(relativeNo);
 		sinaCollectDao.insert(collect);
 		String summary = recharge.getSummary() + "待收";
 		DepositCollectRequest.Builder builder = new DepositCollectRequest.Builder();
@@ -199,8 +201,7 @@ public class SinaOrderManager {
 		builder.payerIp(ip);
 		builder.summary(summary);
 		builder.outTradeNo(collect.getId());
-		if (gatlin.env() != Env.ONLINE) 
-			builder.tradeRelatedNo(configService.config(SinaConsts.SINA_TRADE_RELATIVE_NO));
+		builder.tradeRelatedNo(collect.getRelativeNo());
 		builder.outTradeCode(OutTradeCode.COLLECT_INVEST);
 		BalancePay balancePay = new BalancePay();
 		balancePay.setAccountType(recharge.getRechargerType() == TargetType.USER ? AccountType.SAVING_POT : AccountType.BASIC);
@@ -301,28 +302,36 @@ public class SinaOrderManager {
 	
 	// 个人会员提现
 	@Transactional
-	public String withdrawPay(WithdrawParam param) { 
+	public SinaWithdraw withdrawPay(WithdrawParam param) { 
 		SinaUser user = sinaMemberManager.user(MemberType.PERSONAL, param.getUser().getId());
 		Assert.isTrue(SinaCode.MEMBER_NOT_EXIST, null != user);
 		Withdraw withdraw = sinaBizHook.withdraw(param);
+		SinaWithdraw sinaWithdraw = EntityGenerator.newSinaWithdraw(withdraw, user, AccountType.SAVING_POT);
+		sinaWithdrawDao.insert(sinaWithdraw);
+		return sinaWithdraw;
+	}
+	
+	@Transactional
+	public BigDecimal withdrawPay(SinaWithdraw withdraw, BigDecimal amount) {
+		Pair<String, BigDecimal> pair = sinaBizHook.relativeOutcome(amount);
 		SinaPay pay = EntityGenerator.newSinaPay(withdraw);
+		pay.setRelativeNo(pair.getKey());
+		pay.setAmount(pair.getValue());
 		sinaPayDao.insert(pay);
-		sinaWithdrawDao.insert(EntityGenerator.newSinaWithdraw(withdraw, user, AccountType.SAVING_POT));
 		DepositPayRequest.Builder builder = new DepositPayRequest.Builder();
 		builder.outTradeNo(pay.getId());
 		builder.accountType(AccountType.SAVING_POT);
-		builder.payeeIdentityId(user.getSinaId());
-		builder.amount(param.getAmount());
+		builder.payeeIdentityId(withdraw.getWithdrawee());
+		builder.amount(pay.getAmount());
 		builder.summary("个人提现代付");
-		if (gatlin.env() != Env.ONLINE)
-			builder.tradeRelatedNo(configService.config(SinaConsts.SINA_TRADE_RELATIVE_NO));
-		builder.userIp(param.meta().getIp());
+		builder.tradeRelatedNo(pay.getRelativeNo());
+		builder.userIp("127.0.0.1");
 		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_WITHDRAW_PAY_SINA));
 		DepositPayRequest request = builder.build();
 		logger.info("新浪提个人现代付请求：{}", SerializeUtil.GSON.toJson(request.params()));
 		DepositResponse response = request.sync();
 		logger.info("新浪提个人现代付响应：{}", SerializeUtil.GSON.toJson(response));
-		return withdraw.getId();
+		return pair.getValue();
 	}
 	
 	@Transactional
@@ -340,26 +349,50 @@ public class SinaOrderManager {
 		default:
 			throw new CodeException(CoreCode.DATA_STATE_CHANGED);
 		}
-		query = new Query().eq("id", pay.getWithdrawId()).forUpdate();
-		SinaWithdraw withdraw = sinaWithdrawDao.queryUnique(query);
-		switch (notice.getTrade_status()) {
+		pay.setState(notice.getTrade_status());
+		pay.setUpdated(DateUtil.current());
+		sinaPayDao.update(pay);
+		switch (pay.getState()) {
 		case TRADE_FAILED:
 		case TRADE_CLOSED:
-			withdraw.setState(SinaWithdrawState.PAY_FAILED);
-			withdraw.setUpdated(DateUtil.current());
-			sinaWithdrawDao.update(withdraw);
+			sinaBizHook.relativeOutcomeNotice(pay.getRelativeNo(), pay.getAmount(), false);
 			break;
 		case TRADE_FINISHED:
-			withdraw.setState(SinaWithdrawState.PAYED);
-			withdraw.setUpdated(DateUtil.current());
-			sinaWithdrawDao.update(withdraw);
+			sinaBizHook.relativeOutcomeNotice(pay.getRelativeNo(), pay.getAmount(), true);
 			break;
 		default:
 			break;
 		}
-		pay.setState(notice.getTrade_status());
-		pay.setUpdated(DateUtil.current());
-		sinaPayDao.update(pay);
+		
+		List<SinaPay> pays = sinaPayDao.queryList(new Query().eq("withdraw_id", pay.getWithdrawId()).forUpdate());
+		int process = 0;
+		int success = 0;
+		BigDecimal total = BigDecimal.ZERO;
+		for (SinaPay temp : pays) {
+			switch (temp.getState()) {
+			case TRADE_FAILED:
+			case TRADE_CLOSED:
+				break;
+			case TRADE_FINISHED:
+				success++;
+				break;
+			default:
+				process++;
+				break;
+			}
+			total = total.add(temp.getAmount());
+		}
+		SinaWithdraw withdraw = sinaWithdrawDao.queryUnique(new Query().eq("id", pay.getWithdrawId()).forUpdate());
+		if (withdraw.getAmount().compareTo(total) != 0)		// 代付和提现的金额不等直接返回等待超时即可
+			return;
+		if (process == 0) {		// 代付已经全部处理好
+			if (success == pays.size()) // 全部成功
+				withdraw.setState(SinaWithdrawState.PAYED);
+			else 		// 一个失败全部失败
+				withdraw.setState(SinaWithdrawState.PAY_FAILED);
+			withdraw.setUpdated(DateUtil.current());
+			sinaWithdrawDao.update(withdraw);
+		}
 	}
 	
 	@Transactional
@@ -426,7 +459,8 @@ public class SinaOrderManager {
 	public void withdrawTimeout(String id) {
 		SinaWithdraw withdraw = sinaWithdrawDao.queryUnique(new Query().eq("id", id).forUpdate());
 		Assert.notNull(SinaCode.WITHDRAW_NOT_EXIST, withdraw);
-		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, withdraw.getState() == SinaWithdrawState.PAYED);
+		Assert.isTrue(CoreCode.DATA_STATE_CHANGED, withdraw.getState() == SinaWithdrawState.PAY_FAILED 
+				|| withdraw.getState() == SinaWithdrawState.PAYED || withdraw.getState() == SinaWithdrawState.WAIT_PAY);
 		_withdrawCollect(withdraw, CollectType.WITHDRAW_TIMEOUT, "127.0.0.1");
 	}
 	
@@ -439,10 +473,21 @@ public class SinaOrderManager {
 	}
 	
 	private void _withdrawCollect(SinaWithdraw withdraw, CollectType collectType, String ip) {
+		List<SinaPay> pays = sinaPayDao.queryList(new Query().eq("withdraw_id", withdraw.getId()).forUpdate());
+		BigDecimal amount = BigDecimal.ZERO;
+		for (SinaPay temp : pays) {
+			if (temp.getState() == TradeState.TRADE_FINISHED) {
+				amount = amount.add(temp.getAmount());
+			}
+		}
+		if (amount.compareTo(BigDecimal.ZERO) <= 0)
+			return; 
 		withdraw.setState(SinaWithdrawState.RECALLING);
 		withdraw.setUpdated(DateUtil.current());
 		sinaWithdrawDao.update(withdraw);
+		String relativeNo = sinaBizHook.relativeIncome(amount);
 		SinaCollect collect = EntityGenerator.newSinaCollect(collectType, withdraw.getId());
+		collect.setRelativeNo(relativeNo);
 		sinaCollectDao.insert(collect);
 		DepositCollectRequest.Builder builder = new DepositCollectRequest.Builder();
 		builder.payerId(withdraw.getWithdrawee());
@@ -450,11 +495,10 @@ public class SinaOrderManager {
 		builder.summary(collectType.describe());
 		builder.outTradeNo(collect.getId());
 		builder.outTradeCode(OutTradeCode.COLLECT_INVEST);
-		if (gatlin.env() != Env.ONLINE) 
-			builder.tradeRelatedNo(configService.config(SinaConsts.SINA_TRADE_RELATIVE_NO));
+		builder.tradeRelatedNo(relativeNo);
 		BalancePay balancePay = new BalancePay();
 		balancePay.setAccountType(AccountType.SAVING_POT);
-		builder.paymethod(balancePay, withdraw.getAmount());
+		builder.paymethod(balancePay, amount);
 		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_COLLECT_SINA));
 		DepositCollectRequest request = builder.build();
 		logger.info("新浪{}请求：{}", collectType.describe(), SerializeUtil.GSON.toJson(request.params()));
@@ -511,20 +555,11 @@ public class SinaOrderManager {
 		return bid;
 	}
 	
-	@Transactional
-	public void loanout(SinaLoanout loanout) {
-		Query query = new Query().eq("owner", loanout.getMemberId()).eq("state", BankCardState.BINDED.name());
-		List<SinaBankCard> cards = sinaMemberManager.bankCards(query);
-		Iterator<SinaBankCard> iterator = cards.iterator();
-		SinaBankCard card = null;
-		while (iterator.hasNext()) {
-			SinaBankCard bankCard = iterator.next();
-			if (StringUtil.hasText(bankCard.getSinaCardId())) {
-				card = bankCard;
-				break;
-			}
-		}
-		Assert.notNull(SinaCode.BANK_CARD_ID_NOT_RESET, card);
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void loanout(SinaLoanout total, SinaBankCard card) {
+		Pair<String, BigDecimal> pair = sinaBizHook.relativeOutcome(total.getAmount());
+		SinaLoanout loanout = EntityGenerator.newSinaLoanout(total, pair.getValue());
+		loanout.setRelativeNo(pair.getKey());
 		sinaLoanoutDao.insert(loanout);
 		PayToCardRequest.Builder builder = new PayToCardRequest.Builder();
 		builder.outTradeNo(loanout.getId());
@@ -534,8 +569,7 @@ public class SinaOrderManager {
 		builder.collectMethod(pay);
 		builder.amount(loanout.getAmount());
 		builder.summary(loanout.getDesc());
-		if (gatlin.env() != Env.ONLINE)
-			builder.tradeRelatedNo(configService.config(SinaConsts.SINA_TRADE_RELATIVE_NO));
+		builder.tradeRelatedNo(loanout.getRelativeNo());
 		builder.goodsId(loanout.getBidId());
 		builder.notifyUrl(configService.config(SinaConsts.URL_NOTICE_LOANOUT));
 		builder.userIp(loanout.getIp());
@@ -543,6 +577,7 @@ public class SinaOrderManager {
 		logger.info("新浪放款请求：{}", SerializeUtil.GSON.toJson(request.params()));
 		PayToCardResponse response = request.sync();
 		logger.info("新浪放款响应：{}", SerializeUtil.GSON.toJson(response));
+		total.setAmount(total.getAmount().subtract(pair.getValue()));
 	}
 	
 	@Transactional
@@ -555,10 +590,12 @@ public class SinaOrderManager {
 		case SUCCESS:
 			loanout.setState(WithdrawState.SUCCESS);
 			loanout.setUpdated(DateUtil.current());
+			sinaBizHook.relativeOutcomeNotice(loanout.getRelativeNo(), loanout.getAmount(), true);
 			break;
 		case FAILED:
 			loanout.setState(WithdrawState.FAILED);
 			loanout.setUpdated(DateUtil.current());
+			sinaBizHook.relativeOutcomeNotice(loanout.getRelativeNo(), loanout.getAmount(), false);
 			break;
 		case PROCESSING:
 			loanout.setState(WithdrawState.PROCESSING);
@@ -568,7 +605,32 @@ public class SinaOrderManager {
 			throw new CodeException(SinaCode.UNRECOGNIZE_DATA);
 		}
 		sinaLoanoutDao.update(loanout);
-		sinaBizHook.loanoutNotice(sinaBidDao.getByKey(loanout.getBidId()), loanout);
+		if (loanout.getState() == WithdrawState.PROCESSING)
+			return;
+		SinaBid bid = sinaBidDao.getByKey(loanout.getBidId());
+		List<SinaLoanout> loanouts = sinaLoanoutDao.queryList(new Query().eq("biz_id", bid.getBizId()).eq("purpose", bid.getPurpose()).forUpdate());
+		int process = 0;
+		int success = 0;
+		BigDecimal total = BigDecimal.ZERO;
+		for (SinaLoanout temp : loanouts) {
+			switch (temp.getState()) {
+			case FAILED:
+			case RETURNT_TICKET:
+				break;
+			case SUCCESS:
+				success++;
+			default:
+				process++;
+				break;
+			}
+			total = total.add(temp.getAmount());
+		}
+		if (total.compareTo(bid.getAmount()) != 0)			
+			return;
+		if (process == 0) {
+			if (success == loanouts.size())
+				sinaBizHook.loanoutNotice(bid, loanout.getCompanyId(), true);
+		}
 	}
 	
 	private String _returnUrl(User user) {
@@ -602,5 +664,45 @@ public class SinaOrderManager {
 	
 	public SinaBid bid(BidPurpose purpose, String bizId) {
 		return sinaBidDao.queryUnique(new Query().eq("purpose", purpose).eq("biz_id", bizId).forUpdate());
+	}
+	
+	@Transactional
+	public void pay(SinaUser user, BigDecimal amount) {
+		SinaPay pay = EntityGenerator.newSinaPay();
+		pay.setWithdrawId(StringUtil.EMPTY);
+		pay.setRelativeNo(StringUtil.EMPTY);
+		pay.setAmount(amount);
+		sinaPayDao.insert(pay);
+		DepositPayRequest.Builder builder = new DepositPayRequest.Builder();
+		builder.accountType(AccountType.SAVING_POT);
+		builder.payeeIdentityId(user.getSinaId());
+		builder.amount(pay.getAmount());
+		builder.summary("清空中间账户代付");
+		builder.tradeRelatedNo(pay.getRelativeNo());
+		builder.userIp("127.0.0.1");
+		builder.notifyUrl("http://183.230.148.236/test");
+		DepositPayRequest request = builder.build();
+		logger.info("新浪清空中间账户代付请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		DepositResponse response = request.sync();
+		logger.info("新浪清空中间账户代付响应：{}", SerializeUtil.GSON.toJson(response));
+	}
+	
+	@Transactional
+	public void collect(SinaUser user, String relativeNo, BigDecimal amount) {
+		DepositCollectRequest.Builder builder = new DepositCollectRequest.Builder();
+		builder.payerId(user.getSinaId());
+		builder.payerIp("127.0.0.1");
+		builder.summary("新浪清空中间账户待收");
+		builder.outTradeNo(IDWorker.INSTANCE.nextSid());
+		builder.tradeRelatedNo(relativeNo);
+		builder.outTradeCode(OutTradeCode.COLLECT_INVEST);
+		BalancePay balancePay = new BalancePay();
+		balancePay.setAccountType(AccountType.SAVING_POT);
+		builder.paymethod(balancePay, amount);
+		builder.notifyUrl("http://183.230.148.236/test");
+		DepositCollectRequest request = builder.build();
+		logger.info("新浪新浪清空中间账户待收请求：{}", SerializeUtil.GSON.toJson(request.params()));
+		DepositResponse response = request.sync();
+		logger.info("新浪新浪清空中间账户待收响应：{}", SerializeUtil.GSON.toJson(response));
 	}
 }

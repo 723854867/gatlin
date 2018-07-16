@@ -13,6 +13,7 @@ public class SinaCollect implements Identifiable<String> {
 	@Id
 	private String id;
 	private String tid;
+	private String relativeNo;
 	private CollectType type;
 	private TradeState state;
 	private int created;
@@ -34,6 +35,14 @@ public class SinaCollect implements Identifiable<String> {
 		this.tid = tid;
 	}
 
+	public String getRelativeNo() {
+		return relativeNo;
+	}
+	
+	public void setRelativeNo(String relativeNo) {
+		this.relativeNo = relativeNo;
+	}
+	
 	public CollectType getType() {
 		return type;
 	}
