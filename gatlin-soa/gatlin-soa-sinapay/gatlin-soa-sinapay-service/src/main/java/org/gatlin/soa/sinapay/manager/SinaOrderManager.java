@@ -43,11 +43,13 @@ import org.gatlin.sdk.sinapay.response.PayToCardResponse;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.entity.Withdraw;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.bean.enums.GatlinBizType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.sinapay.SinaBizHook;
+import org.gatlin.soa.sinapay.SinapayBizType;
 import org.gatlin.soa.sinapay.bean.SinaCode;
 import org.gatlin.soa.sinapay.bean.SinaConsts;
 import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
@@ -191,7 +193,7 @@ public class SinaOrderManager {
 		recharge.setState(RechargeState.RECALLING);
 		recharge.setUpdated(DateUtil.current());
 		sinaRechargeDao.update(recharge);
-		String relativeNo = sinaBizHook.relativeIncome(recharge.getAmount());
+		String relativeNo = sinaBizHook.avaiableIncomeAccount();
 		SinaCollect collect = EntityGenerator.newSinaCollect(CollectType.RECHARGE, recharge.getId());
 		collect.setRelativeNo(relativeNo);
 		sinaCollectDao.insert(collect);
@@ -245,6 +247,7 @@ public class SinaOrderManager {
 				recharge.setState(RechargeState.SUCCESS);
 				recharge.setUpdated(DateUtil.current());
 				sinaRechargeDao.update(recharge);
+				sinaBizHook.relativeIncome(collect.getRelativeNo(), GatlinBizType.RECHARGE_SUCCESS.mark(), recharge.getId(), recharge.getAmount());
 				sinaBizHook.rechargeNotice(recharge.getId(), org.gatlin.soa.account.bean.enums.RechargeState.SUCCESS);
 				break;
 			default:
@@ -264,6 +267,7 @@ public class SinaOrderManager {
 				withdraw.setState(SinaWithdrawState.RECALLED);
 				withdraw.setUpdated(DateUtil.current());
 				sinaWithdrawDao.update(withdraw);
+				sinaBizHook.relativeIncome(collect.getRelativeNo(), GatlinBizType.WITHDRAW_FAILURE.mark(), withdraw.getId(), withdraw.getAmount());
 				sinaBizHook.withdrawNotice(withdraw.getId(), false);
 				break;
 			default:
@@ -283,6 +287,7 @@ public class SinaOrderManager {
 				withdraw.setState(SinaWithdrawState.RECALLED);
 				withdraw.setUpdated(DateUtil.current());
 				sinaWithdrawDao.update(withdraw);
+				sinaBizHook.relativeIncome(collect.getRelativeNo(), GatlinBizType.WITHDRAW_FAILURE.mark(), withdraw.getId(), withdraw.getAmount());
 				sinaBizHook.withdrawNotice(withdraw.getId(), false);
 				break;
 			default:
@@ -313,7 +318,7 @@ public class SinaOrderManager {
 	
 	@Transactional
 	public BigDecimal withdrawPay(SinaWithdraw withdraw, BigDecimal amount) {
-		Pair<String, BigDecimal> pair = sinaBizHook.relativeOutcome(amount);
+		Pair<String, BigDecimal> pair = sinaBizHook.relativeOutcome(SinapayBizType.WITHDRAW_PAY, withdraw.getId(), amount);
 		SinaPay pay = EntityGenerator.newSinaPay(withdraw);
 		pay.setRelativeNo(pair.getKey());
 		pay.setAmount(pair.getValue());
@@ -355,10 +360,10 @@ public class SinaOrderManager {
 		switch (pay.getState()) {
 		case TRADE_FAILED:
 		case TRADE_CLOSED:
-			sinaBizHook.relativeOutcomeNotice(pay.getRelativeNo(), pay.getAmount(), false);
+			sinaBizHook.relativeOutcomeNotice(pay.getRelativeNo(), SinapayBizType.WITHDRAW_PAY_FAILURE, notice.getOuter_trade_no(), pay.getAmount(), false);
 			break;
 		case TRADE_FINISHED:
-			sinaBizHook.relativeOutcomeNotice(pay.getRelativeNo(), pay.getAmount(), true);
+			sinaBizHook.relativeOutcomeNotice(pay.getRelativeNo(), SinapayBizType.WITHDRAW_PAY_SUCCESS, notice.getOuter_trade_no(), pay.getAmount(), true);
 			break;
 		default:
 			break;
@@ -485,7 +490,7 @@ public class SinaOrderManager {
 		withdraw.setState(SinaWithdrawState.RECALLING);
 		withdraw.setUpdated(DateUtil.current());
 		sinaWithdrawDao.update(withdraw);
-		String relativeNo = sinaBizHook.relativeIncome(amount);
+		String relativeNo = sinaBizHook.avaiableIncomeAccount();
 		SinaCollect collect = EntityGenerator.newSinaCollect(collectType, withdraw.getId());
 		collect.setRelativeNo(relativeNo);
 		sinaCollectDao.insert(collect);
@@ -557,8 +562,10 @@ public class SinaOrderManager {
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void loanout(SinaLoanout total, SinaBankCard card) {
-		Pair<String, BigDecimal> pair = sinaBizHook.relativeOutcome(total.getAmount());
+		String id = IDWorker.INSTANCE.nextSid();
+		Pair<String, BigDecimal> pair = sinaBizHook.relativeOutcome(SinapayBizType.LOANOUT, id, total.getAmount());
 		SinaLoanout loanout = EntityGenerator.newSinaLoanout(total, pair.getValue());
+		loanout.setId(id);
 		loanout.setRelativeNo(pair.getKey());
 		sinaLoanoutDao.insert(loanout);
 		PayToCardRequest.Builder builder = new PayToCardRequest.Builder();
@@ -590,12 +597,12 @@ public class SinaOrderManager {
 		case SUCCESS:
 			loanout.setState(WithdrawState.SUCCESS);
 			loanout.setUpdated(DateUtil.current());
-			sinaBizHook.relativeOutcomeNotice(loanout.getRelativeNo(), loanout.getAmount(), true);
+			sinaBizHook.relativeOutcomeNotice(loanout.getRelativeNo(), SinapayBizType.LOANOUT_SUCCESS, loanout.getId(), loanout.getAmount(), true);
 			break;
 		case FAILED:
 			loanout.setState(WithdrawState.FAILED);
 			loanout.setUpdated(DateUtil.current());
-			sinaBizHook.relativeOutcomeNotice(loanout.getRelativeNo(), loanout.getAmount(), false);
+			sinaBizHook.relativeOutcomeNotice(loanout.getRelativeNo(), SinapayBizType.LOANOUT_FALURE, loanout.getId(), loanout.getAmount(), false);
 			break;
 		case PROCESSING:
 			loanout.setState(WithdrawState.PROCESSING);

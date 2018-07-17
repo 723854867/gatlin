@@ -79,9 +79,11 @@ public interface SinaBizHook {
 	 */
 	void withdrawNotice(String id, boolean success);
 	
-	String relativeIncome(BigDecimal amount);
+	String avaiableIncomeAccount();
 	
-	Pair<String, BigDecimal> relativeOutcome(BigDecimal amount);
+	String relativeIncome(String id, int bizType, String bizId, BigDecimal amount);
 	
-	void relativeOutcomeNotice(String id, BigDecimal amount, boolean success);
+	Pair<String, BigDecimal> relativeOutcome(int bizType, String bizId, BigDecimal amount);
+	
+	void relativeOutcomeNotice(String id, int bizType, String bizId, BigDecimal amount, boolean success);
 }

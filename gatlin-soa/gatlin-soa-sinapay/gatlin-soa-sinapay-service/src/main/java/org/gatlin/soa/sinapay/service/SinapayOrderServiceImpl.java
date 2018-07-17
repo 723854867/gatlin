@@ -163,6 +163,6 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 	public void collect(String id, long uid, BigDecimal amount) {
 		SinaUser user = sinaMemberManager.user(MemberType.PERSONAL, uid);
 		Assert.notNull(SinaCode.MEMBER_NOT_EXIST, user);
-		
+		sinaOrderManager.collect(user, id, amount);
 	}
 }
