@@ -196,6 +196,7 @@ public class SinaOrderManager {
 		String relativeNo = sinaBizHook.avaiableIncomeAccount();
 		SinaCollect collect = EntityGenerator.newSinaCollect(CollectType.RECHARGE, recharge.getId());
 		collect.setRelativeNo(relativeNo);
+		collect.setAmount(recharge.getAmount());
 		sinaCollectDao.insert(collect);
 		String summary = recharge.getSummary() + "待收";
 		DepositCollectRequest.Builder builder = new DepositCollectRequest.Builder();
@@ -247,7 +248,7 @@ public class SinaOrderManager {
 				recharge.setState(RechargeState.SUCCESS);
 				recharge.setUpdated(DateUtil.current());
 				sinaRechargeDao.update(recharge);
-				sinaBizHook.relativeIncome(collect.getRelativeNo(), GatlinBizType.RECHARGE_SUCCESS.mark(), recharge.getId(), recharge.getAmount());
+				sinaBizHook.relativeIncome(collect.getRelativeNo(), GatlinBizType.RECHARGE_SUCCESS.mark(), recharge.getId(), collect.getAmount());
 				sinaBizHook.rechargeNotice(recharge.getId(), org.gatlin.soa.account.bean.enums.RechargeState.SUCCESS);
 				break;
 			default:
@@ -267,7 +268,7 @@ public class SinaOrderManager {
 				withdraw.setState(SinaWithdrawState.RECALLED);
 				withdraw.setUpdated(DateUtil.current());
 				sinaWithdrawDao.update(withdraw);
-				sinaBizHook.relativeIncome(collect.getRelativeNo(), GatlinBizType.WITHDRAW_FAILURE.mark(), withdraw.getId(), withdraw.getAmount());
+				sinaBizHook.relativeIncome(collect.getRelativeNo(), GatlinBizType.WITHDRAW_FAILURE.mark(), withdraw.getId(), collect.getAmount());
 				sinaBizHook.withdrawNotice(withdraw.getId(), false);
 				break;
 			default:
@@ -287,7 +288,7 @@ public class SinaOrderManager {
 				withdraw.setState(SinaWithdrawState.RECALLED);
 				withdraw.setUpdated(DateUtil.current());
 				sinaWithdrawDao.update(withdraw);
-				sinaBizHook.relativeIncome(collect.getRelativeNo(), GatlinBizType.WITHDRAW_FAILURE.mark(), withdraw.getId(), withdraw.getAmount());
+				sinaBizHook.relativeIncome(collect.getRelativeNo(), GatlinBizType.WITHDRAW_FAILURE.mark(), withdraw.getId(), collect.getAmount());
 				sinaBizHook.withdrawNotice(withdraw.getId(), false);
 				break;
 			default:
@@ -481,9 +482,10 @@ public class SinaOrderManager {
 		List<SinaPay> pays = sinaPayDao.queryList(new Query().eq("withdraw_id", withdraw.getId()).forUpdate());
 		BigDecimal amount = BigDecimal.ZERO;
 		for (SinaPay temp : pays) {
-			if (temp.getState() == TradeState.TRADE_FINISHED) {
+			if (temp.getState() == TradeState.WAIT_PAY || temp.getState() == TradeState.PAY_FINISHED) // 还有代付回调没回调
+				return;
+			if (temp.getState() == TradeState.TRADE_FINISHED) 
 				amount = amount.add(temp.getAmount());
-			}
 		}
 		if (amount.compareTo(BigDecimal.ZERO) <= 0)
 			return; 
@@ -493,6 +495,7 @@ public class SinaOrderManager {
 		String relativeNo = sinaBizHook.avaiableIncomeAccount();
 		SinaCollect collect = EntityGenerator.newSinaCollect(collectType, withdraw.getId());
 		collect.setRelativeNo(relativeNo);
+		collect.setAmount(amount);
 		sinaCollectDao.insert(collect);
 		DepositCollectRequest.Builder builder = new DepositCollectRequest.Builder();
 		builder.payerId(withdraw.getWithdrawee());

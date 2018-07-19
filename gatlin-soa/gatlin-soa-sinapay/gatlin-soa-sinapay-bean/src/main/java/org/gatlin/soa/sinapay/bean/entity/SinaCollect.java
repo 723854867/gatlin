@@ -1,5 +1,7 @@
 package org.gatlin.soa.sinapay.bean.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Id;
 
 import org.gatlin.sdk.sinapay.bean.enums.TradeState;
@@ -13,6 +15,7 @@ public class SinaCollect implements Identifiable<String> {
 	@Id
 	private String id;
 	private String tid;
+	private BigDecimal amount;
 	private String relativeNo;
 	private CollectType type;
 	private TradeState state;
@@ -33,6 +36,14 @@ public class SinaCollect implements Identifiable<String> {
 
 	public void setTid(String tid) {
 		this.tid = tid;
+	}
+	
+	public BigDecimal getAmount() {
+		return amount;
+	}
+	
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
 	}
 
 	public String getRelativeNo() {
