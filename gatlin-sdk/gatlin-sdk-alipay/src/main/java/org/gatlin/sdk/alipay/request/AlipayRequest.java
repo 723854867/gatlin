@@ -21,9 +21,9 @@ public class AlipayRequest<RESPONSE extends AlipayResponse, REQUEST extends Alip
 
 		private static final long serialVersionUID = 7491685951687117463L;
 		
-		@Expose
-		@SerializedName("alipay_sdk")
-		private String alipaySdk = "alipay-sdk-java-dynamicVersionNo";
+//		@Expose
+//		@SerializedName("alipay_sdk")
+//		private String alipaySdk = "alipay-sdk-java-dynamicVersionNo";
 		// 应用ID
 		@Expose
 		@SerializedName("app_id")

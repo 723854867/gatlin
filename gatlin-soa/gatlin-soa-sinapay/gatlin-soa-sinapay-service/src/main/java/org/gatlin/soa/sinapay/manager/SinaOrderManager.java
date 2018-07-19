@@ -615,7 +615,7 @@ public class SinaOrderManager {
 		if (loanout.getState() == WithdrawState.PROCESSING)
 			return;
 		SinaBid bid = sinaBidDao.getByKey(loanout.getBidId());
-		List<SinaLoanout> loanouts = sinaLoanoutDao.queryList(new Query().eq("biz_id", bid.getBizId()).eq("purpose", bid.getPurpose()).forUpdate());
+		List<SinaLoanout> loanouts = sinaLoanoutDao.queryList(new Query().eq("bid_id", bid.getId()).forUpdate());
 		int process = 0;
 		int success = 0;
 		BigDecimal total = BigDecimal.ZERO;
@@ -626,6 +626,7 @@ public class SinaOrderManager {
 				break;
 			case SUCCESS:
 				success++;
+				break;
 			default:
 				process++;
 				break;

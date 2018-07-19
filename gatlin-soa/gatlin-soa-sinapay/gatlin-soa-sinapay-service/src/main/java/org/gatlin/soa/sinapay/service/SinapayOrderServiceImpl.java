@@ -141,7 +141,7 @@ public class SinapayOrderServiceImpl implements SinapayOrderService {
 			try {
 				sinaOrderManager.loanout(loanout, card);
 			} catch (Exception e) {
-				logger.warn("标的放款失败！", SerializeUtil.GSON.toJson(loanout));
+				logger.warn("标的放款失败 {}!", SerializeUtil.GSON.toJson(loanout));
 				break;
 			}
 		}
