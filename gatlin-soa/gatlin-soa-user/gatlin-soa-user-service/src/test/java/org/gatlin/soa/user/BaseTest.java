@@ -19,6 +19,9 @@ public class BaseTest {
 	private UserDao userDao;
 	@Resource
 	private EmployeeDao employeeDao;
+	
+	@Test
+	public void test() {}
 
 	@Test
 	public void testQuery() {
