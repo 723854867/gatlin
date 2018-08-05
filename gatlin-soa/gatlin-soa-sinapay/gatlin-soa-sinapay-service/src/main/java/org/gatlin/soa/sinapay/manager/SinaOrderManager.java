@@ -685,6 +685,7 @@ public class SinaOrderManager {
 		pay.setAmount(amount);
 		sinaPayDao.insert(pay);
 		DepositPayRequest.Builder builder = new DepositPayRequest.Builder();
+		builder.outTradeNo(pay.getId());
 		builder.accountType(AccountType.SAVING_POT);
 		builder.payeeIdentityId(user.getSinaId());
 		builder.amount(pay.getAmount());
