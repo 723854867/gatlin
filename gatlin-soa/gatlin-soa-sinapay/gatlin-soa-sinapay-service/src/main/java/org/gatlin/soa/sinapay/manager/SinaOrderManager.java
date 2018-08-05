@@ -690,7 +690,6 @@ public class SinaOrderManager {
 		builder.payeeIdentityId(user.getSinaId());
 		builder.amount(pay.getAmount());
 		builder.summary("清空中间账户代付");
-		builder.tradeRelatedNo(pay.getRelativeNo());
 		builder.userIp("127.0.0.1");
 		builder.notifyUrl("http://183.230.148.236/test");
 		DepositPayRequest request = builder.build();
