@@ -1,5 +1,7 @@
 package org.gatlin.soa.sinapay.mybatis;
 
+import java.math.BigDecimal;
+
 import org.gatlin.sdk.sinapay.bean.enums.AccountType;
 import org.gatlin.sdk.sinapay.bean.enums.BidState;
 import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
@@ -14,6 +16,7 @@ import org.gatlin.soa.sinapay.bean.entity.SinaBankCard;
 import org.gatlin.soa.sinapay.bean.entity.SinaBid;
 import org.gatlin.soa.sinapay.bean.entity.SinaCollect;
 import org.gatlin.soa.sinapay.bean.entity.SinaCompanyAudit;
+import org.gatlin.soa.sinapay.bean.entity.SinaLoanout;
 import org.gatlin.soa.sinapay.bean.entity.SinaPay;
 import org.gatlin.soa.sinapay.bean.entity.SinaRecharge;
 import org.gatlin.soa.sinapay.bean.entity.SinaUser;
@@ -126,7 +129,7 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final SinaPay newSinaPay(Withdraw withdraw) {
+	public static final SinaPay newSinaPay(SinaWithdraw withdraw) {
 		SinaPay instance = new SinaPay();
 		instance.setWithdrawId(withdraw.getId());
 		instance.setId(IDWorker.INSTANCE.nextSid());
@@ -195,6 +198,32 @@ public class EntityGenerator {
 		instance.setState(BidState.INIT);
 		instance.setAmount(info.getAmount());
 		instance.setCompany(company.getSinaId());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final SinaLoanout newSinaLoanout(SinaLoanout loanout, BigDecimal amount) {
+		SinaLoanout instance = new SinaLoanout();
+		instance.setId(IDWorker.INSTANCE.nextSid());
+		instance.setIp(loanout.getIp());
+		instance.setDesc(loanout.getDesc());
+		instance.setBidId(loanout.getBidId());
+		instance.setMemberId(loanout.getMemberId());
+		instance.setCompanyId(loanout.getCompanyId());
+		instance.setAmount(amount);
+		instance.setState(loanout.getState());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final SinaPay newSinaPay() {
+		SinaPay instance = new SinaPay();
+		instance.setId(IDWorker.INSTANCE.nextSid());
+		instance.setState(TradeState.WAIT_PAY);
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

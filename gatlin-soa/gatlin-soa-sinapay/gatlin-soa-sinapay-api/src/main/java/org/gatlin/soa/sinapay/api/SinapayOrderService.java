@@ -1,5 +1,7 @@
 package org.gatlin.soa.sinapay.api;
 
+import java.math.BigDecimal;
+
 import org.gatlin.sdk.sinapay.notice.BidNotice;
 import org.gatlin.sdk.sinapay.notice.DepositRechargeNotice;
 import org.gatlin.sdk.sinapay.notice.TradeNotice;
@@ -50,4 +52,8 @@ public interface SinapayOrderService {
 	void loanout(SinaLoanout loanout);
 	
 	void loanoutNotice(WithdrawNotice notice);
+	
+	void pay(long uid, BigDecimal amount);
+	
+	void collect(String id, long uid, BigDecimal amount);
 }

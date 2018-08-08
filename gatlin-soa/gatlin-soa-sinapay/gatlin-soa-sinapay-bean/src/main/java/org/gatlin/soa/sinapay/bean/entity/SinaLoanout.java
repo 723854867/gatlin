@@ -21,6 +21,7 @@ public class SinaLoanout implements Identifiable<String> {
 	// 企业编号
 	private String companyId;
 	private BigDecimal amount;
+	private String relativeNo;
 	private WithdrawState state;
 	private int created;
 	private int updated;
@@ -79,6 +80,14 @@ public class SinaLoanout implements Identifiable<String> {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+	
+	public String getRelativeNo() {
+		return relativeNo;
+	}
+	
+	public void setRelativeNo(String relativeNo) {
+		this.relativeNo = relativeNo;
 	}
 
 	public WithdrawState getState() {

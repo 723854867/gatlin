@@ -27,6 +27,7 @@ import org.gatlin.sdk.sinapay.request.member.ModifyBankCardMobileRequest;
 import org.gatlin.sdk.sinapay.request.member.PwdResetRequest;
 import org.gatlin.sdk.sinapay.request.member.PwdSetRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryPwdSetRequest;
+import org.gatlin.sdk.sinapay.request.member.QueryTradeRelatedRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryWithholdRequest;
 import org.gatlin.sdk.sinapay.request.member.RealnameRequest;
 import org.gatlin.sdk.sinapay.request.member.WithholdRequest;
@@ -34,6 +35,7 @@ import org.gatlin.sdk.sinapay.response.BankCardBindConfirmResponse;
 import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
 import org.gatlin.sdk.sinapay.response.BankCardUnbindResponse;
 import org.gatlin.sdk.sinapay.response.QueryPwdSetResponse;
+import org.gatlin.sdk.sinapay.response.QueryTradeRelatedResponse;
 import org.gatlin.sdk.sinapay.response.QueryWithholdResponse;
 import org.gatlin.sdk.sinapay.response.RedirectResponse;
 import org.gatlin.sdk.sinapay.response.SinapayResponse;
@@ -462,5 +464,11 @@ public class SinaMemberManager {
 		set.add(CompanyAuditState.PROCESSING.name());
 		Query query = new Query().eq("sina_uid", sinaId).in("state", set).forUpdate();
 		return sinaCompanyAuditDao.queryUnique(query);
+	}
+	
+	public QueryTradeRelatedResponse queryTradeResponse(String id) {
+		QueryTradeRelatedRequest.Builder builder = new QueryTradeRelatedRequest.Builder();
+		builder.tradeRelatedNo(id);
+		return builder.build().sync();
 	}
 }
