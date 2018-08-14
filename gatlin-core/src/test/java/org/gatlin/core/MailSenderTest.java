@@ -16,7 +16,7 @@ public class MailSenderTest extends CoreTest {
 
 	@Test
 	public void testSend() {
-		mailSender.sendMail("531273925@qq.com", "测试", "hello");
+		mailSender.sendMail("723854867@qq.com", "测试", "hello");
 	}
 	
 	@Test
