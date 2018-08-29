@@ -621,11 +621,13 @@ public class SinaOrderManager {
 		List<SinaLoanout> loanouts = sinaLoanoutDao.queryList(new Query().eq("bid_id", bid.getId()).forUpdate());
 		int process = 0;
 		int success = 0;
+		int failure = 0;
 		BigDecimal total = BigDecimal.ZERO;
 		for (SinaLoanout temp : loanouts) {
 			switch (temp.getState()) {
 			case FAILED:
 			case RETURNT_TICKET:
+				failure++;
 				break;
 			case SUCCESS:
 				success++;
@@ -641,6 +643,8 @@ public class SinaOrderManager {
 		if (process == 0) {
 			if (success == loanouts.size())
 				sinaBizHook.loanoutNotice(bid, loanout.getCompanyId(), true);
+			else if (failure == loanouts.size())
+				sinaBizHook.loanoutNotice(bid, loanout.getCompanyId(), false);
 		}
 	}
 	
