@@ -41,13 +41,50 @@
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>com.github.pagehelper</groupId>
 			<artifactId>pagehelper</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.junziqian</groupId>
+			<artifactId>junziqian-api-sdk</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.junziqian</groupId>
+			<artifactId>rop-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.junziqian</groupId>
+			<artifactId>rop-common</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.junziqian</groupId>
+			<artifactId>itextpdf</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.junziqian</groupId>
+			<artifactId>itext-asian</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.junziqian</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.junziqian</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
 		</dependency>
 	</dependencies>
 </project>

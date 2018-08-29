@@ -5,6 +5,7 @@ import org.gatlin.soa.user.bean.UserUtil;
 import org.gatlin.soa.user.bean.entity.Company;
 import org.gatlin.soa.user.bean.entity.Employee;
 import org.gatlin.soa.user.bean.entity.UserAddress;
+import org.gatlin.soa.user.bean.entity.UserBorrowContract;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
@@ -17,6 +18,7 @@ import org.gatlin.soa.user.bean.param.CompanyAddParam;
 import org.gatlin.soa.user.bean.param.EmployeeAddParam;
 import org.gatlin.soa.user.bean.param.LoginParam;
 import org.gatlin.soa.user.bean.param.RealnameParam;
+import org.gatlin.soa.user.bean.param.UserBorrowContractParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.KeyUtil;
 import org.gatlin.util.lang.StringUtil;
@@ -122,6 +124,26 @@ public class EntityGenerator {
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
+		return instance;
+	}
+	
+	
+	public static final UserBorrowContract newUserBorrowContract(UserBorrowContractParam param) {
+		UserBorrowContract instance = new UserBorrowContract();
+		instance.setAmount(param.getAmount());
+		instance.setBorrowIdentity(param.getBorrowIdentity());
+		instance.setBorrowMobile(param.getBorrowMobile());
+		instance.setBorrowName(param.getBorrowName());
+		instance.setInvestId(param.getInvestId());
+		instance.setInvestIdentity(param.getInvestIdentity());
+		instance.setInvestMobile(param.getInvestMobile());
+		instance.setInvestName(param.getInvestName());
+		int time = DateUtil.current();
+		instance.setProdId(param.getProdId());
+		instance.setUpdated(time);
+		instance.setCreated(time);
+		
+		
 		return instance;
 	}
 }
