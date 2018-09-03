@@ -14,6 +14,7 @@ import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.sdk.sinapay.bean.enums.CashdeskAddrCategory;
 import org.gatlin.sdk.sinapay.bean.enums.CompanyAuditState;
+import org.gatlin.sdk.sinapay.bean.enums.MemberIdentityType;
 import org.gatlin.sdk.sinapay.bean.enums.MemberType;
 import org.gatlin.sdk.sinapay.notice.CompanyAuditNotice;
 import org.gatlin.sdk.sinapay.request.member.ActivateRequest;
@@ -26,6 +27,7 @@ import org.gatlin.sdk.sinapay.request.member.ModifyBankCardMobileConfirmRequest;
 import org.gatlin.sdk.sinapay.request.member.ModifyBankCardMobileRequest;
 import org.gatlin.sdk.sinapay.request.member.PwdResetRequest;
 import org.gatlin.sdk.sinapay.request.member.PwdSetRequest;
+import org.gatlin.sdk.sinapay.request.member.QueryBankCardRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryPwdSetRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryTradeRelatedRequest;
 import org.gatlin.sdk.sinapay.request.member.QueryWithholdRequest;
@@ -34,6 +36,7 @@ import org.gatlin.sdk.sinapay.request.member.WithholdRequest;
 import org.gatlin.sdk.sinapay.response.BankCardBindConfirmResponse;
 import org.gatlin.sdk.sinapay.response.BankCardBindResponse;
 import org.gatlin.sdk.sinapay.response.BankCardUnbindResponse;
+import org.gatlin.sdk.sinapay.response.QueryBankCardResponse;
 import org.gatlin.sdk.sinapay.response.QueryPwdSetResponse;
 import org.gatlin.sdk.sinapay.response.QueryTradeRelatedResponse;
 import org.gatlin.sdk.sinapay.response.QueryWithholdResponse;
@@ -167,6 +170,21 @@ public class SinaMemberManager {
 		cardBind.setUpdated(DateUtil.current());
 		sinaBankCardDao.update(cardBind);
 	}
+	
+	
+	@Transactional
+	public String getSinaBankCard(String identityId) {
+		QueryBankCardRequest.Builder builder = new QueryBankCardRequest.Builder();
+		builder.identityId(identityId);
+		builder.identityType(MemberIdentityType.UID);
+		QueryBankCardRequest request = builder.build();
+		logger.info("新浪查询用户银行卡信息结果请求：{}", SerializeUtil.GSON_ANNO.toJson(request.params()));
+		QueryBankCardResponse response = request.sync();
+		logger.info("新浪查询用户银行卡信息结果响应：{}", SerializeUtil.GSON.toJson(response.getCardList()));
+		return response.getCardList();
+	}
+	
+	
 	
 	@Transactional
 	public String bankCardBindConfirm(BankCardConfirmParam param) {

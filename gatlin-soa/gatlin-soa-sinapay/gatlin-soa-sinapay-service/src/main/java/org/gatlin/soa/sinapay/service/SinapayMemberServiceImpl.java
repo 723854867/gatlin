@@ -202,4 +202,8 @@ public class SinapayMemberServiceImpl implements SinapayMemberService {
 	public QueryTradeRelatedResponse queryRelative(String id) {
 		return sinaMemberManager.queryTradeResponse(id);
 	}
+	@Override
+	public String getSinaBankCard(String identityId){
+		return sinaMemberManager.getSinaBankCard(identityId);
+	}
 }

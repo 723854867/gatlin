@@ -37,54 +37,56 @@ public interface SinapayMemberService {
 	 * 用户实名认证
 	 */
 	UserSecurity realname(RealnameParam param);
-	
+
 	/**
 	 * 绑定银行卡
 	 */
 	String bankCardBind(BankCardBindParam param, String bankId, Geo geo);
-	
+
 	void bankCardBindTimeout(String id);
-	
+
 	// 确认绑卡
 	String bankCardBindConfirm(BankCardConfirmParam param);
-	
+
 	// 解绑银行卡
 	String bankCardUnbind(SoaSidParam param);
-	
+
 	// 确认解绑绑卡
 	void bankCardUnbindConfirm(BankCardConfirmParam param);
 
 	Pager<SinaBankCard> bankCards(Query query);
-	
+
 	SinaUser member(String id);
-	
+
 	SinaUser user(Object tid, MemberType type);
-	
+
 	boolean isWithhold(MemberType type, Object tid);
-	
+
 	String withhold(SoaParam param);
-	
+
 	BalanceInfo queryBalance(QueryBalanceParam param);
-	
+
 	List<AccountMiddleTips> queryBalanceMiddle();
-	
+
 	void companyApply(CompanyApplyParam param, Company company);
-	
+
 	void companyApplyNotice(CompanyAuditNotice notice);
-	
-	void companyBankCardModify(CompanyBankCardModifyParam param); 
-	
+
+	void companyBankCardModify(CompanyBankCardModifyParam param);
+
 	String pwdReset(SoaParam param);
-	
+
 	String bankCardMobileModify(BankCardMobileModifyParam param);
-	
+
 	void bankCardMobileModifyConfirm(BankCardMobileModifyConfirmParam param);
-	
+
 	SinaCompanyAudit companyAudit(int companyId);
-	
+
 	String pwdSet(SoaParam param, MemberType type, Object tid);
-	
+
 	boolean queryPwdSet(MemberType type, Object tid);
-	
+
 	QueryTradeRelatedResponse queryRelative(String id);
+
+	String getSinaBankCard(String identityId);
 }
