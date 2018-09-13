@@ -29,7 +29,7 @@ public class ExcelUtil {
 		ZipSecureFile.setMinInflateRatio(-1.0d);
 		Workbook workbook = null;
 		try {
-			POIFSFileSystem fs = new POIFSFileSystem(file, true);
+			POIFSFileSystem fs = new POIFSFileSystem(file, true); 
 			workbook = new HSSFWorkbook(fs);
 			return _parse(workbook, clazz);
 		} catch (Exception e) {

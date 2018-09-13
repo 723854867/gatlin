@@ -1,8 +1,12 @@
 package org.gatlin.soa.user.api;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.user.bean.entity.UserInfo;
 import org.gatlin.soa.user.bean.entity.UserSecurity;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
@@ -25,6 +29,8 @@ public interface UserService {
 	User user(long uid);
 
 	User user(String token);
+	
+	Map<Long, UserInfo> users(Collection<Long> uids);
 	
 	User user(UsernameType type, String username);
 	

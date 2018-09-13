@@ -1,5 +1,8 @@
 package org.gatlin.soa.user.service;
 
+import java.util.Collection;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.gatlin.core.bean.exceptions.CodeException;
@@ -55,6 +58,11 @@ public class UserServiceImpl implements UserService {
 		UserDevice device = userManager.device(token);
 		Assert.notNull(UserCode.INVALID_TOKEN, device);
 		return _user(userManager.user(device.getUid()), device);
+	}
+	
+	@Override
+	public Map<Long, UserInfo> users(Collection<Long> uids) {
+		return userManager.users(new Query().in("id", uids));
 	}
 	
 	@Override

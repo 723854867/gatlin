@@ -1,6 +1,7 @@
 package org.gatlin.soa.user.manager;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -142,6 +143,10 @@ public class UserManager {
 	
 	public List<UserListInfo> users(UserListParam param) {
 		return userInfoDao.list(param);
+	}
+	
+	public Map<Long, UserInfo> users(Query query) {
+		return userInfoDao.query(query);
 	}
 	
 	public List<Username> usernames(Query query) {
