@@ -110,7 +110,6 @@ public class AmazonRequest<RESPONSE extends AmazonResponse, REQUEST extends Amaz
 	protected RESPONSE response(Response response) {
 		try {
 			String body = response.body().string();
-			System.out.println(body);
 			RESPONSE resp = SerializeUtil.XmlUtil.xmlToBean(body, clazz);
 			resp.verify();
 			return resp;
