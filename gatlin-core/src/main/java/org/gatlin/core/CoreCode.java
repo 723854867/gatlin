@@ -18,6 +18,4 @@ public interface CoreCode {
 	final Code NOTICE_SIGN_VERIFY_FAILURE			= new Code("code.notice.sign.verify.failure", "通知验签失败");
 	final Code UPLOAD_FILE_FORMAT_ERROR				= new Code("code.upload.file.format.error", "上传文件格式错误");
 	final Code IDENTITY_OR_MOBILE_DUPLICATED		= new Code("code.identity.or.mobile.duplicated", "身份证或者手机号已被使用");
-	
-	final Code ACTIVITY_TIME_IS_ALREAD_EXIT		= new Code("code.activity_time_is_alread_exit", "未在活动期限内");
 }
