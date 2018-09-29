@@ -21,6 +21,7 @@ public class UserInfo implements Identifiable<Long> {
 	private String pwd;
 	private String salt;
 	private String nickname;
+	private long riskTypeId;
 	private int created;
 	private int updated;
 
@@ -31,11 +32,11 @@ public class UserInfo implements Identifiable<Long> {
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	public int getMod() {
 		return mod;
 	}
-	
+
 	public void setMod(int mod) {
 		this.mod = mod;
 	}
@@ -78,6 +79,14 @@ public class UserInfo implements Identifiable<Long> {
 
 	public void setUpdated(int updated) {
 		this.updated = updated;
+	}
+
+	public long getRiskTypeId() {
+		return riskTypeId;
+	}
+
+	public void setRiskTypeId(long riskTypeId) {
+		this.riskTypeId = riskTypeId;
 	}
 
 	@Override
