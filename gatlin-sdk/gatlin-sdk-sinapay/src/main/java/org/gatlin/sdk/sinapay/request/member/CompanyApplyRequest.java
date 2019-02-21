@@ -127,6 +127,18 @@ public class CompanyApplyRequest extends MemberRequest<SinapayResponse, CompanyA
 			return this;
 		}
 		
+		// 首次非空:法人证件生效时间
+		public Builder certEffectDate(String certEffectDate) { 
+			this.params.put("cert_effect_date", certEffectDate);
+			return this;
+		}
+		
+		// 首次非空:法人证件失效时间
+		public Builder certInvalidDate(String certInvalidDate) { 
+			this.params.put("cert_invalid_date", certInvalidDate);
+			return this;
+		}
+		
 		// 首次非空：密文(法人手机号)
 		public Builder legalPersonPhone(String legalPersonPhone) { 
 			this.params.put("legal_person_phone", legalPersonPhone);

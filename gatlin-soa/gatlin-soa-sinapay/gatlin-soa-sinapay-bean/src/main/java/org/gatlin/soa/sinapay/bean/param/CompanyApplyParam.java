@@ -24,6 +24,10 @@ public class CompanyApplyParam extends SoaLidParam {
 	private String digest;
 	// 文件名
 	private String filename;
+	@NotEmpty
+	private String certEffectDate;
+	@NotEmpty
+	private String certInvalidDate;
 
 	public String getCity() {
 		return city;
@@ -81,6 +85,24 @@ public class CompanyApplyParam extends SoaLidParam {
 		this.filename = filename;
 	}
 	
+	
+	
+	public String getCertEffectDate() {
+		return certEffectDate;
+	}
+
+	public void setCertEffectDate(String certEffectDate) {
+		this.certEffectDate = certEffectDate;
+	}
+
+	public String getCertInvalidDate() {
+		return certInvalidDate;
+	}
+
+	public void setCertInvalidDate(String certInvalidDate) {
+		this.certInvalidDate = certInvalidDate;
+	}
+
 	@Override
 	public void verify() {
 		super.verify();
