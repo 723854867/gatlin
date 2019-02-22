@@ -344,6 +344,8 @@ public class SinaMemberManager {
 		builder.summary(company.getSummary());
 		builder.legalPerson(company.getLegalPerson());
 		builder.certNo(company.getLegalIdentity());
+		builder.certEffectDate(param.getCertEffectDate());
+		builder.certInvalidDate(param.getCertInvalidDate());
 		builder.legalPersonPhone(String.valueOf(PhoneUtil.getNationalNumber(company.getLegalMobile())));
 		builder.bankCode(bank.getSinaId());
 		builder.bankAccountNo(param.getBankNo());

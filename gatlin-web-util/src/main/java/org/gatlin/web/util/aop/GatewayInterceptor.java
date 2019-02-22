@@ -77,7 +77,7 @@ public class GatewayInterceptor {
 		LogRequest log = _logRequest(request, point);
 		int serverState = configService.config(WebConsts.Options.SERVER_STATE);
 		CfgApi api = null != authService ? authService.api(new Query().eq("path", request.getServletPath())) : null;
-		int apiSecurityLevel = null == api ? 1 : api.getSecurityLevel();
+		int apiSecurityLevel = null == api ? 3 : api.getSecurityLevel();
 		Assert.isTrue(WebCode.API_MAINTENANCE, apiSecurityLevel > serverState);
 		if (null != api)
 			log.setDesc(api.getDesc());
