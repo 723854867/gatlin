@@ -420,7 +420,7 @@ public class SinaOrderManager {
 		builder.identityId(withdraw.getWithdrawee());
 		builder.amount(withdraw.getAmount());
 		builder.userIp(param.meta().getIp());
-		builder.withdrawCloseTime("1m");
+		builder.withdrawCloseTime("10m");
 		builder.extendParam("customNotify^Y"); // 支持申请成功通知
 		DeviceType device = param.getUser().getDeviceType();
 		if (device == DeviceType.MOBILE)
