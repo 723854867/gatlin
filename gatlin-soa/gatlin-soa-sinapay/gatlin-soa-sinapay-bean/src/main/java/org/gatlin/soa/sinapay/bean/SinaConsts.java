@@ -29,6 +29,8 @@ public interface SinaConsts {
 	final StrOption URL_RETURN_BROWSER_WAP							= new StrOption("url_return_browser_wap");
 	// 企业审核回调地址
 	final StrOption URL_NOTICE_COMPANY_AUDIT						= new StrOption("url_notice_company_audit_sina");
+	// 清退签协议阈值
+	final IntegerOption TERMINATE_CONTRACT_THRESHOLD				= new IntegerOption("terminate_contract_threshold", 1000);
 	
 	final String MESSAGE_SINA_CARD_BIND_TIMEOUT						= "timeout_sina_card_bind";
 }
