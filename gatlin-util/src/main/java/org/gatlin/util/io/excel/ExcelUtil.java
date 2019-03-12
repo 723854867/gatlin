@@ -25,17 +25,17 @@ import org.gatlin.util.reflect.BeanUtil;
 
 public class ExcelUtil {
 	
-	public static final <T> List<T> read(File file, Class<T> clazz) {
+	public static final <T> List<T> read(File file, Class<T> clazz,String dateFormat) {
 		ZipSecureFile.setMinInflateRatio(-1.0d);
 		Workbook workbook = null;
 		try {
 			POIFSFileSystem fs = new POIFSFileSystem(file, true); 
 			workbook = new HSSFWorkbook(fs);
-			return _parse(workbook, clazz);
+			return _parse(workbook, clazz,dateFormat);
 		} catch (Exception e) {
 			try {
 				workbook = new XSSFWorkbook(file);
-				return _parse(workbook, clazz);
+				return _parse(workbook, clazz,dateFormat);
 			} catch (InvalidFormatException | IOException e1) {
 				throw new RuntimeException(file.getPath() + " load failure!", e);
 			}
@@ -49,11 +49,11 @@ public class ExcelUtil {
 		}
 	}
 
-	private static final <T> List<T> _parse(Workbook workbook, Class<T> clazz) {
+	private static final <T> List<T> _parse(Workbook workbook, Class<T> clazz,String dateFormat) {
 		List<T> list = new ArrayList<T>();
 		Sheet sheet = workbook.getSheetAt(0);
 		String[] cols = _parseTitle(sheet);
-		_parseContent(sheet, cols, list, clazz);
+		_parseContent(sheet, cols, list, clazz,dateFormat);
 		return list;
 	}
 
@@ -68,15 +68,15 @@ public class ExcelUtil {
 		return cols;
 	}
 
-	private static final <T> void _parseContent(Sheet sheet, String[] cols, List<T> list, Class<T> clazz) {
+	private static final <T> void _parseContent(Sheet sheet, String[] cols, List<T> list, Class<T> clazz,String dateFormat) {
 		int rowNum = sheet.getPhysicalNumberOfRows();
 		for (int i = 1; i < rowNum; i++) {
 			Row row = sheet.getRow(i);
-			list.add(_parseEntity(row, cols, clazz));
+			list.add(_parseEntity(row, cols, clazz,dateFormat));
 		}
 	}
 
-	private static final <T> T _parseEntity(Row row, String[] cols, Class<T> clazz) {
+	private static final <T> T _parseEntity(Row row, String[] cols, Class<T> clazz,String dateFormat) {
 		Map<String, String> map = new HashMap<String, String>();
 		for (int i = 0, len = cols.length; i < len; i++) {
 			Cell cell = row.getCell(i);
@@ -85,7 +85,7 @@ public class ExcelUtil {
 				if (DateUtil.isCellDateFormatted(cell)) {
 					// 用于转化为日期格式
 					Date d = cell.getDateCellValue();
-					cell.setCellValue(org.gatlin.util.DateUtil.getDate(d, org.gatlin.util.DateUtil.yyyyMMdd));
+					cell.setCellValue(org.gatlin.util.DateUtil.getDate(d, dateFormat));
 				}
 			}
 			cell.setCellType(CellType.STRING);

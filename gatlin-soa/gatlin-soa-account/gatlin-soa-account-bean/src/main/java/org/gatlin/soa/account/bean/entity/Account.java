@@ -19,6 +19,7 @@ public class Account implements Identifiable<Long> {
 	private long owner;
 	private AccountType type;
 	private BigDecimal usable;
+	private BigDecimal cash;
 	private BigDecimal frozen;
 	private TargetType ownerType;
 	private int created;
@@ -54,6 +55,14 @@ public class Account implements Identifiable<Long> {
 
 	public void setUsable(BigDecimal usable) {
 		this.usable = usable;
+	}
+
+	public BigDecimal getCash() {
+		return cash;
+	}
+
+	public void setCash(BigDecimal cash) {
+		this.cash = cash;
 	}
 
 	public BigDecimal getFrozen() {
