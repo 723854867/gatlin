@@ -1,14 +1,14 @@
 package org.gatlin.sdk.heepay.request;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 
-import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.exceptions.RequestFailException;
 import org.gatlin.core.service.http.HttpPost;
 import org.gatlin.sdk.heepay.HeepayConfig;
 import org.gatlin.sdk.heepay.response.BatchPayResponse;
 import org.gatlin.util.serial.SerializeUtil;
+
+import com.google.gson.annotations.Expose;
 
 import okhttp3.Response;
 
@@ -39,22 +39,27 @@ public class HeepayRequest <RESPONSE extends BatchPayResponse, REQUEST extends H
 		/**
 		 * 当前接口版本号3
 		 */
+		@Expose
 		protected String version = "3";
 		/**
 		 * 商户内码，例如1664502
 		 */
+		@Expose
 		protected String agent_id = HeepayConfig.agent_id;
 		/**
 		 * 支付后返回的商户处理页面，URL参数是以http://或https://开头的完整URL地址(后台处理)，提交的url地址必须外网能访问到，否则无法通知商户。
 		 */
+		@Expose
 		protected String notify_url = HeepayConfig.notify_url;
 		/**
 		 * 商户自定义原样返回，最大长度50个字符
 		 */
+		@Expose
 		protected String ext_param1 = HeepayConfig.ext_param1;
 		/**
 		 * MD5签名结果
 		 */
+		@Expose
 		protected String sign;
 		
 		public abstract REQUEST build();
