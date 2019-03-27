@@ -32,5 +32,8 @@ public interface SinaConsts {
 	// 清退签协议阈值
 	final IntegerOption TERMINATE_CONTRACT_THRESHOLD				= new IntegerOption("terminate_contract_threshold", 1000);
 	
+	//汇付宝批量回调
+	final StrOption URL_NOTICE_BATCHPAY_HEE							= new StrOption("url_notice_batchpay_hee");
+	
 	final String MESSAGE_SINA_CARD_BIND_TIMEOUT						= "timeout_sina_card_bind";
 }

@@ -28,6 +28,10 @@ public class HttpPost<RESPONSE extends HttpResponse, REQUEST extends HttpPost<RE
 		this.contentType = contentType;
 	}
 	
+	public HttpPost(String url) {
+		super(url);
+	}
+	
 	public Body getBody() {
 		return body;
 	}

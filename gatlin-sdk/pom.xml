@@ -30,5 +30,6 @@
     <module>gatlin-sdk-juhe</module>
     <module>gatlin-sdk-jisu</module>
     <module>gatlin-sdk-amazon</module>
+    <module>gatlin-sdk-heepay</module>
   </modules>
 </project>

@@ -24,6 +24,7 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 	protected int port;
 	protected String host;
 	protected String path;
+	protected String url;
 	protected Protocol protocol;
 	protected Class<RESPONSE> clazz;
 	protected HttpService httpService;
@@ -35,6 +36,14 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 		this.host = host;
 		this.path = path;
 		this.protocol = Protocol.HTTP;
+		Type superType = getClass().getGenericSuperclass();   
+		Type[] generics = ((ParameterizedType) superType).getActualTypeArguments();  
+		this.clazz = (Class<RESPONSE>) generics[0];
+		this.httpService = SpringContextUtil.getBean("httpService", HttpService.class);
+	}
+	
+	protected HttpRequest(String url) {
+		this.url = url;
 		Type superType = getClass().getGenericSuperclass();   
 		Type[] generics = ((ParameterizedType) superType).getActualTypeArguments();  
 		this.clazz = (Class<RESPONSE>) generics[0];
@@ -74,6 +83,13 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 	protected HttpUrl url() {
 		HttpUrl.Builder builder = new HttpUrl.Builder().scheme(protocol.name());
 		builder.host(host).port(port).addPathSegments(path);
+		for (Entry<String, String> entry : params.entrySet())
+			builder.addQueryParameter(entry.getKey(), entry.getValue());
+		return builder.build();
+	}
+	
+	protected HttpUrl url_() {
+		HttpUrl.Builder builder = HttpUrl.parse(url).newBuilder();
 		for (Entry<String, String> entry : params.entrySet())
 			builder.addQueryParameter(entry.getKey(), entry.getValue());
 		return builder.build();
