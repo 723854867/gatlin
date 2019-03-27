@@ -10,7 +10,7 @@ public enum Bank {
 	BANK2(2,"建设"),
 	BANK3(3,"农业"),
 	BANK4(4,"邮政储蓄"),
-	BANK5(5,"中囯银行"),
+	BANK5(5,"中国银行"),
 	BANK6(6,"交通"),
 	BANK7(7,"招商"),
 	BANK8(8,"光大"),
@@ -190,6 +190,6 @@ public enum Bank {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(match("上海银行").mark());
+		System.out.println(match("中国银行").mark());
 	}
 }
