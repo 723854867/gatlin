@@ -61,6 +61,18 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 			requestFailure(response);
 		return response(response);
 	}
+	//直接用完整请求地址
+	public RESPONSE sync_() {
+		Response response = this.httpService.sync(request_());
+		if (!response.isSuccessful())
+			requestFailure(response);
+		return response(response);
+	}
+	//直接用完整请求地址
+	public void async_(Callback<RESPONSE> callback) {
+		callback.request = this;
+		this.httpService.async(request_(), callback);
+	}
 	
 	protected void requestFailure(Response response) {
 		String errorContent = null;
@@ -80,6 +92,14 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 		return rb.build();
 	}
 	
+	//直接用完整请求地址
+	protected Request request_() {
+		Request.Builder rb = new Request.Builder().url(url_());
+		for (Entry<String, String> entry : headers.entrySet())
+			rb.addHeader(entry.getKey(), entry.getValue());
+		return rb.build();
+	}
+	
 	protected HttpUrl url() {
 		HttpUrl.Builder builder = new HttpUrl.Builder().scheme(protocol.name());
 		builder.host(host).port(port).addPathSegments(path);
@@ -87,7 +107,7 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 			builder.addQueryParameter(entry.getKey(), entry.getValue());
 		return builder.build();
 	}
-	
+	//直接用完整请求地址
 	protected HttpUrl url_() {
 		HttpUrl.Builder builder = HttpUrl.parse(url).newBuilder();
 		for (Entry<String, String> entry : params.entrySet())

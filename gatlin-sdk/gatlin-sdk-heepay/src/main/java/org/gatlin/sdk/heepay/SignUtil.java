@@ -70,7 +70,7 @@ public class SignUtil {
 //         Security.addProvider(new com.sun.crypto.provider.SunJCE());
          // 24字节的密钥（我们可以取apk签名的指纹的前12个byte和后12个byte拼接在一起为我们的密钥）
          final String keyBytes = "JUNNET_123456_123456_COM";
-         String szSrc = "樊水东";
+         String szSrc = "560473954062434304^5^0^123^胡文^2.0^清退打款^省^市^123";
 
          System.out.println("加密前的字符串:" + szSrc);
 

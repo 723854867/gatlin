@@ -98,6 +98,8 @@ public class BatchPayRequest extends HeepayRequest<BatchPayResponse, BatchPayReq
 			builder.append("省^");
 			builder.append("市^");
 			builder.append(bankDeposit);
+			System.out.println(builder.toString());
+			System.out.println(Des.Encrypt3Des(builder.toString(), HeepayConfig.DES_KEY,"ToHex16"));
 			return Des.Encrypt3Des(builder.toString(), HeepayConfig.DES_KEY,"ToHex16");
 		}
 		

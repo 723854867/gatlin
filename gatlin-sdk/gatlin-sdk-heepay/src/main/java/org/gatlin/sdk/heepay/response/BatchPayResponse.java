@@ -1,21 +1,20 @@
 package org.gatlin.sdk.heepay.response;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.gatlin.core.service.http.HttpResponse;
-import org.gatlin.sdk.heepay.bean.HeepayException;
 import org.gatlin.sdk.heepay.bean.enums.Code;
-
-import com.google.gson.annotations.SerializedName;
-
+@XmlRootElement(name="root")
 public class BatchPayResponse implements HttpResponse {
 
 	private static final long serialVersionUID = 4382362798210473591L;
 	
-	@SerializedName("ret_code")
 	private String code;
-	@SerializedName("ret_msg")
 	private String msg;
 	private String sign;
 
+	@XmlElement(name="ret_code")
 	public String getCode() {
 		return code;
 	}
@@ -24,6 +23,7 @@ public class BatchPayResponse implements HttpResponse {
 		this.code = code;
 	}
 
+	@XmlElement(name="ret_msg")
 	public String getMsg() {
 		return msg;
 	}
