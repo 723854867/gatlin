@@ -94,13 +94,11 @@ public class BatchPayRequest extends HeepayRequest<BatchPayResponse, BatchPayReq
 			builder.append(bankNo+"^");
 			builder.append(name+"^");
 			builder.append(String.valueOf(amount.floatValue())+"^");
-			builder.append("清退打款^");
+			builder.append(HeepayConfig.remit_reason+"^");
 			builder.append("省^");
 			builder.append("市^");
 			builder.append(bankDeposit);
-			System.out.println(builder.toString());
-			System.out.println(Des.Encrypt3Des(builder.toString(), HeepayConfig.DES_KEY,"ToHex16"));
-			return Des.Encrypt3Des(builder.toString(), HeepayConfig.DES_KEY,"ToHex16");
+			return builder.toString();
 		}
 		
 		public Builder detail_data(String detail_data){
@@ -112,7 +110,10 @@ public class BatchPayRequest extends HeepayRequest<BatchPayResponse, BatchPayReq
 		@Override
 		public BatchPayRequest build() {
 			Map<String, String> map = SerializeUtil.JSON.beanToMap(SerializeUtil.GSON_ANNO, this);
+			map.put("key", HeepayConfig.KEY);
+			System.out.println(SignUtil._signContent(map).toLowerCase());
 			this.sign = SignUtil.MD5Sign(SignUtil._signContent(map).toLowerCase());
+			this.detail_data = Des.Encrypt3Des(detail_data, HeepayConfig.DES_KEY,"ToHex16");
 			map = SerializeUtil.JSON.beanToMap(SerializeUtil.GSON_ANNO, this);
 			return new BatchPayRequest(new TreeMap<String, String>(map));
 		}

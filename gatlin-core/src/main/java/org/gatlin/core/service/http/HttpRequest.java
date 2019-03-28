@@ -1,8 +1,10 @@
 package org.gatlin.core.service.http;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -111,7 +113,11 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 	protected HttpUrl url_() {
 		HttpUrl.Builder builder = HttpUrl.parse(url).newBuilder();
 		for (Entry<String, String> entry : params.entrySet())
-			builder.addQueryParameter(entry.getKey(), entry.getValue());
+			try {
+				builder.addQueryParameter(entry.getKey(), URLEncoder.encode(entry.getValue(),"UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 		return builder.build();
 	}
 	

@@ -28,11 +28,14 @@ public class SignUtil {
      * @return 加密完成的32位值(小写)
      */
 	public static final String MD5Sign(String str) {
-//		String str = _signContent(params).toLowerCase();
 		String re_md5 = new String();
 		try {
 			 MessageDigest md = MessageDigest.getInstance("MD5");
-	            md.update(str.getBytes());
+	            try {
+					md.update(str.getBytes("UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					throw new HeepayException(Code.MD5_FAILE.mark(), Code.MD5_FAILE.desc());
+				}
 	            byte b[] = md.digest();
 	            int i;
 	            StringBuffer buf = new StringBuffer("");
@@ -80,6 +83,8 @@ public class SignUtil {
          String srcBytes = Des.Decrypt3Des(encoded, keyBytes,"ToHex16");
 
          System.out.println("解密后的字符串:" + srcBytes);
+         
+         System.out.println(MD5Sign("我"));
      }
 	
 
