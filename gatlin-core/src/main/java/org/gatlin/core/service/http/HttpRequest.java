@@ -113,11 +113,7 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 	protected HttpUrl url_() {
 		HttpUrl.Builder builder = HttpUrl.parse(url).newBuilder();
 		for (Entry<String, String> entry : params.entrySet())
-			try {
-				builder.addQueryParameter(entry.getKey(), URLEncoder.encode(entry.getValue(),"UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+			builder.addQueryParameter(entry.getKey(), entry.getValue());
 		return builder.build();
 	}
 	
