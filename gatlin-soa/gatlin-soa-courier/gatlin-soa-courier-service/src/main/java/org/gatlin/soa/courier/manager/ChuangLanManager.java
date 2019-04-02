@@ -31,13 +31,13 @@ public class ChuangLanManager {
 			if (idx == 500) {
 				builder.deleteCharAt(builder.length() - 1);
 				idx = 0;
-				sendSms("尊敬的微钱进用户您好，您在微钱进投资的产品已到期且自动赎回至余额，请关注查收。", builder.toString());
+				sendSms(content, builder.toString());
 				builder = new StringBuilder();
 			}
 		}
 		if (builder.length() > 0) {
 			builder.deleteCharAt(builder.length() - 1);
-			sendSms("尊敬的微钱进用户您好，您在微钱进投资的产品已到期且自动赎回至余额，请关注查收。",  builder.toString());
+			sendSms(content,  builder.toString());
 		}
 	}
 }
