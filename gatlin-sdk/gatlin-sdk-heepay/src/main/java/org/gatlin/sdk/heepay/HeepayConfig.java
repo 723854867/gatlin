@@ -13,7 +13,7 @@ public interface HeepayConfig {
 	//商户id
 	String agent_id = "2119474";
 	//商户付款理由
-	String remit_reason = "微钱进兑付";
+	String remit_reason = "微钱进兑付款";
 	//批量付款回调地址
 	String notify_url = "";
 	//商户自定义原样返回，最大长度50个字符

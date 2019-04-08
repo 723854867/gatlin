@@ -2,6 +2,7 @@ package org.gatlin.util.io.excel;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,6 +39,29 @@ public class ExcelUtil {
 				return _parse(workbook, clazz,dateFormat);
 			} catch (InvalidFormatException | IOException e1) {
 				throw new RuntimeException(file.getPath() + " load failure!", e);
+			}
+		} finally {
+			if (null != workbook) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+	}
+	
+	public static final <T> List<T> read(InputStream in, Class<T> clazz,String dateFormat) {
+		ZipSecureFile.setMinInflateRatio(-1.0d);
+		Workbook workbook = null;
+		try {
+			workbook = new HSSFWorkbook(in);
+			return _parse(workbook, clazz,dateFormat);
+		} catch (Exception e) {
+			try {
+				workbook = new XSSFWorkbook(in);
+				return _parse(workbook, clazz,dateFormat);
+			} catch (IOException e1) {
+				throw new RuntimeException("load failure!", e);
 			}
 		} finally {
 			if (null != workbook) {
