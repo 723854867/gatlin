@@ -11,7 +11,7 @@ public interface WebConsts {
 		final IntegerOption SERVER_STATE							= new IntegerOption("server_state", 0);
 		final BoolOption UPLOAD_ENABLE								= new BoolOption("upload.enable", false);
 		final LongOption RAPID_MAX_UPLOAD_SIZE						= new LongOption("upload.maxUploadSize", 5242880l);
-		final IntegerOption RAPID_MAX_IN_MEMORY_SIZE				= new IntegerOption("upload.maxInMemorySize", 51200);
+		final IntegerOption RAPID_MAX_IN_MEMORY_SIZE				= new IntegerOption("upload.maxInMemorySize", 512000);
 		final IntegerOption RAPID_MAX_UPLOAD_SIZE_PER_FILE			= new IntegerOption("upload.maxUploadSizePerFile", 10485760);
 		final StrOption RESOURCE_PATH								= new StrOption("resource_path");
 		final StrOption RESOURCE_PREFIX								= new StrOption("resource_prefix");
