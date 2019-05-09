@@ -1,5 +1,8 @@
 package org.gatlin.sdk.heepay.response;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name="root")
 public class QueryBankCardResponse extends BatchPayResponse {
 	
 	private static final long serialVersionUID = -4454468388907417122L;
