@@ -111,7 +111,7 @@ public class BatchPayRequest extends HeepayRequest<BatchPayResponse, BatchPayReq
 		public BatchPayRequest build() {
 			Map<String, String> map = SerializeUtil.JSON.beanToMap(SerializeUtil.GSON_ANNO, this);
 			map.put("key", HeepayConfig.KEY);
-			System.out.println(SignUtil._signContent(map).toLowerCase());
+//			System.out.println(SignUtil._signContent(map).toLowerCase());
 			this.sign = SignUtil.MD5Sign(SignUtil._signContent(map).toLowerCase());
 			this.detail_data = Des.Encrypt3Des(detail_data, HeepayConfig.DES_KEY,"ToHex16");
 			map = SerializeUtil.JSON.beanToMap(SerializeUtil.GSON_ANNO, this);

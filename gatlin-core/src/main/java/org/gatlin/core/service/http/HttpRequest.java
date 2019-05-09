@@ -9,10 +9,12 @@ import java.util.Map.Entry;
 
 import org.gatlin.core.bean.exceptions.RequestFailException;
 import org.gatlin.core.util.SpringContextUtil;
+import org.gatlin.util.Consts;
 import org.gatlin.util.bean.enums.Protocol;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.serial.SerializeUtil;
 
+import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -97,6 +99,9 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 		Request.Builder rb = new Request.Builder().url(url_());
 		for (Entry<String, String> entry : headers.entrySet())
 			rb.addHeader(entry.getKey(), entry.getValue());
+		FormBody.Builder fb = new FormBody.Builder(Consts.UTF_8);
+		for (Entry<String, String> entry : params.entrySet())
+			fb.add(entry.getKey(), entry.getValue());
 		return rb.build();
 	}
 	
@@ -110,8 +115,8 @@ public abstract class HttpRequest<RESPONSE extends HttpResponse, REQUEST extends
 	//直接用完整请求地址
 	protected HttpUrl url_() {
 		HttpUrl.Builder builder = HttpUrl.parse(url).newBuilder();
-		for (Entry<String, String> entry : params.entrySet())
-			builder.addQueryParameter(entry.getKey(), entry.getValue());
+//		for (Entry<String, String> entry : params.entrySet())
+//			builder.addQueryParameter(entry.getKey(), entry.getValue());
 		return builder.build();
 	}
 	
