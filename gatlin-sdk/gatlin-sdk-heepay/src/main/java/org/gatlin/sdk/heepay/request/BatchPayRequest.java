@@ -8,7 +8,6 @@ import org.gatlin.sdk.heepay.Des;
 import org.gatlin.sdk.heepay.HeepayConfig;
 import org.gatlin.sdk.heepay.SignUtil;
 import org.gatlin.sdk.heepay.bean.enums.AccountType;
-import org.gatlin.sdk.heepay.bean.enums.Bank;
 import org.gatlin.sdk.heepay.response.BatchPayResponse;
 import org.gatlin.util.serial.SerializeUtil;
 
@@ -117,5 +116,11 @@ public class BatchPayRequest extends HeepayRequest<BatchPayResponse, BatchPayReq
 			map = SerializeUtil.JSON.beanToMap(SerializeUtil.GSON_ANNO, this);
 			return new BatchPayRequest(new TreeMap<String, String>(map));
 		}
+	}
+	
+
+	public static void main(String[] args) {
+		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><root><ret_code>E100</ret_code><ret_msg>商户未经授权，请与客服联系处理</ret_msg></root>";
+		BatchPayResponse response = SerializeUtil.XmlUtil.xmlToBean(xml, BatchPayResponse.class);
 	}
 }

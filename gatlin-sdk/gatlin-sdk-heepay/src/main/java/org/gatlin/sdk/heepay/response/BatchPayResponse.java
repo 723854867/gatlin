@@ -2,11 +2,10 @@ package org.gatlin.sdk.heepay.response;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.gatlin.core.service.http.HttpResponse;
 import org.gatlin.sdk.heepay.bean.enums.Code;
-@XmlTransient
+//@XmlTransient
 @XmlRootElement(name="root")
 public class BatchPayResponse implements HttpResponse {
 
