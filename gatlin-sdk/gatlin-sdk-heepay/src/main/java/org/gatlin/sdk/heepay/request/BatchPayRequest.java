@@ -91,7 +91,7 @@ public class BatchPayRequest extends HeepayRequest<BatchPayResponse, BatchPayReq
 			builder.append(orderNo+"^");
 			builder.append(bankCode+"^");
 			builder.append(AccountType.PRIVATE.mark()+"^");
-			builder.append(bankNo+"^");
+			builder.append(bankNo.trim().replaceAll(" ", "")+"^");
 			builder.append(name+"^");
 			builder.append(String.valueOf(amount.floatValue())+"^");
 			builder.append(HeepayConfig.remit_reason+"^");
