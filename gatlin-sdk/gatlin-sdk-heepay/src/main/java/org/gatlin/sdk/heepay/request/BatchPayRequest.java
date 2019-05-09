@@ -86,10 +86,10 @@ public class BatchPayRequest extends HeepayRequest<BatchPayResponse, BatchPayReq
 		 * @param bankDeposit 开户行
 		 * @return
 		 */
-		public String detail_data(String orderNo,String bankName,String bankNo,String name,BigDecimal amount,String bankDeposit) {
+		public String detail_data(String orderNo,String bankCode,String bankNo,String name,BigDecimal amount,String bankDeposit) {
 			StringBuilder builder = new StringBuilder();
 			builder.append(orderNo+"^");
-			builder.append(Bank.match(bankName).mark()+"^");
+			builder.append(bankCode+"^");
 			builder.append(AccountType.PRIVATE.mark()+"^");
 			builder.append(bankNo+"^");
 			builder.append(name+"^");

@@ -1,6 +1,5 @@
 package org.gatlin.sdk.heepay.request;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -12,7 +11,7 @@ import org.gatlin.util.serial.SerializeUtil;
 import com.google.gson.annotations.Expose;
 
 /**
- * 批量支付
+ * 查询银行卡号
  * 
  * @author lynn
  */
@@ -22,13 +21,14 @@ public class QueryBankCardRequest extends HeepayRequest<QueryBankCardResponse, Q
 		super(HeepayConfig.QUERY_BANK_CARD_URL);
 		this.params = params;
 	}
-	
-	public static class Builder implements Serializable{
+	public static class Builder extends HeepayRequest.Builder<QueryBankCardRequest, Builder>{
 
 
 		private static final long serialVersionUID = -8486842482665541648L;
 
 		public Builder() {
+			this.ext_param1 = null;
+			this.notify_url = null;
 		}
 		
 		/**
@@ -36,22 +36,7 @@ public class QueryBankCardRequest extends HeepayRequest<QueryBankCardResponse, Q
 		 */
 		@Expose
 		protected String bank_card_no;
-		/**
-		 * 当前接口版本号3
-		 */
-		@Expose
-		protected String version = "3";
-		/**
-		 * 商户内码，例如1664502
-		 */
-		@Expose
-		protected String agent_id = HeepayConfig.agent_id;
-		
-		@Expose
-		protected String sign;
-	
 
-		
 		public Builder bank_card_no(String bank_card_no) {
 			this.bank_card_no=bank_card_no;
 			return this;
