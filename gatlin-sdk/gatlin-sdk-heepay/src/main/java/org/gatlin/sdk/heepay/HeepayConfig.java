@@ -4,6 +4,7 @@ public interface HeepayConfig {
 
 	//小额正式交易地址
 	String SMALL_AMOUNT_URL = "https://Pay.heepay.com/API/PayTransit/PayTransferWithSmallAll.aspx";
+	String QUERY_BANK_CARD_URL = "https://Pay.heepay.com/API/PayTransit/QueryBankCardInfo.aspx";
 //	String SMALL_AMOUNT_URL = "http://211.103.157.45/payheepay/API/PayTransit/PayTransferWithSmallAll.aspx";
 	String SMALL_AMOUNT_HOST = "211.103.157.45";
 	int SMALL_AMOUNT_PORT = 80;

@@ -21,6 +21,10 @@ public class HeepayRequest <RESPONSE extends BatchPayResponse, REQUEST extends H
 		super(HeepayConfig.SMALL_AMOUNT_URL);
 	}
 	
+	public HeepayRequest(String url) {
+		super(url);
+	}
+	
 	
 	@Override
 	protected RESPONSE response(Response response) {

@@ -1,13 +1,11 @@
 package org.gatlin.sdk.heepay.request;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.gatlin.sdk.heepay.HeepayConfig;
 import org.gatlin.sdk.heepay.Des;
+import org.gatlin.sdk.heepay.HeepayConfig;
 import org.gatlin.sdk.heepay.SignUtil;
 import org.gatlin.sdk.heepay.bean.enums.AccountType;
 import org.gatlin.sdk.heepay.bean.enums.Bank;
