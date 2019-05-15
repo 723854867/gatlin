@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.gatlin.core.bean.exceptions.RequestFailException;
 import org.gatlin.core.service.http.HttpPost;
 import org.gatlin.sdk.heepay.HeepayConfig;
-import org.gatlin.sdk.heepay.response.BatchPayResponse;
+import org.gatlin.sdk.heepay.response.BashResponse;
 import org.gatlin.util.serial.SerializeUtil;
 
 import com.google.gson.annotations.Expose;
@@ -15,7 +15,7 @@ import okhttp3.Response;
 /*
  * 批量支付请求
  */
-public class HeepayRequest <RESPONSE extends BatchPayResponse, REQUEST extends HeepayRequest<RESPONSE, REQUEST>> extends HttpPost<RESPONSE, REQUEST>{
+public class HeepayRequest <RESPONSE extends BashResponse, REQUEST extends HeepayRequest<RESPONSE, REQUEST>> extends HttpPost<RESPONSE, REQUEST>{
 	
 	public HeepayRequest() {
 		super(HeepayConfig.SMALL_AMOUNT_URL);
