@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.validation.constraints.Null;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.util.ZipSecureFile;
@@ -176,9 +178,7 @@ public class ExcelUtil {
 				Object value = map.get(col.getField().getName());
 				Cell cell = row.createCell(colNum);
 				cell.setCellType(CellType.STRING);
-				if (null == value)
-					System.out.println("here");
-				cell.setCellValue(value.toString());
+				cell.setCellValue(value==null ? "" : value.toString());
 			}
 		}
 		for (int idx = 0, len = cols.size(); idx < len; idx++)
